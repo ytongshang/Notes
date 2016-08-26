@@ -5,8 +5,7 @@
   1. git Plus
   2. file icons
   3. autocomplete-paths
-  4. esformatter
-  5. simplified Chinese menu
+  4. simplified Chinese menu
 
 
 
