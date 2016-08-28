@@ -19,8 +19,8 @@ brew install brew-cask
 brew cask install java
 brew cask install atom
 brew cask install google-chrome
-brew cask install iterm2
 brew cask install alfred
+brew cask install dash
 ```
 
 * 安装iterm2使用brew cask安装item2
@@ -34,7 +34,8 @@ brew install zsh
 ```
 
 * 安装oh my zsh
-  1. 安装zash
+  2. zsh文章 https://segmentfault.com/a/1190000002658335?_ea=438459
+  1. 安装oh my zash
   ```
   git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
   ```
@@ -42,7 +43,7 @@ brew install zsh
   ```
   touch ~/.zshrc
   ```
-  3. 如果原来使用过zsh,备份zsh的配置文件
+  3. 如果原来使用过zsh,备份原来的zsh的配置文件
   ```
   cp ~/.zshrc ~/.zshrc.orig
   ```
@@ -50,11 +51,27 @@ brew install zsh
   ```
   cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
   ```  
-  5. bash切换到zsh
+  5. unix，linux,osx中将shell切换到zsh
   ```
   chsh -s /bin/zsh
   ```
+  windows使用cygwin时，在~/.bash_profile中加入zsh
+  ```
+  exec zsh
+  ```
   6. 修改zsh 主题 ，编辑 ~/.zshrc，主题文件在 ~/.oh-my-zsh/themes 目录
   ```
-  ZSH_THEME=ys
+  ZSH_THEME=y
   ```
+  7. 安装autojump
+  ```
+  git clone https://github.com/wting/autojump
+  cd autojump
+  python install.py
+  ```
+  添加执行install.py生成的代码到~/.zshrc
+  ```
+  source .zshrc
+  ```
+  重启shell
+  8.
