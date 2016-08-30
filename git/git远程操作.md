@@ -1,0 +1,168 @@
+#### git clone
+1. 基本命令、
+```
+git clone <版本库的网址> <本地目录名>
+```
+
+2. git clone支持多种协议，除了HTTP(s)以外，还支持SSH、Git、本地文件协议等
+```
+$ git clone http[s]://example.com/path/to/repo.git/
+$ git clone ssh://example.com/path/to/repo.git/
+$ git clone git://example.com/path/to/repo.git/
+$ git clone /opt/git/project.git
+$ git clone file:///opt/git/project.git
+$ git clone ftp[s]://example.com/path/to/repo.git/
+$ git clone rsync://example.com/path/to/repo.git/
+```
+
+#### git remote
+1. 为了便于管理，Git要求每个远程主机都必须指定一个主机名。git remote命令就用于管理主机名
+```
+git remote
+origin
+```
+
+2. git remote -v | --verbose 列出详细信息，可以查看远程主机的网址
+```
+git remote --verbose
+origin  https://github.com/ytongshang/Notes.git (fetch)
+origin  https://github.com/ytongshang/Notes.git (push)
+```
+
+3. 克隆版本库的时候，所使用的远程主机自动被Git命名为origin。如果想用其他的主机名，需要
+用git clone命令的-o选项指定
+```
+git clone -o jQuery https://github.com/jquery/jquery.git
+git remote
+jQuery
+```
+
+4. git remote show命令加上主机名，可以查看该主机的详细信息
+```
+git remote show origin
+remote origin
+Fetch URL: https://git.coding.net/Rancune/learnGit.git
+Push  URL: https://git.coding.net/Rancune/learnGit.git
+HEAD branch: master
+Remote branch:
+  master tracked
+Local branch configured for 'git pull':
+  master merges with remote master
+Local ref configured for 'git push':
+  master pushes to master (up to date)
+```
+
+5. git remote add命令用于添加远程主机
+```
+git remote add origin https://git.coding.net/Rancune/learnGit.git
+```
+
+6. git remote rm命令用于删除远程主机。
+```
+git remote rm origin
+```
+
+7. git remote rename命令用于远程主机的改名。
+```
+git remote rename origin hapi
+```
+
+#### git fetch
+
+1. 一旦远程主机的版本库有了更新(Git术语叫做commit)，需要将这些更新取回本地，这时就要
+用到git fetch命令,下面命令将某个远程主机的更新，全部取回本地
+```
+git fetch <远程主机名>
+```
+
+2. 默认情况下，git fetch取回所有分支(branch)的更新。如果只想取回特定分支的更新，可以指
+定分支名
+```
+git fetch <远程主机名> <分支名>
+git fetch origin master
+```
+
+3. 所取回的更新，在本地主机上要用”远程主机名/分支名”的形式读取。比如origin主机的master，
+就要用origin/master读取。git branch命令的-r选项，可以用来查看远程分支，-a选项查看所有分支
+```
+git branch -r
+origin/master
+git branch -a
+master
+remotes/origin/master
+```
+
+4. 本地主机的当前分支是master，远程分支是origin/master。取回远程主机的更新以后，可以在
+它的基础上，使用git checkout命令创建一个新的分支,下面命令表示，在origin/master的基础
+上，创建一个新分支
+```
+git checkout -b newBrach origin/master
+```
+
+5. 也可以使用git merge命令或者git rebase命令，在本地分支上合并远程分支
+```
+git merge origin/master
+# 或者
+git rebase origin/master
+```
+
+5.
+
+#### git pull
+#### git push
+
+1. 把本地库的所有内容推送到远程库上,分支推送顺序的写法是<来源地>:<目的地>，所以
+git pull是<远程分支>:<本地分支>，而git push是<本地分支>:<远程分支>。
+```
+git push <远程主机名> <本地分支名>:<远程分支名>
+```
+
+2. 将本地的master分支推送到origin主机的master分支。如果后者不存在，则会被新建
+```
+git push origin master
+```
+
+3. 如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程
+分支。下面命令表示删除origin主机的master分支
+```
+git push origin :master
+git push origin --delete master
+```
+
+4. 如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略,下面命令表示，
+将当前分支推送到origin主机的对应分支
+```
+git push origin
+```
+
+5. 如果当前分支只有一个追踪分支，那么主机名都可以省略
+```
+git push
+```
+
+6.  下面命令将本地的master分支推送到origin主机，同时指定origin为默认主机，后面就可以
+不加任何参数使用git push了
+```
+git push -u origin master
+```
+
+7. 就是不管是否存在对应的远程分支，将本地的所有分支都推送到远程主机，这时需要使用–all选项
+```
+git push --all origin
+```
+
+8. 如果远程主机的版本比本地版本更新，推送时Git会报错，要求先在本地做git pull合并差异，
+然后再推送到远程主机。这时，如果你一定要推送，可以使用–force选项,下面命令使用–force选项，
+结果导致在远程主机产生一个”非直进式”的合并(non-fast-forward merge)。除非你很确定要这样做，
+否则应该尽量避免使用–force选项
+```
+git push --force origin
+```
+
+9. git push不会推送标签(tag)，除非使用–tags选项。
+```
+git push origin tags
+```
+
+
+#### git push
