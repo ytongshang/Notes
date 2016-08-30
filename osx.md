@@ -74,4 +74,5 @@ brew install zsh
   source .zshrc
   ```
   重启shell
+  
   8.

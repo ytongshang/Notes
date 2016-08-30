@@ -10,8 +10,6 @@
   4. simplified Chinese menu
   5. atom-beautify
 
-
-
 * 常用设置
   1. tree-view settings hideIgnoredNames
 
