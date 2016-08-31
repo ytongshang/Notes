@@ -1,7 +1,7 @@
 #### git clone
 1. 基本命令、
 ```
-git clone <版本库的网址> <本地目录名>
+git clone <远程版本库> <本地目录名>
 ```
 
 2. git clone支持多种协议，除了HTTP(s)以外，还支持SSH、Git、本地文件协议等
@@ -82,8 +82,9 @@ git fetch <远程主机名> <分支名>
 git fetch origin master
 ```
 
-3. 所取回的更新，在本地主机上要用”远程主机名/分支名”的形式读取。比如origin主机的master，
-就要用origin/master读取。git branch命令的-r选项，可以用来查看远程分支，-a选项查看所有分支
+3. 所取回的更新，在本地主机上要用”远程主机名/分支名”的形式读取,**此时本地的分支与远程主机的分支
+是没有合并的,两者还是独立的**，比如origin主机的master，就要用origin/master读取。
+git branch命令的-r选项，可以用来查看远程分支，-a选项查看所有分支
 ```
 git branch -r
 origin/master
@@ -93,10 +94,10 @@ remotes/origin/master
 ```
 
 4. 本地主机的当前分支是master，远程分支是origin/master。取回远程主机的更新以后，可以在
-它的基础上，使用git checkout命令创建一个新的分支,下面命令表示，在origin/master的基础
-上，创建一个新分支
+它的基础上，可以用checkout命令切换到另外的一个分支
 ```
-git checkout -b newBrach origin/master
+git checkout master 切换本地的主分支
+git checkout origin/master 切换到origin的主分支
 ```
 
 5. 也可以使用git merge命令或者git rebase命令，在本地分支上合并远程分支
@@ -106,9 +107,53 @@ git merge origin/master
 git rebase origin/master
 ```
 
-5.
-
 #### git pull
+
+1. git pull命令的作用是，取回远程主机某个分支的更新，再与本地的指定分支合并,
+实际上是git fetch与git merge两个命令的合并
+```
+git pull <远程主机名> <远程分支名>:<本地分支名>
+```
+2. 取回origin主机的next分支，与本地的master分支合并，需要写成下面这样
+```
+git pull origin next:master
+```
+3. 如果远程分支是与当前分支合并，则冒号后面的部分可以省略
+```
+git pull origin next
+```
+4. 3中的命令表示，取回origin/next分支，再与当前分支合并。实质上，这等同于先做git fetch，再做git merge
+```
+git fetch origin
+或git fetch origin next
+git merge origin/next
+```
+
+5. Git会自动在本地分支与远程分支之间，建立一种追踪关系(tracking)。比如，在git clone的时候，
+所有本地分支默认与远程主机的同名分支，建立追踪关系，也就是说，本地的master分支自动
+”追踪”origin/master分支,上面命令指定master分支追踪origin/next分支
+```
+git branch --set-upstream master origin/next
+```
+
+6. 如果当前分支与远程分支存在追踪关系，git pull就可以省略远程分支名,下面命令表示，本地的当前
+分支自动与对应的origin主机”追踪分支”(remote-tracking branch)进行合并
+```
+git pull origin
+```
+
+7. 如果当前分支只有一个追踪分支，连远程主机名都可以省略。当前分支自动与唯一一个追踪分支进行合并
+```
+git pull
+```
+
+8. 如果合并需要采用rebase模式，可以使用–rebase选项
+```
+git pull --rebase <远程主机名> <远程分支名>:<本地分支名>
+```
+
+
+
 #### git push
 
 1. 把本地库的所有内容推送到远程库上,分支推送顺序的写法是<来源地>:<目的地>，所以
@@ -163,6 +208,3 @@ git push --force origin
 ```
 git push origin tags
 ```
-
-
-#### git push
