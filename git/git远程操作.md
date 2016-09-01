@@ -1,5 +1,5 @@
 #### git clone
-1. 基本命令、
+1. 基本命令
 ```
 git clone <远程版本库> <本地目录名>
 ```
@@ -207,4 +207,71 @@ git push --force origin
 9. git push不会推送标签(tag)，除非使用–tags选项。
 ```
 git push origin tags
+```
+
+#### git 标签
+1. 创建标签，首先切换到对应的分支,默认会为当前的分支 **HEAD** 打上标签
+```
+git checkout dev
+git tag "v0.1"
+```
+
+2. 默认标签是打在最新提交的commit上的，还可以为历史提交打上标签
+```
+git log --pretty=oneline --abbrev-commit
+6a5819e merged bug fix 101
+cc17032 fix bug 101
+7825a50 merge with no-ff
+6224937 add merge
+59bc1cb conflict fixed
+400b400 & simple
+75a857c AND simple
+fec145a branch test
+d17efd8 remove test.txt
+
+git tag v0.9 6224937
+```
+
+3. 标签不是按时间顺序列出，而是按字母排序的。可以用git show <tagname>查看标签信息
+```
+git show v0.9
+```
+
+4. 还可以创建带有说明的标签，用-a指定标签名，-m指定说明文字
+```
+git tag -a v0.1 -m "version 0.1 released" 3628164
+```
+
+5. 可以通过-s用私钥签名一个标签,签名采用PGP签名，因此，必须首先安装gpg（GnuPG），如
+果没有找到gpg，或者没有gpg密钥对，就会报错
+```
+git tag -s v0.2 -m "signed version 0.2 released" fec145a
+```
+
+6. 如果标签打错了，也可以删除,因为创建的标签都只存储在本地，不会自动推送到远程。所以，打错
+的标签可以在本地安全删除
+```
+git tag -d v0.1
+```
+
+7. 如果要推送某个标签到远程，使用命令git push <远程主机名> <tagname>
+```
+git push origin v1.0
+```
+
+8. 一次性推送全部尚未推送到远程的本地标签
+```
+git push origin --tags
+```
+
+9. 如果标签已经推送到远程，要删除远程标签就麻烦一点，先从本地删除,然后，从远程删除。
+删除命令也是push，第一种方式相当于push一个空的tag到原来的v0.9的tag,这里origin 与:之前有一个
+空格，下面则是一种删除方法，与git 删除远程分支的原理差不多。
+```
+git tag -d v0.9
+git push origin :refs/tags/v0.9
+或
+git push origin --delete tag <tagname>
+或
+git push origin : <tagname>
 ```

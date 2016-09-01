@@ -109,4 +109,5 @@ git branch -D branch_name
   4. 没有冲突或者解决掉冲突后，再用git push origin branch-name推送就能成功！
   5. 如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系
   没有创建，用命令git branch --set-upstream branch-name origin/branch-name。
-  6. 在本地创建和远程分支对应的分支，使用git checkout -b branch-name origin/branch-name，本地和远程分支的名称最好一致；
+  6. 在本地创建和远程分支对应的分支，使用git checkout -b branch-name origin/branch-name，
+  本地和远程分支的名称最好一致；
