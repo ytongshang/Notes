@@ -14,11 +14,16 @@ git checkout develop
 git checkout -b new_branch
 ```
 
-4. 查看分支,其中不带参数显示本地分支，-a所有的分支，-r远程分支
+4. 查看分支,其中不带参数显示本地分支，-a所有的分支，-r远程分支, -v显示和分支的最后一次
+commit, 列出的分支中，带 ** * ** 的为当前的分支,要从该清单中筛选出你已经（或尚未）与
+当前分支合并的分支，可以用 --merged 和 --no-merged 选项
 ```
 git branch
 git branch -a
 git branch -r
+git branch -v
+git branch --merged
+git branch --no-merged
 ```
 
 5. git删除分支,**不能删除当前的分支，必须先切换到另外的一个分支上才行**
