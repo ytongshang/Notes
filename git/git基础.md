@@ -18,6 +18,11 @@ git config --global push.default matching
 git config --global push.default simple
 ```
 
+3. 指定编辑器
+```
+git config --global core.editor
+```
+
 #### 创建一个新的git项目
 1. 创建一个新的git 项目
 ```
@@ -26,26 +31,57 @@ cd learnGit
 git init
 ```
 
-#### commit
+#### commit rm
 1. 将一个文件加入到git项目,-m 用来指定commit的描述
 ```
 git add readme.md
 git commit -m “add readme”
 ```
 
+2. 一般情况下都是先git add然后调用git commit,但也可以跳过git add这一将更新加到暂存区的步骤
+```
+git commit -a -m "commit message"
+```
+
+3. 删除文件
+```
+git rm <文件名>
+git rm log/\*.log
+```
+
+4. 如果前面以及加入一暂存区了，要删除的话，带-f参数
+```
+git rm -f <文件名>
+```
+
+5. 我们想把文件从 Git 仓库中删除（亦即从暂存区域移除），但仍然希望保留在当前工作目录中。换句
+话说，仅是从跟踪清单中删除。比如一些大型日志文件或者一堆 .a 编译文件，不小心纳入仓库后，要移除
+跟踪但不删除文件，以便稍后在 .gitignore 文件中补上，用 --cached 选项即可
+```
+git rm --cached readme.txt
+```
+
 #### 查询
 
-1. 查看git项目的状态
+1. 查看git项目的状态,git status仅仅列出了哪些文件有变化
 ```
 git status
 ```
-
-2. 查看某个文件的变化情况,通过 **：q** 退出diff查看
+2. 要查看尚未暂存的文件更新了哪些部分，不加参数直接输入 git diff，通过 **：q** 退出diff查看
 ```
 git diff readme.md
 ```
 
-3. 查看提交历史,查看具体文件的提交历史,还可以格式化log记录
+3. 若要看已经暂存起来的文件和上次提交时的快照之间的差异，可以用 git diff --cached 命令，或者
+git diff --staged命令
+```
+git diff --cached
+git diff --staged
+```
+4. 单单 git diff 不过是显示还没有暂存起来的改动，而不是这次工作和上次提交之间的差异。所以有时候
+你一下子暂存了所有更新过的文件后，运行 git diff 后却什么也没有，就是这个原因
+
+5. 查看提交历史,查看具体文件的提交历史,还可以格式化log记录
 ```
 git log
 git log a.log
@@ -103,3 +139,28 @@ git reset HEAD file
 5. **场景1**：当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令git checkout -- file。
 **场景2**：当你不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改，分两步，第一步用命令git reset HEAD file，就回到了场景1，第二步按场景1操作。
 **场景3**：已经提交了不合适的修改到版本库时，想要撤销本次提交，直接版本回溯。
+
+
+#### .gitignore文件
+1. 文件格式
+  * 所有空行或者以注释符号 ＃ 开头的行都会被 Git 忽略。
+  * 可以使用标准的 glob 模式匹配。
+  * 匹配模式最后跟反斜杠（/）说明要忽略的是目录。
+  * 要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号（!）取反
+
+2. 示便
+```
+# 此为注释 – 将被 Git 忽略
+# 忽略所有 .a 结尾的文件
+*.a
+# 但 lib.a 除外
+!lib.a
+# 仅仅忽略项目根目录下的 TODO 文件，不包括 subdir/TODO
+/TODO
+# 忽略 build/ 目录下的所有文件
+build/
+# 会忽略 doc/notes.txt 但不包括 doc/server/arch.txt,仅限一级目录
+doc/*.txt
+# ignore all .txt files in the doc/ directory
+doc/**/*.txt
+```
