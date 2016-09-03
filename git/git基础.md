@@ -1,6 +1,7 @@
 #### git教程
 1. [git 教程](http://www.yiibai.com/git/home.html)
 2. [廖雪峰git 教程](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/)
+3. [官方教程](https://git-scm.com/book/zh/v1/Git-%E5%88%86%E6%94%AF-%E4%BD%95%E8%B0%93%E5%88%86%E6%94%AF)
 
 #### git 全局设置
 1. name和email
