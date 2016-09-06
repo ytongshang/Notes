@@ -216,7 +216,8 @@ git checkout dev
 git tag "v0.1"
 ```
 
-2. 默认标签是打在最新提交的commit上的，还可以为历史提交打上标签
+2. 默认标签是打在最新提交的commit上的，还可以为历史提交打上标签\
+
 ```
 git log --pretty=oneline --abbrev-commit
 6a5819e merged bug fix 101
