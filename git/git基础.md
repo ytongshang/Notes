@@ -36,7 +36,9 @@ git init
 1. 将一个文件加入到git项目,-m 用来指定commit的描述
 ```
 git add readme.md
+git add .
 git commit -m “add readme”
+
 ```
 
 2. 一般情况下都是先git add然后调用git commit,但也可以跳过git add这一将更新加到暂存区的步骤
