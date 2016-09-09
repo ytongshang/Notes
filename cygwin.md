@@ -1,23 +1,25 @@
-* 下载setup.exe
+- 下载setup.exe
 
-* 163 mirror
-```
-http://mirrors.163.com/cygwin/
-```
+- 163 mirror
 
-* 默认安装
+  ```
+  http://mirrors.163.com/cygwin/
+  ```
 
-* z-shell
+- 默认安装
 
-* 安装并配置 oh my zsh,~/.bash_profile加入
-```
-exec zsh
-```
+- z-shell
 
-* 安装vim
+- 安装并配置 oh my zsh,~/.bash_profile加入
 
-* install python
+  ```
+  exec zsh
+  ```
 
-* 安装autojump
+- 安装vim
 
-* 配置 atuojump
+- install python
+
+- 安装autojump
+
+- 配置 atuojump
