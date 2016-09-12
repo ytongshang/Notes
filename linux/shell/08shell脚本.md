@@ -125,3 +125,56 @@
   ```
 
 # 环境变量
+- alias命令用于设置命令的别名，格式为：**alias 别名=命令**,unalias命令用于取消命令的别名，格式为：**unalias 别名**
+```
+比如担心复制文件时误将文件覆盖，可以重命名cp
+alias cp = "cp -i"
+unalias cp
+```
+
+- 在linux中所有的一切都是文件，命令文件也不例外，内部命令：属于解释器内部的；外部命令：独立于解释器外的命令文件
+```
+步骤一:如果是以绝对/相对路径输入的命令则直接执行（如执行/bin/ls）。
+步骤二:检查是否为alias别名命令。
+步骤三:由bash判断其是“内部命令”还是“外部命令”。
+步骤四：通过$PATH变量中定义的路径进行命令查找
+```
+
+- 查看当前所有的环境变量，查看当前环境变量$PATH的值
+```
+env
+echo $PATH
+```
+
+- 增加一个$PATH的值环境变量
+```
+PATH=$PATH:/root/bin
+```
+
+- 重要的环境变量
+```
+HOME	用户的主目录“家”。
+SHELL	当前的shell是哪个程序
+HISTSIZE	历史命令记录条数
+MAIL	邮件信箱文件
+LANG	语系数据
+RANDOM	随机数字
+PS1	bash提示符
+HISTFILESIZE	history命令存储数量
+PATH	在路径中的目录查找执行文件
+EDITOR	默认文本编辑器
+HOME	用户主目录
+```
+
+- 假设需要设置一个变量”WORKDIR“，让每个用户执行”cd $WORKDIR“都登陆到/home/workdir目录中，定义方法：变量名称=新的值，查看方法：echo $变量名称
+```
+mkdir /home/workdir
+WORKDIR = /home/workdir
+cd $WORKDIR
+```
+
+- 环境变量是有范围的，一个用户设置的环境变量，其它用户不一定能用，这是因为就在于变量有作用范围。
+export命令用于将局部变量提升为全局变量，格式为：**export 变量名[=变量值]**
+```
+export WORKDIR
+```
