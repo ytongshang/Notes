@@ -151,19 +151,19 @@ git reset HEAD file
   * 匹配模式最后跟反斜杠（/）说明要忽略的是目录。
   * 要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号（!）取反
 
-2. 示便
-```
-# 此为注释 – 将被 Git 忽略
-# 忽略所有 .a 结尾的文件
-*.a
-# 但 lib.a 除外
-!lib.a
-# 仅仅忽略项目根目录下的 TODO 文件，不包括 subdir/TODO
-/TODO
-# 忽略 build/ 目录下的所有文件
-build/
-# 会忽略 doc/notes.txt 但不包括 doc/server/arch.txt,仅限一级目录
-doc/*.txt
-# ignore all .txt files in the doc/ directory
-doc/**/*.txt
+2. 示例
+  ```
+  # 此为注释 – 将被 Git 忽略
+  # 忽略所有 .a 结尾的文件
+  *.a
+  # 但 lib.a 除外
+  !lib.a
+  # 仅仅忽略项目根目录下的 TODO 文件，不包括 subdir/TODO
+  /TODO
+  # 忽略 build/ 目录下的所有文件
+  build/
+  # 会忽略 doc/notes.txt 但不包括 doc/server/arch.txt,仅限一级目录
+  doc/*.txt
+  # ignore all .txt files in the doc/ directory
+  doc/**/*.txt
 ```
