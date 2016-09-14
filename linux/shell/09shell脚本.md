@@ -61,7 +61,7 @@
 
 - 示例
 
-  ```
+  ```bash
   [ -d /etc ]
   $?
   ```
@@ -80,7 +80,7 @@
 
 - 示例
 
-  ```
+  ```bash
     [ $USER != root ] && echo "user" || echo "root"
   ```
 
@@ -124,7 +124,7 @@
 
 - 示例
 
-  ```
+  ```bash
   [ $LANG != "en.US" ] && echo "Not en.US"
   ```
 
@@ -140,7 +140,7 @@
 
 - 示例1
 
-  ```
+  ```bash
   #!/bin/bash
   DIR="/media/cdrom"
   if [ !-e $DIR ]
@@ -151,7 +151,7 @@
 
 - 示例2 为了减少用户的等待时间，需要为ping命令追加-c参数代表发送数据包的个数，-i代表每0.2秒发一个数据包，-W则为3秒即超时。而$1为用户输入的第一个参数（IP地址），$?为上一条命令的执行结果，判断是否等于0(即成功)
 
-  ```
+  ```bash
   ping -c 3 -i 0.2 -W 3 $1 &>/dev/null
   if[ $? -eq 0 ]
   then
@@ -163,7 +163,7 @@
 
 - 示例3 根据分数评等级
 
-  ```
+  ```bash
   #!/bin/bash
   read -p "Enter your socre(0~100)":GRADE
   if [ $GRADE -ge 85 ] && [ $GRADE -le 100 ] ; then
