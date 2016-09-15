@@ -132,20 +132,43 @@
 
 ## if语句
 
-- if条件语句![if](../../resources/if.png)
+- if条件语句
 
-- 双分支结构![if_else](../../resources/if_else.png)
+  ```bash
+  if 条件测试语句
+  then 命令
+  fi
+  ```
 
-- 多分支结构![if_elseif_else](../../resources/if_elseif_else.png)
+- 双分支结构
+
+  ```bash
+  if 条件测试语句
+  then 命令
+  else
+  命令
+  fi
+  ```
+
+- 多分支结构
+
+  ```bash
+  if 条件测试语句
+  then 命令
+  elif 条件测试语句
+  then 命令
+  else
+  命令
+  fi
+  ```
 
 - 示例1
 
   ```bash
   #!/bin/bash
   DIR="/media/cdrom"
-  if [ !-e $DIR ]
-  then
-  mkdir -p $DIR
+  if [ !-e $DIR ]; then
+    mkdir -p $DIR
   fi
   ```
 
@@ -153,11 +176,10 @@
 
   ```bash
   ping -c 3 -i 0.2 -W 3 $1 &>/dev/null
-  if[ $? -eq 0 ]
-  then
-  ehco "Host $1 is up"
+  if[ $? -eq 0 ]; then
+    ehco "Host $1 is up"
   else
-  echo "Host $1 is down"
+    echo "Host $1 is down"
   fi
   ```
 
@@ -167,9 +189,167 @@
   #!/bin/bash
   read -p "Enter your socre(0~100)":GRADE
   if [ $GRADE -ge 85 ] && [ $GRADE -le 100 ] ; then
-  echo "$GRADE is Excellent"
+    echo "$GRADE is Excellent"
   elif [ $GRADE -ge 70 ] && [ $GRADE -le 84 ] ; then
-  echo "$GRADE is Pass"
-  else echo "$GRADE is Fail"
+    echo "$GRADE is Pass"
+  else
+    echo "$GRADE is Fail"
   fi
+  ```
+
+## for语句
+
+- 基本命令
+
+  ```bash
+  for 变量名 in 取值列表
+  do
+    命令
+  done
+  ```
+
+- 示例:Shell脚本提示用户输入要设置的密码并赋值给PASSWD变量，从users.txt文件中读入用户名并赋值给UNAME变量， 而查看用户的信息都重定向到/dev/null文件，不显示到屏幕
+
+  ```bash
+  #!/bin/bash
+  read -p "Enter the user password:" PASSWD
+  for UNAME in `cat users.txt`; do
+    id $UNAME &> /dev/null
+    if [ $? -eq 0 ]; then
+      echo "Already exists"
+    else
+      useradd $UNAME &> /dev/null
+      echo $PASSWD | passwd --stdin $UNAME &> /dev/null
+      if [ $? -eq 0 ]; then
+        echo "Create success"
+      else
+        echo "Create failture"
+      fi
+    fi
+  done
+  ```
+
+- 示例：从列表文件中读取主机地址，逐个测试是否在线
+
+  ```bash
+  HLIST = $(cat ~/ipadds.txt)
+  for IP in HLIST; do
+    ping -c 3 -i 0.2 -W 3 $IP &> /dev/null
+    if [ $? -eq 0 ]; then
+      echo "Host $IP is up"
+    else
+      echo "Host $IP is down"
+    fi
+  done
+  ```
+
+## while语句
+
+- 基本语法
+
+  ```bash
+  while 条件测试语句
+  do
+    命令
+  done
+  ```
+
+- 示例：随机生成一个0-999的整数，判断并提示用户输入的值过高或过低
+
+  ```bash
+  #!/bin/bash
+
+  PRICE = $(expr $RANDOM % 1000)
+  TIMES = 0
+  echo "商品实际价格为0-999之间，猜猜看是多少？"
+  while true; do
+    read -p "请输入你猜测的价格数目：" INT
+    let TIMES++
+    if [ $INT -eq $PRICE ]; then
+      echo "恭喜你答对了，实际价格是 $PRICE"
+      echo "你总共猜测了 $TIMES 次"
+      exit 0
+    elif [ $INT -gt $PRICE ]; then
+      echo "太高了！"
+    else
+      echo "太低了！"
+    fi
+  done
+  ```
+
+## case语句
+
+- 基本语法
+
+  ```bash
+  case 变量值 in
+    模式1 )
+      命令
+      ;;
+    模式2)
+      命令
+      ;;
+  esac
+  ```
+
+- 示例
+
+  ```bash
+  #!/bin/bash
+  read -p "请输入一个字符，并按Enter键确认：" KEY
+  case $KEY in
+    [a-z]|[A-Z] )
+      echo "您输入的是 字母。"
+      ;;
+    [0-9]) )
+      echo "您输入的是 字母。"
+      ;;
+  esac
+  ```
+
+# 计划任务服务
+
+## 一次性任务
+
+- 一次性任务吧，它是由atd服务/进程来实现的，计划的管理操作是"at"命令
+
+  ```
+  at <时间>    安排一次性任务
+  atq或at -l    查看任务列表
+  at -c 序号    预览任务与设置环境
+  atrm 序号    删除任务
+  ```
+
+- 示例
+
+  ```
+  交互式：
+  at 23:30
+  at > systemctl start httpd
+  at > job 3 at Mon Apr 27 23:30:00 2015
+
+  非交互式：
+  echo "systemctl start httpd" | at 23:30
+
+  查看任务：
+  atq
+  ```
+
+## 长期任务
+
+- 基本命令
+
+  ```
+  创建、编辑计划任务:crontab -e [-u 用户名]
+  查看计划任务:crontab -l [-u 用户名]
+  删除计划任务:crontab -r [-u 用户名]
+  ```
+
+- 创建参数 ![crontab参数](../../resources/crontab.png)
+
+- 示例，每周1、3、5的凌晨3点25分将/home/wwwroot目录打包备份为backup.tar.gz"
+
+  ```
+  crontab -e
+  25 3 * * 1,3,5 /usr/bin/tar -czvf backukp.tar.gz /home/wwwroot
   ```
