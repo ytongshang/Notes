@@ -223,7 +223,7 @@
 - git push不会推送标签(tag)，除非使用–tags选项。
 
   ```
-  git push origin tags
+  git push origin -tags
   ```
 
 # git 标签
@@ -235,7 +235,7 @@
   git tag "v0.1"
   ```
 
-- 默认标签是打在最新提交的commit上的，还可以为历史提交打上标签\
+- 默认标签是打在最新提交的commit上的，还可以为历史提交打上标签
 
 ```
 git log --pretty=oneline --abbrev-commit

@@ -82,7 +82,8 @@
 - 若要看已经暂存起来的文件和上次提交时的快照之间的差异，可以用 git diff --cached 命令，或者 git diff --staged命令
 
   ```
-  git diff --cached git diff --staged
+  git diff --cached
+  git diff --staged
   ```
 
 - 单单 git diff 不过是显示还没有暂存起来的改动，而不是这次工作和上次提交之间的差异。所以有时候 你一下子暂存了所有更新过的文件后，运行 git diff 后却什么也没有，就是这个原因
@@ -90,7 +91,9 @@
 - 查看提交历史,查看具体文件的提交历史,还可以格式化log记录
 
   ```
-  git log git log a.log git log --pretty=oneline
+  git log
+  git log a.log
+  git log --pretty=oneline
   ```
 
 ### 版本回溯
@@ -108,7 +111,8 @@
 - 回溯到某个具体的版本
 
   ```
-  git reset --hard commit_id git reset --hard de97194 ([master de97194] add b.log)
+  git reset --hard commit_id
+  git reset --hard de97194 ([master de97194] add b.log)
   ```
 
 - 可以用git reflog查看每一次提交命令,然后就可以回溯到自己想要回溯的某个版本了
@@ -149,7 +153,11 @@
   git reset HEAD file
   ```
 
-- **场景1**：当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令git checkout -- file。 **场景2**：当你不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改，分两步，第一步用命令git reset HEAD file，就回到了场景1，第二步按场景1操作。 **场景3**：已经提交了不合适的修改到版本库时，想要撤销本次提交，直接版本回溯。
+- 回溯版本
+
+  - **场景1**：当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令git checkout -- file。
+  - **场景2**：当你不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改，分两步，第一步用命令git reset HEAD file，就回到了场景1，第二步按场景1操作。
+  - **场景3**：已经提交了不合适的修改到版本库时，想要撤销本次提交，直接版本回溯。
 
 #### .gitignore文件
 
