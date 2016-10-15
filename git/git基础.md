@@ -26,6 +26,12 @@
   git config --global core.editor
   ```
 
+- 保存密码
+
+  ```
+  git config --global credential.helper store
+  ```
+
 # 创建一个新的git项目
 
 - 创建一个新的git 项目
