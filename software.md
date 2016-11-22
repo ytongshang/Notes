@@ -1,4 +1,6 @@
-# atom
+# software
+
+## atom
 
 - 常用快捷键
 
@@ -16,6 +18,6 @@
 
   - tree-view settings hideIgnoredNames
 
-# source code pro
+## source code pro
 
 - <https://github.com/adobe-fonts/source-code-pro>
