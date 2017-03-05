@@ -39,6 +39,9 @@
 
   ```git
   git config --global credential.helper store
+
+  windows：
+  git config --global credential.helper wincred
   ```
 
 ## 创建一个新的git项目
