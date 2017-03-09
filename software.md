@@ -1,23 +1,27 @@
 # software
 
-## atom
+- [source code pro](#source-code-pro)
+- [VSCode](#vscode)
 
-- 常用快捷键
-
-  - 快捷键命令行： ctrl + shift + P
-
-- 插件
-
-  - git Plus
-  - file icons
-  - autocomplete-paths
-  - simplified Chinese menu
-  - atom-beautify
-
-- 常用设置
-
-  - tree-view settings hideIgnoredNames
 
 ## source code pro
 
-- <https://github.com/adobe-fonts/source-code-pro>
+- [Source Code Pro](https://github.com/adobe-fonts/source-code-pro)
+
+## VSCode
+
+```json
+{
+    "editor.fontFamily": "SourceCodePro",
+    "editor.fontSize": 15,
+    "window.zoomLevel": 0,
+
+     //markdown-toc
+     "markdown-toc.depthFrom": 2,
+
+     "markdownlint.config": {
+        "default": true,
+        "MD007": { "indent": 4 }
+    }
+}
+```
