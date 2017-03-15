@@ -15,6 +15,8 @@
     "editor.fontFamily": "SourceCodePro",
     "editor.fontSize": 15,
     "window.zoomLevel": 0,
+    "vsicons.dontShowNewVersionMessage": true,
+    "workbench.iconTheme": "vscode-icons",
 
      //markdown-toc
      "markdown-toc.depthFrom": 2,
