@@ -345,7 +345,7 @@
   删除计划任务:crontab -r [-u 用户名]
   ```
 
-- 创建参数 ![crontab参数](../../resources/crontab.png)
+- 创建参数 ![crontab参数](../../image-resources/crontab.png)
 
 - 示例，每周1、3、5的凌晨3点25分将/home/wwwroot目录打包备份为backup.tar.gz"
 
