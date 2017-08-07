@@ -51,22 +51,3 @@ decimal(size,d) numeric(size,d) | 容纳带有小数的数字。"size"规定数�
 char(size)      | 容纳固定长度的字符串（可容纳字母、数字以及特殊字符）。在括号中规定字符串的长度。
 varchar(size)   | 容纳可变长度的字符串（可容纳字母、数字以及特殊的字符）。在括号中规定字符串的最大长度。
 date(yyyymmdd)  | 容纳日期。
-
-### 约束
-
-- 约束用于限制加入表的数据的类型。
-- 可以在创建表时规定约束（通过 CREATE TABLE 语句），或者在表创建之后也可以（通过 ALTER TABLE 语句）。
-- 常见的约束
-
-```sql
-NOT NULL
-UNIQUE
-PRIMARY KEY
-FOREIGN KEY
-CHECK
-DEFAULT
-```
-
-### NOT NULL
-
-
