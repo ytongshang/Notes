@@ -1,7 +1,5 @@
 # CONSTRAINT
 
-<!-- TOC -->
-
 - [1. NOT NULL](#1-not-null)
 - [2. UNIQUE](#2-unique)
     - [2.1. 基本使用](#21-基本使用)
