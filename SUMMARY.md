@@ -5,4 +5,4 @@
 ## c++
 
 * c++ primer
-    * [01_the basics](cpp/c++ primer/01 the basics.md)
+    * [01_the basics](cpp/c++ primer/01_the basics.md)
