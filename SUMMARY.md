@@ -17,3 +17,6 @@
     * [01_sql基础](database/sql/01_sql基础.md)
     * [02_database](database/sql/02_database.md)
     * [03_constraint](database/sql/03_constraint.md)
+
+* sqlite3
+    * [01_sql基础](database/sqlite3/01_install.md)
