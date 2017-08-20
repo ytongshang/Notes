@@ -78,3 +78,10 @@
 
 * sqlite3
     * [01_sql基础](database/sqlite3/01_install.md)
+
+## other
+
+* git
+    * [01_git基础](other/git/01_git基础.md)
+    * [02_git分支](other/git/02_git分支.md)
+    * [03_git远程操作](other/git/03_git远程操作.md)
