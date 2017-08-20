@@ -11,6 +11,14 @@
 
 * effective java
     * [01_创建销毁对象](java/effective java/01_创建销毁对象.md)
+    * [02_对象通用方法](java/effective java/02_对象通用方法.md)
+    * [03_类与接口](java/effective java/03_类与接口.md)
+    * [04_枚举](java/effective java/04_枚举.md)
+    * [05_方法](java/effective java/05_方法.md)
+    * [06_通用程序设计](java/effective java/06_通用程序设计.md)
+    * [07_异常](java/effective java/07_异常.md)
+    * [08_序列化](java/effective java/08_序列化.md)
+    * [09_多线程](java/effective java/09_多线程.md)
 
 ## database
 
