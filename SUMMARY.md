@@ -4,4 +4,4 @@
 
 ## c++
 
-* [c++ primer notes_01 the basics](cpp/c++ primer notes_01 the basics.md)
+* [c++ primer_01 the basics](cpp/c++ primer_01 the basics.md)
