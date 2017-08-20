@@ -9,6 +9,18 @@
 
 ## java
 
+* thinking in java
+    * [01_对象导论](java/thinking in java/01_对象导论.md)
+    * [02_对象的初始化与清理](java/thinking in java/02_对象的初始化与清理.md)
+    * [03_类复用](java/thinking in java/03_类复用.md)
+    * [04_多态 接口](java/thinking in java/04_多态 接口.md)
+    * [05_内部类](java/thinking in java/05_内部类.md)
+    * [06_持有对象](java/thinking in java/06_持有对象.md)
+    * [07_异常](java/thinking in java/07_异常.md)
+    * [08_类型信息](java/thinking in java/08_类型信息.md)
+    * [09_泛型](java/thinking in java/09_泛型.md)
+    * [10_注解](java/thinking in java/10_注解.md)
+
 * effective java
     * [01_创建销毁对象](java/effective java/01_创建销毁对象.md)
     * [02_对象通用方法](java/effective java/02_对象通用方法.md)
