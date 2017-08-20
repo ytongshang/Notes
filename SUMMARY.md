@@ -7,6 +7,11 @@
 * c++ primer
     * [01_the basics](cpp/c++ primer/01_the basics.md)
 
+## java
+
+* effective java
+    * [01_创建销毁对象](java/effective java/01_创建销毁对象.md)
+
 ## database
 
 * mysql
