@@ -1,3 +1,3 @@
-# AndroidTips
+# ProgrammingNotes
 
 - Notes about android
