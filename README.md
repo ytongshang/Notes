@@ -1,0 +1,3 @@
+# AndroidTips
+
+- Notes about android
