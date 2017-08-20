@@ -32,6 +32,13 @@
     * [08_序列化](java/effective java/08_序列化.md)
     * [09_多线程](java/effective java/09_多线程.md)
 
+* concurrent
+    * [01_多线程基础](java/concurrent/01_多线程基础.md)
+    * [02_Volatile详解](java/concurrent/02_Volatile详解.md)
+    * [03_线程协作](java/concurrent/03_线程协作.md)
+    * [04_Concurrent包](java/concurrent/04_Concurrent包.md)
+    * [05_EffectiveJava 并发实践](java/concurrent/05_EffectiveJava 并发实践.md)
+
 * java8
     * [01_java8](java/java8/01_java8.md)
 
