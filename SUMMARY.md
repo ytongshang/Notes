@@ -42,21 +42,28 @@
 * java8
     * [01_java8](java/java8/01_java8.md)
 
-## linux
+## operating system
 
-* [00_常见问题](linux/00_常见问题.md)
-* [01_常用基本命令](linux/01_常用基本命令.md)
-* [02_文件相关命令](linux/02_文件相关命令.md)
-* [03_显示命令](linux/03_显示命令.md)
-* [04_系统状态检查命令](linux/04_系统状态检查命令.md)
-* [05_用户相关命令](linux/05_用户相关命令.md)
-* [06_打包压缩文件命令](linux/06_打包压缩文件命令.md)
-* [07_文件查询搜索相关命令](linux/07_文件查询搜索相关命令.md)
-* [08_shell脚本基础](linux/08_shell脚本基础.md)
-* [09_shell脚本](linux/09_shell脚本.md)
-* [10_vim](linux/10_vim.md)
-* [11_存储结构与磁盘划分](linux/11_存储结构与磁盘划分.md)
-* [12_用户身份与文件权限](linux/12_用户身份与文件权限.md)
+* linux
+    * [00_常见问题](operating system/linux/00_常见问题.md)
+    * [01_常用基本命令](operating system/linux/01_常用基本命令.md)
+    * [02_文件相关命令](operating system/linux/02_文件相关命令.md)
+    * [03_显示命令](operating system/linux/03_显示命令.md)
+    * [04_系统状态检查命令](operating system/linux/04_系统状态检查命令.md)
+    * [05_用户相关命令](operating system/linux/05_用户相关命令.md)
+    * [06_打包压缩文件命令](operating system/linux/06_打包压缩文件命令.md)
+    * [07_文件查询搜索相关命令](operating system/linux/07_文件查询搜索相关命令.md)
+    * [08_shell脚本基础](operating system/linux/08_shell脚本基础.md)
+    * [09_shell脚本](operating system/linux/09_shell脚本.md)
+    * [10_vim](operating system/linux/10_vim.md)
+    * [11_存储结构与磁盘划分](operating system/linux/11_存储结构与磁盘划分.md)
+    * [12_用户身份与文件权限](operating system/linux/12_用户身份与文件权限.md)
+
+* osx
+    * [osx](operating system/osx/osx.md)
+
+* windows
+    * [software](operating system/windows/software.md)
 
 ## database
 
