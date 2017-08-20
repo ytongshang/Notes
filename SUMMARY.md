@@ -30,7 +30,6 @@
     * [06_通用程序设计](java/effective java/06_通用程序设计.md)
     * [07_异常](java/effective java/07_异常.md)
     * [08_序列化](java/effective java/08_序列化.md)
-    * [09_多线程](java/effective java/09_多线程.md)
 
 * concurrent
     * [01_多线程基础](java/concurrent/01_多线程基础.md)
