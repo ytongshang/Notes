@@ -83,6 +83,18 @@ int &refVal2;       // error: a reference must be initialized
 int &refVal3 = 10;  // error: initializer must be an object.
 ```
 
+## 指针
+
+- 指针状态
+ - 指向一个对象
+ - 指向紧邻对象所占空间的下一个位置
+ - 空指针
+ - 无效指针
+- 空指针，尽可能用nullptr
+- 建议初始化所有的指针,并且在可能的情况下，尽可能定义了对象后定义指向它的指针
+- void*指针，它可以存放任意对象的指针，但是我们对存于该指针的对象的类型是不知道的，非空的指针只能说明它
+ 指向一片内存，但是不能对该内存执行任何操作。
+
 ## Const
 
 - const让变量变得不能修改的，必须在定义时被初始化
