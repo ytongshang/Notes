@@ -135,47 +135,13 @@ using wages =double;
 
 ## constexpr变量
 
-- 常量表达式是值不会变且在编译期间就能得到计算结果的表达式，
+- 常量表达式是值不会变(本身是顶层const的)且在编译期间就能得到计算结果的表达式
 - constexpr，必须用常量表达式初始化，或者constexpr函数的返回值
 - **constexpr指针，将指针置为顶层const**
 
 ```c++
 constexpr int *a = nullptr;   //a 是一个指向int的常量指针，等价于int *const a = nullptr;
 ```
-
-## enum
-
-```c++
-enum Points {
-    point2d = 2,
-    point2w,point3d = 3,
-    point3w
-};
-```
-
-- 枚举变量类型，其中，point2w,point3d的值是可以相同的，即都是3，默认后一个比前一个的枚举类型的值大1
-- 枚举类型定义后，可以定义该类型变量，但是只能用枚举类型赋值，不能用它默认的数值赋值
-
-```c++
-Points pt3d = point3d; //  ok: point3d is a Points enumerator
-Points pt2w = 3;       //  error: pt2w initialized with int
-pt2w = polygon;        //  error: polygon is not a Points enumerator
-pt2w = pt3d;           //  ok: both are objects of Points enum type
-```
-
-- 对于头文件不应该含有定义这一规则，有三个例外。
-- 头文件可以定义类、值在编译时就已知道的const 对象和 inline 函数，这些实体可在多个源文件中定义，只要每个源文件中的定义是相同的。
- 一般都把这样的 const 变量定义在头文件中。那样的话，无论该 const变量何时使用，编译器都能够看见其初始化。
- 因为 const 对象默认为定义它的文件的局部变量，所以把它们的定义放在头文件中是合法的。
-- 当我们在头文件中定义了 const 变量后，每个包含该头文件的源文件都有了自己的 const 变量，其名称和值都一样。
-- 当该 const变量是用常量表达式初始化时，可以保证所有的变量都有相同的值。
- 但是在实践中，大部分的编译器在编译时都会用相应的常量表达式替换这些const 变量的任何使用。
- 所以，在实践中不会有任何存储空间用于存储用常量表达式初始化的 const 变量。
-- 如果 const变量不是用常量表达式初始化，那么它就不应该在头文件中定义。相反，和其他的变量一样，该 const
- 变量应该在一个源文件中定义并初始化。应在头文件中为它添加 extern 声明，以使其能被多个文件共享.
-
-
-
 
 ## auto变量 与decltype类型
 
@@ -219,3 +185,38 @@ int i = 42;
 decltype(i) e;    //e为undefined int
 decltype((i)) d ; //d为 int&,必须初始化
 ```
+
+## enum
+
+```c++
+enum Points {
+    point2d = 2,
+    point2w,point3d = 3,
+    point3w
+};
+```
+
+- 枚举变量类型，其中，point2w,point3d的值是可以相同的，即都是3，默认后一个比前一个的枚举类型的值大1
+- 枚举类型定义后，可以定义该类型变量，但是只能用枚举类型赋值，不能用它默认的数值赋值
+
+```c++
+Points pt3d = point3d; //  ok: point3d is a Points enumerator
+Points pt2w = 3;       //  error: pt2w initialized with int
+pt2w = polygon;        //  error: polygon is not a Points enumerator
+pt2w = pt3d;           //  ok: both are objects of Points enum type
+```
+
+- 对于头文件不应该含有定义这一规则，有三个例外。
+- 头文件可以定义类、值在编译时就已知道的const 对象和 inline 函数，这些实体可在多个源文件中定义，只要每个源文件中的定义是相同的。
+ 一般都把这样的 const 变量定义在头文件中。那样的话，无论该 const变量何时使用，编译器都能够看见其初始化。
+ 因为 const 对象默认为定义它的文件的局部变量，所以把它们的定义放在头文件中是合法的。
+- 当我们在头文件中定义了 const 变量后，每个包含该头文件的源文件都有了自己的 const 变量，其名称和值都一样。
+- 当该 const变量是用常量表达式初始化时，可以保证所有的变量都有相同的值。
+ 但是在实践中，大部分的编译器在编译时都会用相应的常量表达式替换这些const 变量的任何使用。
+ 所以，在实践中不会有任何存储空间用于存储用常量表达式初始化的 const 变量。
+- 如果 const变量不是用常量表达式初始化，那么它就不应该在头文件中定义。相反，和其他的变量一样，该 const
+ 变量应该在一个源文件中定义并初始化。应在头文件中为它添加 extern 声明，以使其能被多个文件共享.
+
+
+
+
