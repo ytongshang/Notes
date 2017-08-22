@@ -137,10 +137,10 @@ using wages =double;
 
 - 常量表达式是值不会变且在编译期间就能得到计算结果的表达式，
 - constexpr，必须用常量表达式初始化，或者constexpr函数的返回值
-- constexpr指针，将指针置为顶层const
+- **constexpr指针，将指针置为顶层const**
 
 ```c++
-constexpr int * a =nullptr;   //a 是一个指向int的常量指针
+constexpr int *a = nullptr;   //a 是一个指向int的常量指针，等价于int *const a = nullptr;
 ```
 
 ## enum
