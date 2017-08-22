@@ -51,7 +51,7 @@ extern const int bufSize; // uses bufSize from file_1
 //其它文件的声明也必须加上extern
 // uses bufSize defined in file_1
 for (int index = 0; index != bufSize; ++index) {
-
+ //...
 }
 ```
 
@@ -68,24 +68,19 @@ extern const int buffSize = 512;
 extern const int buffSize;
 ```
 
-- 不要出现“魔数”，也就是突然出现一个常量，万一要用也应当用const关键字来声明
-
-
-
-
-
 ## 引用
 
-- 引用就是对象的另一个名字;
-- 在实际程序中，引用主要用作函数的形式参数,引用只是它绑定的对象的另一名字，作用在引用上的所有操作事实上都是作用在该引用绑定的对象
-- 引用必须用与该引用同类型的对象初始化
+- 引用就是对象的另一个名字
+- 定义引用时就必须用用与该引用同类型的对象初始化
+- 引用只是它绑定的对象的另一名字，作用在引用上的所有操作事实上都是作用在该引用绑定的对象
+- 在实际程序中，引用主要用作函数的形式参数
 - 当引用初始化后，只要该引用存在，它就保持绑定到初始化时指向的对象。不可能将引用绑定到另一个对象。
 
 ```c++
 int ival = 1024;
 int &refVal = ival; // ok: refVal refers to ival
 int &refVal2;       // error: a reference must be initialized
-int &refVal3 = 10;  // error: initializer must be an object8.
+int &refVal3 = 10;  // error: initializer must be an object.
 ```
 
 ## Const
