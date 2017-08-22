@@ -34,10 +34,11 @@ unsigned int b=5;
 
 ## 定义与声明
 
-- 在多个文件中使用的变量，必须在一个文件中定义，而在其它的文件中必须有他的声明，而不能是定义，不能重复定义，加extern关键字
-- 不要出现“魔数”，也就是突然出现一个常量，万一要用也应当用const关键字来声明
-- const让变量变得不能修改的，必须在定义时被初始化
-- 非const的全局变量在整个程序中都可用，因为它默认是extern的，const的全局变量只在该定义它的文件有能用，其它文件要用，必须声明为extern
+- 变量声明：用于向程序表明变量的类型和名字。
+- 变量定义：用于为变量分配存储空间，还可为变量指定初始值。程序中，变量有且仅有一个定义。
+- 定义也是声明：当定义变量时我们声明了它的类型和名字。
+- extern关键字：通过使用extern关键字声明变量名而不定义它。
+- 在多个文件中使用的变量，必须只能在一个文件中定义，而在其它的文件中使用它之前必须有它的声明，通过extern关键字声明变量
 
 ```c++
 // file_1.cc
@@ -47,12 +48,31 @@ extern const int bufSize = fcn();
 
 // file_2.cc
 extern const int bufSize; // uses bufSize from file_1
-//其它文件的申明也必须加上extern
+//其它文件的声明也必须加上extern
 // uses bufSize defined in file_1
 for (int index = 0; index != bufSize; ++index) {
 
 }
 ```
+
+- **非const的全局变量在整个程序中都可用**，因为它默认是extern的，
+- **const的全局变量只在该定义它的文件中使用，其它文件要用，必须声明为extern**
+
+```c++
+// file_1.cc
+// 定义
+extern const int buffSize = 512;
+
+// file_2.cc
+// 声明变量，不能是定义
+extern const int buffSize;
+```
+
+- 不要出现“魔数”，也就是突然出现一个常量，万一要用也应当用const关键字来声明
+
+
+
+
 
 ## 引用
 
@@ -70,6 +90,7 @@ int &refVal3 = 10;  // error: initializer must be an object8.
 
 ## Const
 
+- const让变量变得不能修改的，必须在定义时被初始化
 - const引用，即指向const对象的引用，可用相关的const或非const对象初始化，只是不能通过别名修改对象了
 - 非const引用，即指向非const对象的引用，只能用非const对象初始化
 
