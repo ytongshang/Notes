@@ -68,6 +68,20 @@ extern const int buffSize = 512;
 extern const int buffSize;
 ```
 
+### 头文件与定义
+
+- 对于头文件不应该含有定义这一规则，有三个例外。
+- 头文件可以定义类、值在编译时就已知道的const 对象和 inline 函数，这些实体可在多个源文件中定义，只要每个源文件中的定义是相同的。
+ 一般都把这样的 const 变量定义在头文件中。那样的话，无论该 const变量何时使用，编译器都能够看见其初始化。
+ 因为 const 对象默认为定义它的文件的局部变量，所以把它们的定义放在头文件中是合法的。
+- 当我们在头文件中定义了 const 变量后，每个包含该头文件的源文件都有了自己的 const 变量，其名称和值都一样。
+- 当该 const变量是用常量表达式初始化时，可以保证所有的变量都有相同的值。
+ 但是在实践中，大部分的编译器在编译时都会用相应的常量表达式替换这些const 变量的任何使用。
+ 所以，在实践中不会有任何存储空间用于存储用常量表达式初始化的 const 变量。
+- 如果 const变量不是用常量表达式初始化，那么它就不应该在头文件中定义。相反，和其他的变量一样，该 const
+ 变量应该在一个源文件中定义并初始化。应在头文件中为它添加 extern 声明，以使其能被多个文件共享.
+
+
 ## 引用
 
 - 引用就是对象的另一个名字
@@ -99,7 +113,7 @@ int &refVal3 = 10;  // error: initializer must be an object.
 ## Const
 
 - const让变量变得不能修改的，必须在定义时被初始化
-- **const引用，即指向const对象的引用，可用相关的const或非const对象初始化，只是不能通过别名修改对象了**
+- **const引用，即指向const对象的引用，可用相关的const或非const对象初始化，当然也可以用字面值初始化，只是不能通过别名修改对象了**
 - **非const引用，即指向非const对象的引用，只能用非const对象初始化**
 
 ```c++
@@ -145,20 +159,33 @@ constexpr int *a = nullptr;   //a 是一个指向int的常量指针，等价于
 
 ## auto变量 与decltype类型
 
-- auto定义的变量必须有初始值一条声明语句只能有一个基本数据类型，所以这一条语句中的所有变量的基本数据类型必须一样
+- auto定义的变量必须有初始值
+- 一条声明语句只能有一个基本数据类型，所以这一条语句中的所有变量的基本数据类型必须一样
 
 ```c++
-auto i =0, *p = &i;    //i为整型，p为整型指针auto sz = 0 ,pi = 3.14   //错误，两个数据类型不一致
+auto i =0, *p = &i;    //i为整型，p为整型指针
+auto sz = 0 ,pi = 3.14   //错误，两个数据类型不一致
 ```
 
--auto会忽略顶层const,同时底层const则会保留下来，而decltype则会将顶层、底层const都保留下来
+- auto会忽略顶层const,同时底层const则会保留下来，而decltype则会将顶层、底层const都保留下来
 
 ```c++
 int i = 0;
-const int ci = i, &cr = ci;auto b = ci ;          //int
+const int ci = i, &cr = ci;
+auto b = ci ;          //int
 auto c = cr ;          //int
 auto d = &i;           //int *
 auto e = &ci;          //const int *
+```
+
+- 显式加上const与&可表示顶层const与引用
+
+```c++
+int i = 0;
+const int ci = i, &cr = ci;
+const auto f = ci;        // const int
+auto &g =42;              //错误，非常量引用不能绑定到字面值
+const auto &j = 42;       // 正确，可以为常量引用绑定字面值
 ```
 
 - 对于引用，auto返回的是引用的变量的类型，不包括引用本身，decltyp则包括引用本身
@@ -169,20 +196,12 @@ auto a= pi;            //int
 decltype(pi) a = i;    //int& 必须初始化
 ```
 
-- 显示加上const与&可表示顶层const与引用
-
-```c++
-const auto f = ci;
-auto &g =42;              //错误，非常量引用不能绑定到字面值
-const auto &j = 42;
-```
-
 - decltype（变量）返回变量的类型，decltype(表达式)返回表达式结果的类型，如果表达式的结果为左值，则返回左值，如果表达式为右值，则返回为右值
-- 变量是种可以作为赋值语句左值的特殊形式，因而decltype((variable))返回变量的引用类型，而decltype(variable)返回变量类型 ，只有变量为引用类型时才返回引用类型
+- 变量是种可以作为赋值语句左值的特殊形式，因而**decltype((variable))永远返回变量的引用类型**，而decltype(variable)返回变量类型 ，只有变量为引用类型时才返回引用类型
 
 ```c++
 int i = 42;
-decltype(i) e;    //e为undefined int
+decltype(i) e;    //e为未初始化的 int
 decltype((i)) d ; //d为 int&,必须初始化
 ```
 
@@ -196,7 +215,7 @@ enum Points {
 };
 ```
 
-- 枚举变量类型，其中，point2w,point3d的值是可以相同的，即都是3，默认后一个比前一个的枚举类型的值大1
+- 枚举变量类型，**其中，point2w,point3d的值是可以相同的，即都是3**，默认后一个比前一个的枚举类型的值大1
 - 枚举类型定义后，可以定义该类型变量，但是只能用枚举类型赋值，不能用它默认的数值赋值
 
 ```c++
@@ -205,17 +224,6 @@ Points pt2w = 3;       //  error: pt2w initialized with int
 pt2w = polygon;        //  error: polygon is not a Points enumerator
 pt2w = pt3d;           //  ok: both are objects of Points enum type
 ```
-
-- 对于头文件不应该含有定义这一规则，有三个例外。
-- 头文件可以定义类、值在编译时就已知道的const 对象和 inline 函数，这些实体可在多个源文件中定义，只要每个源文件中的定义是相同的。
- 一般都把这样的 const 变量定义在头文件中。那样的话，无论该 const变量何时使用，编译器都能够看见其初始化。
- 因为 const 对象默认为定义它的文件的局部变量，所以把它们的定义放在头文件中是合法的。
-- 当我们在头文件中定义了 const 变量后，每个包含该头文件的源文件都有了自己的 const 变量，其名称和值都一样。
-- 当该 const变量是用常量表达式初始化时，可以保证所有的变量都有相同的值。
- 但是在实践中，大部分的编译器在编译时都会用相应的常量表达式替换这些const 变量的任何使用。
- 所以，在实践中不会有任何存储空间用于存储用常量表达式初始化的 const 变量。
-- 如果 const变量不是用常量表达式初始化，那么它就不应该在头文件中定义。相反，和其他的变量一样，该 const
- 变量应该在一个源文件中定义并初始化。应在头文件中为它添加 extern 声明，以使其能被多个文件共享.
 
 
 
