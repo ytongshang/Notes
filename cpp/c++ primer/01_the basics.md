@@ -98,13 +98,16 @@ int &refVal3 = 10;  // error: initializer must be an object.
 ## Const
 
 - const让变量变得不能修改的，必须在定义时被初始化
-- const引用，即指向const对象的引用，可用相关的const或非const对象初始化，只是不能通过别名修改对象了
-- 非const引用，即指向非const对象的引用，只能用非const对象初始化
+- **const引用，即指向const对象的引用，可用相关的const或非const对象初始化，只是不能通过别名修改对象了**
+- **非const引用，即指向非const对象的引用，只能用非const对象初始化**
 
 ```c++
 int i = 42;      //  legal for const references only
 const int &r = 42;  //注意42是一个常量，所以可以初始化r,如果r前没加const,则不能用42初始化了
 const int &r2 = r + i;
+int &r3 = i; // 正确
+const int a = 100;
+int &r4 = a;// error,非const引用，只能用非const对象初始化
 ```
 
 - 顶层const:任意的对象是常量
