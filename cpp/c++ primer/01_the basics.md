@@ -2,18 +2,28 @@
 
 ## 基本数据类型
 
-- char,wchar_t(前缀L)，char16_t(前缀u),char32_t(前缀U),utf-8的可以用前缀u8
-- signed类型 ，符号位1为负数，0为正数
+- 算术类型和空类型，算术类型分为整型和浮点型
+- bool,char,wchar_t,char16_t,char32_t,short,int,long,long long,float,double,long double
 - bool型，非0为true,0为false
-- 带符号类型与不带符号类型在同一表达式时，带符号会转化为不带符号类型
+
+### signed与unsigned
+- 除bool和扩展字符型（wchar_t,char16_t,char32_t）外，其**它整型都有signed与unsigned之分**
+- signed类型 ，符号位1为负数，0为正数
+- **当我们赋给无符号类型一个超出它表示范围的值时，结果是初始值对无符号类型表示数值总数取模后的余数**
+ 比如，unsigned char表示0-255,当我们将-1赋值给unsigned char时，其值为-1对256取模的余数为255
+- **当我们赋给带符号类型一个超出它表示范围的值时，其结果是未定义的**
+- char分为signed char与unsigned char,**不同环境下，char表示两者中的一种，可能为signed char,可能为unsigned char**
+ 所以使用char时应当明确的使用signed char,或者unsigned char,不要使用char,char与环境有关
+- char,wchar_t(前缀L)，char16_t(前缀u),char32_t(前缀U),utf-8的可以用前缀u8
+- **带符号类型与不带符号类型在同一表达式时，带符号会转化为不带符号类型，也就是取模后的余数**
 
 ```c++
-int a=-8;
+int a = -8;
 unsigned int b=5;
 //那么 a+b并不等于-3
 ```
 
-- 使用一个不大的整数时，明确的使用signed char,或者unsigned char,不要使用char,char与环境有关
+
 
 ## 定义与声明
 
