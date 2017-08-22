@@ -124,6 +124,25 @@ int * cont pa = =&a;
 const int *pa= &a;
 ```
 
+## typedef
+
+- typedef 类型别名的一种方法，还可以用using
+
+```c++
+typedef double wages;
+using wages =double;
+```
+
+## constexpr变量
+
+- 常量表达式是值不会变且在编译期间就能得到计算结果的表达式，
+- constexpr，必须用常量表达式初始化，或者constexpr函数的返回值
+- constexpr指针，将指针置为顶层const
+
+```c++
+constexpr int * a =nullptr;   //a 是一个指向int的常量指针
+```
+
 ## enum
 
 ```c++
@@ -155,24 +174,8 @@ pt2w = pt3d;           //  ok: both are objects of Points enum type
 - 如果 const变量不是用常量表达式初始化，那么它就不应该在头文件中定义。相反，和其他的变量一样，该 const
  变量应该在一个源文件中定义并初始化。应在头文件中为它添加 extern 声明，以使其能被多个文件共享.
 
-## typedef
 
-- typedef 类型别名的一种方法，还可以用using
 
-```c++
-typedef double wages;
-using wages =double;
-```
-
-## constexpr变量
-
-- 常量表达式是值不会变且在编译期间就能得到计算结果的表达式，
-- constexpr，必须用常量表达式初始化，或者constexpr函数的返回值
-- constexpr指针，将指针置为顶层const
-
-```c++
-constexpr int * a =nullptr;   //a 是一个指向int的常量指针
-```
 
 ## auto变量 与decltype类型
 
