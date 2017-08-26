@@ -106,6 +106,9 @@ vector<string> svec4{10,"hi"};  // 10个元素，每个都为"hi"
 
 ```
 
+### 向vector中加元素
+
+
 
 
 
