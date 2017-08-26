@@ -173,6 +173,40 @@ auto it3 = a.cbeign();  // vector<int>::const_iterator
 
 ### 迭代器支持的操作
 
+#### 迭代器都支持的操作
+
+- *iter
+- item->item
+- ++iter
+- --iter
+- iter1 == iter2
+- iter1 != iter2
+
+
+#### vector与string迭代器支持的操作
+
+- iter + n;
+- iter - n;
+- iter1 += n
+- iter1 -= n 
+- iter1 - iter2  **返回的是difference_type**
+- >, >=, <=, <
+
+- **因为不是所有的迭代器都支持大小比较，但是所有的迭代器都支持 == 与 != 操作，所以在for循环中用 !=而不是 <**
+
+```c++
+std::string a = "Hello world";
+for(auto it = a.begin(); it != a.end() && !isspace(*it); ++it) {
+    *it = toupper(*it);
+}
+```
+
+#### 迭代器与泛型for语句
+
+- 不能在泛型语句中向vector对象添加元素
+- 任何一个可能改变vector对象容量的操作，比如push_back,都会使该vector对象的迭代器失效
+
+
 
 
 
