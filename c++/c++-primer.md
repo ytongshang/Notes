@@ -163,8 +163,10 @@ auto b = ivec.begin(), e = ivec.end();
 ```c++
 vector<int> a;
 const vector<int> b;
-auto ita = a.begin(); // vector<int>::iterator
-auto itb = b.begin(); // vector<int>::const_iterator
+auto it1 = a.begin();   // vector<int>::iterator
+auto it2 = b.begin();   // vector<int>::const_iterator
+auto it3 = a.cbeign();  // vector<int>::const_iterator
+
 ```
 
 
