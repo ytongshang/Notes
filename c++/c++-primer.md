@@ -155,10 +155,17 @@ auto b = ivec.begin(), e = ivec.end();
 ### iterator与const_iterator
 
 - iterator的对象可读也可以写
-- const_iterator可以读但是不能够写
-- 如果容器对象或string对象是一个常量，那么只能使用const_iterator
+- **const_iterator可以读但是不能够写**
+- **如果容器对象或string对象是一个常量，那么只能使用const_iterator**
 - 如果容器对象与string对象不是常量，那么既可以用iterator又可以用const_iterator
-- 如果要返回const_iterator,那么可以使用cbegin与cend函数
+- **如果要返回const_iterator,那么可以使用cbegin与cend函数**
+
+```c++
+vector<int> a;
+const vector<int> b;
+auto ita = a.begin(); // vector<int>::iterator
+auto itb = b.begin(); // vector<int>::const_iterator
+```
 
 
 
