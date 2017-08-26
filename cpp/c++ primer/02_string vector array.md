@@ -251,7 +251,15 @@ auto ia2(ia);  // ia2是一个整型指针，指向ia的第一个元素
 decltype(ia) ia3 = {0,1,2,3,4,5,6,7,8,9};   // ia3是一个含有10个整数的数组
 ```
 
+### 标准库函数begin与end
 
+- c++11针对数组引入了两个名为begin与end的函数
+
+```c++
+int ia[] = {0,1,2,3,4,5,6,7,8,9};
+int *begin = begin(ia);
+int *last = end(ia);
+```
 
 
 
