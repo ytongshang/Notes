@@ -6,6 +6,7 @@
 
 * [c++ primer](c++/c++-primer.md)
   * [01\_the basics](cpp/c++ primer/01_the basics.md)
+  * 02\_string vector array
 
 ## java
 
