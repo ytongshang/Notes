@@ -106,10 +106,58 @@ vector<string> svec4{10,"hi"};  // 10个元素，每个都为"hi"
 
 ```
 
-### 向vector中加元素
+### vector相关的操作
 
+- **vector对象是能够高效增长的，因而在初始化时设定其大小是没有什么必要的，这点与java是不同的**
 
+#### vector遍历
 
+- 使用泛型for语句
+
+```c++
+vector<int> v = {1,2,3};
+for (auto &i :v) {
+    i *= i;
+}
+// 引用类型，v变为{1,4,9}
+```
+
+#### 下标操作符
+
+- size()返回的类型是size_type
+- **使用size_type类型时，必须用具体的类，而不能是模板**
+
+```c++
+vector<int> ::size_type // 正确
+vector::size_type       // 错误
+```
+
+- **不能用下标形式添加元素，使用下标必须vector存在对应的元素**
+
+```c++
+vector<int> ivec;
+for (decltype(ivec.size()) i = 0; i != 10; ++i) {
+    ivec[i] = i;  // 错误，因为ivec不包含任何元素，所以不能使用下标运算符
+}
+```
+
+## 迭代器
+
+- 尾后迭代器：**指向容器尾元素的下一个位置，指向的实际是容器的一个本不存在的尾后元素**，只起到一个标记作用
+
+```java
+vector<int> ivec = {1,5,6,4,400};
+auto b = ivec.begin(), e = ivec.end();
+```
+
+- 如果容器为空，那么beging与end返回的是同一个迭代器，都是尾后迭代器
+
+### iterator与const_iterator
+
+- iterator的对象可读也可以写
+- const_iterator可以读但是不能够写
+- 如果容器对象或string对象是一个常量，那么只能使用const_iterator
+- 如果要返回const_iterator,那么可以使用cbegin与cend函数
 
 
 
