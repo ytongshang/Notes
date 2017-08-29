@@ -114,7 +114,33 @@ sizeof Sales_data::revenue  // 另一种获得revenue成员大小的方式
     - 对引用类型，返回被引用对象所占空间的大小
     - 对于指针类型，返回指针本身所占空间的大小
     - 对解引用指针执行sizeof运算得到指针指向的对象所占的空间大小，指针不需要有效
+    - 对于数组执行sizeof，等价于对数组中所有元素执行一次sizeof然后求和，sizeof不会把数组当指针处理，与decltype相同
+    - sizeof()作用于string、vector时，只返回该类型固定部分的大小，不计算对象中元素占用了多少空间
 
+ ```c++
+ // 总长度/首个元素的大小，返回数组长度
+ constexpr size_t sz = sizeof(ia) / sizeof(*ia);
+ int arr2[sz];
+ ```
+ 
+ ## 类型转换
+ 
+ - 算术转换：运算符的运算对象转换成最宽的字符，比如int 与unsigned int一起，int转换为unsigned int
+ - 整型提升：小整型转换为int(bool,char,signed char,unsigned char,short,unsigned short)
+  较大的char(wchar_t,char16_t,char32_t)转为int,unsigned int,long,unsigned long ,long long ,unsigned long long中
+  能容纳对象的最小的类型
+ - 如果无符号不小于有符号的，有符号的转为无符号的，如果有有符号的大于无符号类型，具体行为依赖于机器
+ - 数组转为指向首元素的指针
+ - 0，nullptr转换为任意类型的指针
+ - 非0为true,0为false
+ - 允许将指向非常量的指针或引用转换成指针相应常量的引针/引用，也就是可以用T的指针/引用初始化const T的指针/引用
+ 
+ ```c++
+ int i;
+ const int &j = i ;   // 正确
+ const int *p = &i;   // 正确
+ int &r = j, *q = p;  // 错误，非const指针/指针只能用非const初始化
+ ```
 
 
 
