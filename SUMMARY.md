@@ -7,7 +7,7 @@
 * [c++ primer](c++/c++-primer.md)
   * [01\_the basics](cpp/c++ primer/01_the basics.md)
   * [02_string vector array](cpp/c++ primer/02_string vector array.md)
-  * [02_string vector array](cpp/c++ primer/03_expression.md)
+  * [03_expression](cpp/c++ primer/03_expression.md)
 
 ## java
 
