@@ -141,6 +141,58 @@ sizeof Sales_data::revenue  // 另一种获得revenue成员大小的方式
  const int *p = &i;   // 正确
  int &r = j, *q = p;  // 错误，非const指针/指针只能用非const初始化
  ```
+ 
+## 强制转换
+
+### const_cast
+
+- const_cast ，_改变对象的const,对于底层const的增删，只能用const_cast,_只有使用 const_cast _才能将 const 性质转换掉_。在这种情况下，试图使用其他三种形式的强制转换都会导致编译时的错误。类似 地，除了添加或删除_ const 特性，用 const_cast 符来执行其他任何类型转换，都会引起编译错误。
+
+```c++
+const char *pc;
+char *ptr = const_cast<char*>(pc);
+```
+
+- 常见的一种用法就是先定义了类的const成员函数，想定义其非const的重载时，先将非const参数用const_cast转化为底层const,然后调用其底层const版本的函数，最后又将参数转回为非底层const
+
+### static_cast
+
+- 只要不包含底层const,都可以使用static_cast
+- 当需要将一个较大的算术类型赋值给较小的类型时，使用强制转换非常有用。此时，强制类型转换告诉程序的读者和编译器：我们知道并且不关心潜在的精度损失。
+ 对于从一个较大的算术类型到一个较小类型的赋值，编译器通常会产生警告。当我们显式地提供强制类型转换时，警告信息就会被关闭。 
+- 如果编译器不提供自动转换，使用 static_cast 来执行类型转换也是很有用的。例如，下面的程序使用 static_cast 找回存放在 void* 指针中的值
+
+```c++
+double d=15.0;
+void* p = &d; 
+// ok: address of any data object can be stored in a void*
+// ok: converts void* back to the original pointer type
+double *dp = static_cast<double*>(p);
+```
+     
+### dynamic_cast
+
+- dynamic_cast只用于对象的指针和引用。
+- 当用于多态类型时，它允许任意的隐式类型转换以及相反过程。
+- 不过，与static_cast不同，在后一种情况里（注：即隐式转换的相反过程），dynamic_cast会检查操作是否有效。
+ 也就是说，它会检查转换是否会返回一个被请求的有效的完整对象。检测在运行时进行。如果被转换的指针不是一个被请求的有效完整的对象指针，返回值为NULL.
+- dynamic_cast 主要用于执行“安全的向下转型（safe downcasting）”，也就是说，要确定一个对象是否是一个继承体系中的一个特定类型。
+ 它是唯一不能用旧风格语法执行的强制转型，也是唯一可能有重大运行时代价的强制转型。
+ 
+ ```c++ 
+ //假定 Base 是至少带一个虚函数的类，并且 Derived 类派生于 Base 类。如果有一个名为 basePtr 的指向 Base 的
+ //指针，就可以像这样在运行时将它强制转换为指向 Derived 的指针：
+  if (Derived *derivedPtr = dynamic_cast<Derived*>(basePtr)) {
+     // use the Derived object to which derivedPtr points
+   } else { // BasePtr points at a Base object
+      // use the Base object to which basePtr points
+   }
+
+ ```
+
+### reinterpret_cast
+
+- 是特意用于底层的强制转型，导致实现依赖（implementation-dependent）（就是说，不可移植）的结果，基本上很少见。
 
 
 
