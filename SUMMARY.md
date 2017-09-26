@@ -18,7 +18,6 @@
   * [04\_多态 接口](java/thinking in java/04_多态 接口.md)
   * [05\_内部类](java/thinking in java/05_内部类.md)
   * [06\_持有对象](java/thinking in java/06_持有对象.md)
-  * [07\_异常](java/thinking in java/07_异常.md)
   * [08\_类型信息](java/thinking in java/08_类型信息.md)
   * [09\_泛型](java/thinking in java/09_泛型.md)
   * [10\_注解](java/thinking in java/10_注解.md)
