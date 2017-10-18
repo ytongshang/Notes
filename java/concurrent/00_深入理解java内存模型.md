@@ -23,7 +23,7 @@
 - JMM定义了线程和主内存之间的抽象关系：线程之间的共享变量存储在主内存（main memory）中，每个线程都有一个私有的本地内存（local memory），本地内存中存储了该线程以读/写共享变量的副本。
 - 本地内存是JMM的一个抽象概念，并不真实存在。它涵盖了缓存，写缓冲区，寄存器以及其他的硬件和编译器优化
 
-- ![java内存抽象](./../../image-resources/jmm/java内存模型抽象.png)
+![java内存抽象](./../../image-resources/jmm/java内存模型抽象.png)
 
 ### 重排序
 
@@ -54,7 +54,7 @@ public void read() {
 // 由于处理器重排序，多线程最后可能的结果是 x = y = 0
 ```
 
-- ![处理器重排序](./../../image-resources/jmm/处理器重排序.png)
+![处理器重排序](./../../image-resources/jmm/处理器重排序.png)
 
 ### happens-before
 
@@ -68,7 +68,7 @@ public void read() {
     - volatile变量规则：对一个volatile域的写，happens-before 于任意后续对这个volatile域的读。
     - 传递性：如果A happens-before B，且B happens-before C，那么A happens-before C。
 
-- ![happens-before](./../../image-resources/jmm/happens-before.png)
+![happens-before](./../../image-resources/jmm/happens-before.png)
 
 ### 数据依赖性
 
@@ -115,6 +115,30 @@ class ReorderExample {
 // 线程A中的重排序，则可以导致reader中的结果不正确
 ```
 
-- ![多线程重排序1](./../../image-resources/jmm/多线程重排序1.png)
+![多线程重排序1](./../../image-resources/jmm/多线程重排序1.png)
 
-- ![多线程重排序2](./../../image-resources/jmm/多线程重排序2.png)
+![多线程重排序2](./../../image-resources/jmm/多线程重排序2.png)
+
+## 顺序一致性内存模型
+
+- 顺序一致性内存模型是一个被计算机科学家理想化了的理论参考模型，它为程序员提供了极强的内存可见性保证。顺序一致性内存模型有两大特性：
+    - 一个线程中的所有操作必须按照程序的顺序来执行。
+    - 不管程序是否同步）所有线程都只能看到一个单一的操作执行顺序。在顺序一致性内存模型中，每个操作都必须原子执行且立刻对所有线程可见。
+
+## 数据竞争与顺序一致性保证
+
+当程序未正确同步时，就会存在数据竞争。java内存模型规范对数据竞争的定义如下：
+
+在一个线程中写一个变量，
+在另一个线程读同一个变量，
+而且写和读没有通过同步来排序。
+当代码中包含数据竞争时，程序的执行往往产生违反直觉的结果（前一章的示例正是如此）。如果一个多线程程序能正确同步，这个程序将是一个没有数据竞争的程序。
+
+JMM对正确同步的多线程程序的内存一致性做了如下保证：
+
+如果程序是正确同步的，程序的执行将具有顺序一致性（sequentially consistent）–即程序的执行结果与该程序在顺序一致性内存模型中的执行结果相同（马上我们将会看到，这对于程序员来说是一个极强的保证）。这里的同步是指广义上的同步，包括对常用同步原语（lock，volatile和final）的正确使用
+
+
+
+
+

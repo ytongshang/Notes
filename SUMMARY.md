@@ -6,8 +6,8 @@
 
 * [c++ primer](c++/c++-primer.md)
   * [01\_the basics](cpp/c++ primer/01_the basics.md)
-  * [02_string vector array](cpp/c++ primer/02_string vector array.md)
-  * [03_expression](cpp/c++ primer/03_expression.md)
+  * [02\_string vector array](cpp/c++ primer/02_string vector array.md)
+  * [03\_expression](cpp/c++ primer/03_expression.md)
 
 ## java
 
@@ -30,8 +30,8 @@
   * [06\_通用程序设计](java/effective java/06_通用程序设计.md)
   * [07\_异常](java/effective java/07_异常.md)
   * [08\_序列化](java/effective java/08_序列化.md)
-* concurrent
-  * [00_深入理解java内存模型](java/concurrent/00_深入理解java内存模型.md)
+* [concurrent](java/concurrent.md)
+  * [00\_深入理解java内存模型](java/concurrent/00_深入理解java内存模型.md)
   * [01\_多线程基础](java/concurrent/01_多线程基础.md)
   * [02\_Volatile详解](java/concurrent/02_Volatile详解.md)
   * [03\_线程协作](java/concurrent/03_线程协作.md)
@@ -100,3 +100,4 @@
   * [17 享元模式](other/design-pattern/17 享元模式.md)
   * [18 外观模式](other/design-pattern/18 外观模式.md)
   * [19 桥接模式](other/design-pattern/19 桥接模式.md)
+
