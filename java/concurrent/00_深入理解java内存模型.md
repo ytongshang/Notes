@@ -1,7 +1,5 @@
 # 《深入理解Java内存模型》读书笔记
 
-<!-- TOC -->
-
 - [书目](#书目)
 - [基础](#基础)
     - [并发编程模型](#并发编程模型)
@@ -14,11 +12,19 @@
     - [数据依赖性](#数据依赖性)
     - [as-if-serial语义](#as-if-serial语义)
     - [多线程与重排序](#多线程与重排序)
-- [顺序一致性](#顺序一致性)
-    - [顺序一致性内存模型](#顺序一致性内存模型)
-    - [数据竞争与顺序一致性保证](#数据竞争与顺序一致性保证)
-    - [同步程序的顺序一致性效果](#同步程序的顺序一致性效果)
-- [volatile](#volatile)
+    - [顺序一致性](#顺序一致性)
+        - [顺序一致性内存模型](#顺序一致性内存模型)
+        - [数据竞争与顺序一致性保证](#数据竞争与顺序一致性保证)
+        - [同步程序的顺序一致性效果](#同步程序的顺序一致性效果)
+    - [可见性](#可见性)
+    - [原子性](#原子性)
+- [同步基制](#同步基制)
+    - [volatile](#volatile)
+        - [作用](#作用)
+        - [volatile变量的理解](#volatile变量的理解)
+        - [volatile的内存语义](#volatile的内存语义)
+        - [volatile和 synchronize对比](#volatile和-synchronize对比)
+        - [使用指导](#使用指导)
 
 ## 书目
 
@@ -199,3 +205,68 @@ class ReorderExample {
 ## 同步基制
 
 ### volatile
+
+#### 作用
+
+- volatile变量具有以下特性：
+    - **[可见性]**：对一个volatile变量的读，总是能看到（任意线程）对这个volatile变量最后的写入。
+    - **[原子性]**：对任意单个volatile变量的读/写具有原子性，但类似于volatile++这种复合操作不具有原子性。
+
+#### volatile变量的理解
+
+- 理解volatile特性的一个好方法是：把对volatile变量的单个读/写，看成是使用同一个锁对这些单个读/写操作做了同步
+
+```java
+class VolatileFeaturesExample {
+    //使用volatile声明64位的long型变量
+    volatile long vl = 0L;
+
+    public void set(long l) {
+        vl = l;   //单个volatile变量的写
+    }
+
+    public void getAndIncrement () {
+        vl++;    //复合（多个）volatile变量的读/写
+    }
+
+    public long get() {
+        return vl;   //单个volatile变量的读
+    }
+}
+```
+
+```java
+class VolatileFeaturesExample {
+    long vl = 0L;               // 64位的long型普通变量
+
+    //对单个的普通 变量的写用同一个锁同步
+    public synchronized void set(long l) {
+       vl = l;
+    }
+
+    public void getAndIncrement () { //普通方法调用
+        long temp = get();           //调用已同步的读方法
+        temp += 1L;                  //普通写操作
+        set(temp);                   //调用已同步的写方法
+    }
+    public synchronized long get() { 
+        //对单个的普通变量的读用同一个锁同步
+        return vl;
+    }
+}
+```
+
+#### volatile的内存语义
+
+- volatile写：当写一个volatile变量时，JMM会把该线程对应的本地内存中的共享变量刷新到主内存。
+- volatile读：当读一个volatile变量时，JMM会把该线程对应的本地内存置为无效。线程接下来将从主内存中读取共享变量
+- **从内存语义的角度来说，volatile与锁有相同的效果：volatile写和锁的释放有相同的内存语义；volatile读与锁的获取有相同的内存语义**
+
+#### volatile和 synchronize对比
+
+- 在功能上，监视器锁比volatile更强大；在可伸缩性和执行性能上，volatile更有优势。
+- volatile仅仅保证对单个volatile变量的读/写具有原子性；而synchronize锁的互斥执行的特性可以确保对整个临界区代码的执行具有原子性。
+
+#### 使用指导
+
+[正确使用 Volatile 变量](https://www.ibm.com/developerworks/cn/java/j-jtp06197.html)
