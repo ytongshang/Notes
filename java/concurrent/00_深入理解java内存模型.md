@@ -104,9 +104,17 @@ class ReorderExample {
     }
 
     public void reader() {
-        f (flag) {                //3
+        f (flag) {                 //3
             int i =  a * a;        //4
         }
     }
 }
+// 线程A执行writer方法，线程B执行reader方法
+// 线程A中的1和2不存在依赖关系，可以重排序
+// 线程B中的3和4存在依赖关系，不可以重排序
+// 线程A中的重排序，则可以导致reader中的结果不正确
 ```
+
+- ![多线程重排序1](./../../image-resources/jmm/多线程重排序1.png)
+
+- ![多线程重排序2](./../../image-resources/jmm/多线程重排序2.png)
