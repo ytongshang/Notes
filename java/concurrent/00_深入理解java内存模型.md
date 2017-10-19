@@ -25,6 +25,13 @@
         - [volatile的内存语义](#volatile的内存语义)
         - [volatile和 synchronize对比](#volatile和-synchronize对比)
         - [使用指导](#使用指导)
+    - [锁](#锁)
+    - [final](#final)
+        - [写final域的重排序规则](#写final域的重排序规则)
+        - [读final域的重排序规则](#读final域的重排序规则)
+        - [如果final域是引用类型](#如果final域是引用类型)
+        - [为什么final引用不能从构造函数内“逸出”](#为什么final引用不能从构造函数内逸出)
+        - [总结](#总结)
 
 ## 书目
 
@@ -392,7 +399,7 @@ public class FinalReferenceEscapeExample {
 }
 ```
 
-[final逸出](./../../image-resources/jmm/final逸出.png)
+![final逸出](./../../image-resources/jmm/final逸出.png)
 
 #### 总结
 
