@@ -212,6 +212,12 @@ class ReorderExample {
     - **[可见性]**：对一个volatile变量的读，总是能看到（任意线程）对这个volatile变量最后的写入。
     - **[原子性]**：对任意单个volatile变量的读/写具有原子性，但类似于volatile++这种复合操作不具有原子性。
 
+![volatile变量重排序](./../../image-resources/jmm/volatile变量重排序.png)
+
+- 当第二个操作是volatile写时，不管第一个操作是什么，都不能重排序。这个规则确保volatile写之前的操作不会被编译器重排序到volatile写之后。
+- 当第一个操作是volatile读时，不管第二个操作是什么，都不能重排序。这个规则确保volatile读之后的操作不会被编译器重排序到volatile读之前。
+- 当第一个操作是volatile写，第二个操作是volatile读时，不能重排序
+
 #### volatile变量的理解
 
 - 理解volatile特性的一个好方法是：把对volatile变量的单个读/写，看成是使用同一个锁对这些单个读/写操作做了同步
@@ -270,3 +276,124 @@ class VolatileFeaturesExample {
 #### 使用指导
 
 [正确使用 Volatile 变量](https://www.ibm.com/developerworks/cn/java/j-jtp06197.html)
+
+### 锁
+
+- 对比锁释放-获取的内存语义与volatile写-读的内存语义，可以看出：锁释放与volatile写有相同的内存语义；锁获取与volatile读有相同的内存语义。
+
+- 锁的内存语义
+    - 线程A释放一个锁，实质上是线程A向接下来将要获取这个锁的某个线程发出了（线程A对共享变量所做修改的）消息。
+    - 线程B获取一个锁，实质上是线程B接收了之前某个线程发出的（在释放这个锁之前对共享变量所做修改的）消息。
+    - 线程A释放锁，随后线程B获取这个锁，这个过程实质上是线程A通过主内存向线程B发送消息
+
+### final
+
+#### 写final域的重排序规则
+
+- 在构造函数内对一个final域的写入，与随后把这个被构造对象的引用赋值给一个引用变量，这两个操作之间不能重排序,
+- JMM禁止编译器把final域的写重排序到构造函数之外
+- 写final域的重排序规则可以确保：**在对象引用为任意线程可见之前，对象的final域已经被正确初始化过了，而普通域不具有这个保障。**
+
+```java
+public class FinalExample {
+    int i;                            //普通变量
+    final int j;                      //final变量
+    static FinalExample obj;
+
+    public void FinalExample () {     //构造函数
+        i = 1;                        //写普通域
+        j = 2;                        //写final域
+    }
+
+    public static void writer () {    //写线程A执行
+        obj = new FinalExample ();
+    }
+
+    public static void reader () {       //读线程B执行
+        FinalExample object = obj;       //读对象引用
+        int a = object.i;                //读普通域
+        int b = object.j;                //读final域
+    }
+}
+// 写线程A先执行，然后执行读线程B
+// 可以保证，只要只要B线程看到obj不为null,那么obj中的j一定为2
+// 而B看到obj不为null,obj中的i因为不是final则不一定能读到正确的值
+```
+
+#### 读final域的重排序规则
+
+- 在一个线程中，初次读对象引用与初次读该对象包含的final域，JMM禁止处理器重排序这两个操作（注意，这个规则仅仅针对处理器）。
+- 读final域的重排序规则可以确保：**在读一个对象的final域之前，一定会先读包含这个final域的对象的引用。如果该引用不为null，那么引用对象的final域一定已经被A线程初始化过了。**
+
+#### 如果final域是引用类型
+
+- 在构造函数内对一个final引用的对象的成员域的写入，与随后在构造函数外把这个被构造对象的引用赋值给一个引用变量，
+ 这两个操作之间不能重排序
+
+ ```java
+ public class FinalReferenceExample {
+    final int[] intArray;                     //final是引用类型
+    static FinalReferenceExample obj;
+
+    public FinalReferenceExample () {        //构造函数
+        intArray = new int[1];               //1
+        intArray[0] = 1;                    //2
+    }
+
+    public static void writerOne () {          //写线程A执行
+        obj = new FinalReferenceExample ();   //3
+    }
+
+    public static void writerTwo () {          //写线程B执行
+        obj.intArray[0] = 2;                  //4
+    }
+
+    public static void reader () {              //读线程C执行
+        if (obj != null) {                     //5
+            int temp1 = obj.intArray[0];       //6
+        }
+    }
+}
+
+ ```
+
+- 假设线程A执行writerOne()方法，执行完后线程B执行writerTwo()方法，执行完后线程C执行reader ()方法
+- 1是对final域的写入，2是对这个final域引用的对象的成员域的写入，3是把被构造的对象的引用赋值给某个引用变量。
+- **这里除了前面提到的1不能和3重排序外，2和3也不能重排序。**
+- JMM可以确保读线程C至少能看到写线程A在构造函数中对final引用对象的成员域的写入。即C至少能看到数组下标0的值为1。
+- 而写线程B对数组元素的写入，读线程C可能看的到，也可能看不到。JMM不保证线程B的写入对读线程C可见，因为写线程B和读线程C之间存在数据竞争，此时的执行结果不可预知。
+
+#### 为什么final引用不能从构造函数内“逸出”
+
+- 写final域的重排序规则可以确保：在引用变量为任意线程可见之前，该引用变量指向的对象的final域已经在构造函数中被正确初始化过了。
+ 其实要得到这个效果，还需要一个保证：**在构造函数内部，不能让这个被构造对象的引用为其他线程可见，也就是对象引用不能在构造函数中“逸出”。**
+- **在构造函数返回前，被构造对象的引用不能为其他线程可见，因为此时的final域可能还没有被初始化。**
+- **在构造函数返回后，任意线程都将保证能看到final域正确初始化之后的值**
+
+```java
+public class FinalReferenceEscapeExample {
+    final int i;
+    static FinalReferenceEscapeExample obj;
+
+    public FinalReferenceEscapeExample () {
+        i = 1;                              //1写final域
+        obj = this;                         //2 this引用在此“逸出”
+    }
+
+    public static void writer() {
+        new FinalReferenceEscapeExample ();
+    }
+
+    public static void reader {
+        if (obj != null) {                    // 3
+            int temp = obj.i;                 // 4
+        }
+    }
+}
+```
+
+[final逸出](./../../image-resources/jmm/final逸出.png)
+
+#### 总结
+
+- 只要对象是正确构造的（被构造对象的引用在构造函数中没有“逸出”），那么不需要使用同步（指lock和volatile的使用），就可以保证任意线程都能看到这个final域在构造函数中被初始化之后的值。
