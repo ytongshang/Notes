@@ -11,6 +11,17 @@
 
 ## java
 
+* [concurrent](java/concurrent.md)
+  * [00\_深入理解java内存模型](java/concurrent/00_深入理解java内存模型.md)
+  * [01\_多线程基础](java/concurrent/01_多线程基础.md)
+  * [02\_Volatile详解](java/concurrent/02_Volatile详解.md)
+  * [03\_线程协作](java/concurrent/03_线程协作.md)
+  * [04\_Concurrent包](java/concurrent/04_Concurrent包.md)
+  * [05\_EffectiveJava 并发实践](java/concurrent/05_EffectiveJava 并发实践.md)
+* java util
+  * [01\_正则表达式](java/java8/01_正则表达式.md)
+* java8
+  * [01\_java8](java/java8/01_java8.md)
 * [thinking in java](java/thinking-in-java.md)
   * [01\_对象导论](java/thinking in java/01_对象导论.md)
   * [02\_对象的初始化与清理](java/thinking in java/02_对象的初始化与清理.md)
@@ -30,15 +41,6 @@
   * [06\_通用程序设计](java/effective java/06_通用程序设计.md)
   * [07\_异常](java/effective java/07_异常.md)
   * [08\_序列化](java/effective java/08_序列化.md)
-* [concurrent](java/concurrent.md)
-  * [00\_深入理解java内存模型](java/concurrent/00_深入理解java内存模型.md)
-  * [01\_多线程基础](java/concurrent/01_多线程基础.md)
-  * [02\_Volatile详解](java/concurrent/02_Volatile详解.md)
-  * [03\_线程协作](java/concurrent/03_线程协作.md)
-  * [04\_Concurrent包](java/concurrent/04_Concurrent包.md)
-  * [05\_EffectiveJava 并发实践](java/concurrent/05_EffectiveJava 并发实践.md)
-* java8
-  * [01\_java8](java/java8/01_java8.md)
 
 ## operating system
 
