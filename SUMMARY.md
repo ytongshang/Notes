@@ -19,7 +19,7 @@
   * [04\_Concurrent包](java/concurrent/04_Concurrent包.md)
   * [05\_EffectiveJava 并发实践](java/concurrent/05_EffectiveJava 并发实践.md)
 * java util
-  * [01\_正则表达式](java/java8/01_正则表达式.md)
+  * [01\_正则表达式](java/java util/01_正则表达式.md)
 * java8
   * [01\_java8](java/java8/01_java8.md)
 * [thinking in java](java/thinking-in-java.md)
