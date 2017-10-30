@@ -209,3 +209,46 @@ channel.write(bufferArray);
 
 - buffers数组是write()方法的入参，write()方法会按照buffer在数组中的顺序，将数据写入到channel，**注意只有position和limit之间的数据才会被写入**。
 - 因此，如果一个buffer的容量为128byte，但是仅仅包含58byte的数据，那么这58byte的数据将被写入到channel中。**因此与Scattering Reads相反，Gathering Writes能较好的处理动态消息**
+
+### 通道之间的数据传送
+
+- 在Java NIO中，如果两个通道中有一个是FileChannel，那你可以直接将数据从一个channel 传输到另外一个channel
+
+#### transferFrom()
+
+```java
+ public abstract long transferFrom(ReadableByteChannel src, long position, long count) throws IOException;
+```
+
+- src 来源于哪一个channel，其中FileChannel实现了ReadableByteChannel
+- **position指的是调用transferFrom方法的channel，也就是表示在toChannel的position位置开始写入**
+- 整个方法的意思是从src中读取最多count个byte，然后往函数的调用方（本Channel）的position开始写入，
+ 但是有可能由于src中还剩的byte小于count个，**导致最后实际写入toChannel的值，也就是函数的返回值小于count**
+- **方法调用后不会修改本channel的positon，而src由于读取数据，src的positon会向后移动实际读取的byte数的位置**
+
+```java
+RandomAccessFile fromFile = new RandomAccessFile("fromFile.txt", "rw");
+FileChannel      fromChannel = fromFile.getChannel();
+
+RandomAccessFile toFile = new RandomAccessFile("toFile.txt", "rw");
+FileChannel      toChannel = toFile.getChannel();
+
+long position = 0;
+long count = fromChannel.size();
+
+toChannel.transferFrom(position, count, fromChannel);
+```
+
+#### transferTo()
+
+```java
+public abstract long transferTo(long position, long count,
+                                    WritableByteChannel target)
+        throws IOException;
+```
+
+- target，写入的channel
+- position,**是指函数调用方的channel，也就是从fromChannel（本channel）的postion位置开始读取数据**
+- 整个方法的意思是从函数的调用方（本channel）的position位置开始读取最多count个byte，然后从写入到target中，
+ 但是有可能由于本channel中还剩的byte小于count个，**导致最后实际写入target的值，也就是函数的返回值小于count**
+- **方法调用后不会修改本channel的positon，而target由于读取数据,target的positon会向后移动实际读取的byte数的位置** 
