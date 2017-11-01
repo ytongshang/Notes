@@ -121,7 +121,7 @@ while(! socketChannel.finishConnect() ){
 
 ```java
 ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-
+serverSocketChannel.socket().bind(new InetSocketAddress(9999));
 serverSocketChannel.close();
 ```
 
