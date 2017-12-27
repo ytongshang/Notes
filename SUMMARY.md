@@ -4,14 +4,14 @@
 
 ## c++
 
-* [c++ primer](c++/c++-primer.md)
+* c++ primer
   * [01\_the basics](cpp/c++ primer/01_the basics.md)
   * [02\_string vector array](cpp/c++ primer/02_string vector array.md)
   * [03\_expression](cpp/c++ primer/03_expression.md)
 
 ## java
 
-* [concurrent](java/concurrent.md)
+* concurrent
   * [00\_深入理解java内存模型](java/concurrent/00_深入理解java内存模型.md)
   * [01\_多线程基础](java/concurrent/01_多线程基础.md)
   * [02\_Volatile详解](java/concurrent/02_Volatile详解.md)
@@ -42,6 +42,13 @@
   * [07\_异常](java/effective java/07_异常.md)
   * [08\_序列化](java/effective java/08_序列化.md)
 
+## golang
+
+* golang基础
+  * [01_程序结构](golang/go基础/01_程序结构.md)
+  * [02_基础数据类型](golang/go基础/02_基础数据类型.md)
+  * [03_复合数据类型](golang/go基础/03_复合数据类型.md)
+
 ## operating system
 
 * linux
@@ -65,7 +72,7 @@
 
 ## database
 
-* [mysql](database/mysql.md)
+* mysql
   * [01\_install](database/mysql/01_install.md)
   * [02\_basis](database/mysql/02_basis.md)
 * sql
@@ -102,4 +109,3 @@
   * [17 享元模式](other/design-pattern/17 享元模式.md)
   * [18 外观模式](other/design-pattern/18 外观模式.md)
   * [19 桥接模式](other/design-pattern/19 桥接模式.md)
-
