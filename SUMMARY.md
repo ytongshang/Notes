@@ -48,6 +48,8 @@
   * [01_程序结构](golang/go基础/01_程序结构.md)
   * [02_基础数据类型](golang/go基础/02_基础数据类型.md)
   * [03_复合数据类型](golang/go基础/03_复合数据类型.md)
+  * [04_函数](golang/go基础/04_函数.md)
+  * [05_方法](golang/go基础/05_方法.md)
 
 ## operating system
 
