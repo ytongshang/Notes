@@ -50,6 +50,8 @@
   * [03_复合数据类型](golang/go基础/03_复合数据类型.md)
   * [04_函数](golang/go基础/04_函数.md)
   * [05_方法](golang/go基础/05_方法.md)
+  * [06-接口](golang/go基础/06-接口.md)
+  * [07_goroutines and channels](golang/go基础/07_goroutines and channels.md)
 
 ## operating system
 
