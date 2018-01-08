@@ -52,6 +52,7 @@
   * [05_方法](golang/go基础/05_方法.md)
   * [06-接口](golang/go基础/06-接口.md)
   * [07_goroutines and channels](golang/go基础/07_goroutines and channels.md)
+  * [08_基于共享变量的并发](golang/go基础/08_基于共享变量的并发.md)
 
 ## operating system
 
