@@ -53,6 +53,9 @@
   * [06-接口](golang/go基础/06-接口.md)
   * [07_goroutines and channels](golang/go基础/07_goroutines and channels.md)
   * [08_基于共享变量的并发](golang/go基础/08_基于共享变量的并发.md)
+  * [09_包与测试](golang/go基础/09_包与测试.md)
+  * [10_反射](golang/go基础/10_反射.md)
+  * [11_底层编程](golang/go基础/11_底层编程.md)
 
 ## operating system
 
