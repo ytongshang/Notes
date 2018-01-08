@@ -1,5 +1,16 @@
 # Goroutines and channels
 
+- [Goroutines](#goroutines)
+- [Channel](#channel)
+- [不带缓存的Channel](#不带缓存的channel)
+- [串联的Channels（Pipeline）](#串联的channelspipeline)
+- [单方向的Channel](#单方向的channel)
+- [带缓存的Channels](#带缓存的channels)
+    - [并发的循环](#并发的循环)
+        - [易并行问题(embarrassingly parallel)](#易并行问题embarrassingly-parallel)
+- [Select](#select)
+- [并发的退出](#并发的退出)
+
 ## Goroutines
 
 - go语句是一个普通的函数或方法调用前加上关键字go。
