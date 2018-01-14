@@ -6,6 +6,7 @@
 - [串联的Channels（Pipeline）](#串联的channelspipeline)
 - [单方向的Channel](#单方向的channel)
 - [带缓存的Channels](#带缓存的channels)
+- [无缓冲的channel与有缓冲channel](#无缓冲的channel与有缓冲channel)
     - [并发的循环](#并发的循环)
         - [易并行问题(embarrassingly parallel)](#易并行问题embarrassingly-parallel)
 - [Select](#select)
@@ -16,19 +17,18 @@
 - go语句是一个普通的函数或方法调用前加上关键字go。
 - go语句会使其语句中的函数在一个新创建的goroutine中运行。而go语句本身会迅速地完成
 - **主函数返回时，所有的goroutine都会被直接打断，程序退出**。
-- **除了从主函数退出或者直接终止程序之外，没有其它的编程方法能够让一个goroutine来打断另一个的执行**，还可以通过goroutine之间的通信来让一个goroutine请求其它的goroutine，并让被请求的goroutine自行结束执行
+- **除了从主函数退出或者直接终止程序之外，没有其它的编程方法能够让一个goroutine来打断另一个的执行**，但是可以通过goroutine之间的通信让一个goroutine请求其它的goroutine，并让被请求的goroutine自行结束执行
 
 ```golang
 f()    // call f(); wait for it to return
 go f() // create a new goroutine that calls f(); don't wait
 ```
 
+## Channel
+
 - **一个channel是一个通信机制**，它可以让一个goroutine通过它给另一个goroutine发送值信息。
 - **每个channel都有一个特殊的类型，也就是channels可发送数据的类型**。一个可以发送int类型数据的channel一般写为chan int
 - **channel对应一个make创建的底层数据结构的引用**。当我们复制一个channel或用于函数参数传递时，我们只是拷贝了一个channel引用，因此调用者和被调用者将引用同一个channel对象
-
-## Channel
-
 - 最简单方式调用make函数创建的是一个无缓存的channel，但是**可以指定第二个整型参数，对应channel的容量。如果channel的容量大于零，那么该channel就是带缓存的channel。**
 
 ```golang
@@ -48,10 +48,21 @@ x = <-ch // a receive expression in an assignment statement
 close(ch)
 ```
 
+- **无论判断一个channel是否关闭，但是可以间接的用读操作的第二个返回值来判断**
+
+```golang
+ch := make(chan int)
+//...
+
+i,ok := <-ch
+if !ok {
+    //ch关闭了
+}
+```
+
 ## 不带缓存的Channel
 
-- **一个基于无缓存Channels的发送操作将导致发送者goroutine阻塞，直到另一个goroutine在相同的Channels上执行接收操作，当发送的值通过Channels成功传输之后，两个goroutine可以继续执行后面的语句。**
-- 如果接收操作先发生，那么接收者goroutine也将阻塞，直到有另一个goroutine在相同的Channels上执行发送操作。
+- **一个基于无缓存Channels的发送操作将导致发送者goroutine阻塞，直到另一个goroutine在相同的Channels上执行接收操作，当发送的值通过Channels成功传输之后，两个goroutine可以继续执行后面的语句。**如果接收操作先发生，那么接收者goroutine也将阻塞，直到有另一个goroutine在相同的Channels上执行发送操作。
 - **基于无缓存Channels的发送和接收操作将导致两个goroutine做一次同步操作**
 - **有时基于channels发送消息仅仅是用作两个goroutine之间的同步，这时候我们可以用struct{}空结构体作为channels元素的类型**，虽然也可以使用bool或int类型实现同样的功能，done <- 1语句也比done <- struct{}{}更短。
 
@@ -218,8 +229,8 @@ func main() {
 ## 带缓存的Channels
 
 - 带缓存的Channel内部持有一个元素队列。队列的最大容量是在调用make函数创建channel时通过第二个参数指定的
-- channel内部缓存的容量，可以用内置的cap函数获取
-- 对于内置的len函数，如果传入的是channel，那么将返回channel内部缓存队列中有效元素的个数
+- **channel内部缓存的容量，可以用内置的cap函数获取**
+- **对于内置的len函数，如果传入的是channel，那么将返回channel内部缓存队列中有效元素的个数**
 
 ```golang
 ch = make(chan string, 3)
@@ -258,6 +269,21 @@ func request(hostname string) (response string) { /* ... */ }
 - **无缓存channel更强地保证了每个发送操作与相应的同步接收操作；**但是对于带缓存channel，这些操作是解耦的。
 - 即使我们知道将要发送到一个channel的信息的数量上限，创建一个对应容量大小的带缓存channel也是不现实的，因为这要求在执行任何接收操作之前缓存所有已经发送的值。如果未能分配足够的缓冲将导致程序死锁。
 
+## 无缓冲的channel与有缓冲channel
+
+[对golang的Channel初始化的有缓存与无缓存解释](http://blog.csdn.net/paladinosment/article/details/42243303)
+
+- golang channel 有缓冲 与 无缓冲 是有重要区别的,一个是同步的 一个是非同步的
+
+```golang
+c1:=make(chan int)         //无缓冲
+c2:=make(chan int,1)       //有缓冲
+c1<-1
+```
+
+- **无缓冲**:不仅仅是向 c1 通道放1，而是一直要等有别的协程 <-c1 接手了这个参数，那么c1<-1才会继续下去，要不然就一直阻塞着。
+- **有缓冲**：c2<-1则不会阻塞，因为缓冲大小是1(其实是缓冲大小为0)，只有当放第二个值的时候，如果第一个还没被人拿走，这时候才会阻塞。
+
 ### 并发的循环
 
 #### 易并行问题(embarrassingly parallel)
@@ -279,17 +305,13 @@ func makeThumbnails(filenames []string) {
         }
     }
 }
-
-func makeThumbnails2(filenames []string) {
-    for _, f := range filenames {
-        go thumbnail.ImageFile(f) // NOTE: ignoring errors
-    }
-}
 ```
 
 ```golang
 // !!!!!!!!!!错误的写法
-// makeThumbnails在它还没有完成工作之前就已经返回了。它启动了所有的goroutine，每一个文件名对应一个，但没有等待它们一直到执行完毕
+// makeThumbnails在它还没有完成工作之前就已经返回了。
+// 它启动了所有的goroutine，每一个文件名对应一个，但没有等待它们一直到执行完毕
+// 原因是main goroutine结束了，其它的goroutine也就结束了
 func makeThumbnails2(filenames []string) {
     for _, f := range filenames {
         go thumbnail.ImageFile(f) // NOTE: ignoring errors
@@ -297,7 +319,7 @@ func makeThumbnails2(filenames []string) {
 }
 ```
 
-- 没有什么直接的办法能够等待goroutine完成，但是我们可以改变goroutine里的代码让其能够将完成情况报告给外部的goroutine知晓，使用的方式是向一个共享的channel中发送事件。因为我们已经确切地知道有len(filenames)个内部goroutine，所以外部的goroutine只需要在返回之前对这些事件计数
+- **没有什么直接的办法能够等待goroutine完成，但是我们可以改变goroutine里的代码让其能够将完成情况报告给外部的goroutine知晓，使用的方式是向一个共享的channel中发送事件**。因为我们已经确切地知道有len(filenames)个内部goroutine，所以外部的goroutine只需要在返回之前对这些事件计数
 
 ```golang
 // 正确的写法
@@ -311,6 +333,7 @@ func makeThumbnails3(filenames []string) {
     }
     // Wait for goroutines to complete.
     for range filenames {
+        // 其实这里不一定是每一个对应的，只需要保证数目就可以了
         <-ch
     }
 }
@@ -318,7 +341,7 @@ func makeThumbnails3(filenames []string) {
 // 错误 的写法
 for _, f := range filenames {
     go func() {
-        // 匿名函数的词法环境（lexical environment）
+        // 匿名函数的词法域问题（lexical environment）
         thumbnail.ImageFile(f) // NOTE: incorrect!
         // ...
     }()
@@ -440,6 +463,7 @@ default:
     - 一个接收表达式可能只包含接收表达式自身，就像上面的第一个case，或者包含在一个简短的变量声明中，像第二个case里一样；第二种形式让你能够引用接收到的值。
     - **select会等待case中有能够执行的case时去执行。当条件满足时，select才会去通信并执行case之后的语句；这时候其它通信是不会执行的。**
     - **一个没有任何case的select语句写作select{}，会永远地等待下去**
+    - 如果有一个或多个IO操作可以完成，则Go运行时系统会随机的选择一个执行，否则的话，如果有default分支，则执行default分支语句，如果连default都没有，则select语句会一直阻塞，直到至少有一个IO操作可以进行
 
 ```golang
 func main() {
@@ -462,8 +486,7 @@ func main() {
 }
 ```
 
-- 有时候我们希望能够从channel中发送或者接收值，并避免因为发送或者接收导致的阻塞，尤其是当channel没有准备好写或者读时。select语句就可以实现这样的功能。
- select会有一个default来设置当其它的操作都不能够马上被处理时程序需要执行哪些逻辑。
+- 有时候我们希望能够从channel中发送或者接收值，并避免因为发送或者接收导致的阻塞，尤其是当channel没有准备好写或者读时。select语句就可以实现这样的功能。select会有一个default来设置当其它的操作都不能够马上被处理时程序需要执行哪些逻辑。
 
 ```golang
 select {
@@ -479,7 +502,7 @@ default:
 
 ## 并发的退出
 
-- 原理：关闭了一个channel并且被消费掉了所有已发送的值，操作channel之后的代码可以立即被执行，并且会产生零值
+- 原理：**关闭了一个channel并且被消费掉了所有已发送的值，操作channel之后的代码可以立即被执行，并且会产生零值**
 - 方法：**不要向channel发送值，而是用关闭一个channel来进行广播**
 
 ```golang
