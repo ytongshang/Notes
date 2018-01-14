@@ -27,3 +27,9 @@
     }
 }
 ```
+
+- win10 cmder启动zsh
+
+```bash
+%windir%\system32\bash.exe ~ -c /bin/zsh -cur_console:p
+```
