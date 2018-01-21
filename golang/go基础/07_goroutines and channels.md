@@ -7,16 +7,64 @@
 - [单方向的Channel](#单方向的channel)
 - [带缓存的Channels](#带缓存的channels)
 - [无缓冲的channel与有缓冲channel](#无缓冲的channel与有缓冲channel)
-    - [并发的循环](#并发的循环)
-        - [易并行问题(embarrassingly parallel)](#易并行问题embarrassingly-parallel)
+- [并发的循环](#并发的循环)
+    - [易并行问题(embarrassingly parallel)](#易并行问题embarrassingly-parallel)
 - [Select](#select)
-- [并发的退出](#并发的退出)
+- [channel使用](#channel使用)
+    - [⽤简单⼯⼚模式打包并发任务和 channel**](#⽤简单⼯⼚模式打包并发任务和-channel)
+    - [⽤ channel 实现信号量 (semaphore)](#⽤-channel-实现信号量-semaphore)
+    - [⽤ closed channel 发出退出通知](#⽤-closed-channel-发出退出通知)
+    - [⽤ select 实现超时 (timeout)](#⽤-select-实现超时-timeout)
 
 ## Goroutines
 
-- go语句是一个普通的函数或方法调用前加上关键字go。
-- go语句会使其语句中的函数在一个新创建的goroutine中运行。而go语句本身会迅速地完成
-- **主函数返回时，所有的goroutine都会被直接打断，程序退出**。
+- 默认情况下，**进程启动后仅允许⼀个系统线程服务于 goroutine。可使⽤环境变量或标准库函数 runtime.GOMAXPROCS 修改，让调度器⽤多个线程实现多核并⾏，⽽不仅仅是并发**
+- **进程退出时，所有的goroutine都会被直接打断，程序退出**。
+- **调⽤ runtime.Goexit 将⽴即终⽌当前 goroutine 执⾏,不会影响其它线程的执行**，调度器确保所有已注册 defer延迟调⽤被执⾏
+
+```golang
+func main() {
+    wg := new(sync.WaitGroup)
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        defer println("A.defer")
+        func() {
+            defer println("B.defer")
+            runtime.Goexit() // 终⽌当前 goroutine
+            println("B") // 不会执⾏
+        }()
+    println("A") // 不会执⾏
+    }()
+     wg.Wait()
+}
+
+// B.defer
+// A.defer
+```
+
+- 和 yield 作⽤类似，Gosched 让出底层线程，将当前 goroutine 暂停，放回队列等待下次被调度执⾏
+
+```golang
+func main() {
+    wg := new(sync.WaitGroup)
+     wg.Add(2)
+    go func() {
+        defer wg.Done()
+        for i := 0; i < 6; i++ {
+            println(i)
+            if i == 3 { runtime.Gosched() }
+        }
+    }()
+ 
+    go func() {
+        defer wg.Done()
+        println("Hello, World!")
+    }()
+    wg.Wait()
+}
+```
+
 - **除了从主函数退出或者直接终止程序之外，没有其它的编程方法能够让一个goroutine来打断另一个的执行**，但是可以通过goroutine之间的通信让一个goroutine请求其它的goroutine，并让被请求的goroutine自行结束执行
 
 ```golang
@@ -27,9 +75,9 @@ go f() // create a new goroutine that calls f(); don't wait
 ## Channel
 
 - **一个channel是一个通信机制**，它可以让一个goroutine通过它给另一个goroutine发送值信息。
-- **每个channel都有一个特殊的类型，也就是channels可发送数据的类型**。一个可以发送int类型数据的channel一般写为chan int
-- **channel对应一个make创建的底层数据结构的引用**。当我们复制一个channel或用于函数参数传递时，我们只是拷贝了一个channel引用，因此调用者和被调用者将引用同一个channel对象
-- 最简单方式调用make函数创建的是一个无缓存的channel，但是**可以指定第二个整型参数，对应channel的容量。如果channel的容量大于零，那么该channel就是带缓存的channel。**
+- **channel对应一个make创建的底层数据结构的引用**。当我们复制一个channel或用于函数参数传递时，我们只是拷贝了一个channel引用
+- **channel对象可以作为map的key**
+- make函数创建的是一个无缓存的channel，但是**可以指定第二个整型参数，对应channel的容量。如果channel的容量大于零，那么该channel就是带缓存的channel。**
 
 ```golang
 ch := make(chan int) // ch has type 'chan int'
@@ -59,6 +107,8 @@ if !ok {
     //ch关闭了
 }
 ```
+
+- **range方法可以读取channel中的数据，直到channel关闭**
 
 ## 不带缓存的Channel
 
@@ -284,9 +334,9 @@ c1<-1
 - **无缓冲**:不仅仅是向 c1 通道放1，而是一直要等有别的协程 <-c1 接手了这个参数，那么c1<-1才会继续下去，要不然就一直阻塞着。
 - **有缓冲**：c2<-1则不会阻塞，因为缓冲大小是1(其实是缓冲大小为0)，只有当放第二个值的时候，如果第一个还没被人拿走，这时候才会阻塞。
 
-### 并发的循环
+## 并发的循环
 
-#### 易并行问题(embarrassingly parallel)
+### 易并行问题(embarrassingly parallel)
 
 - 易并行问题: 子问题都是完全彼此独立的问题
 
@@ -500,9 +550,54 @@ default:
 
 - channel的零值是nil。因为对一个nil的channel发送和接收操作会永远阻塞，在select语句中操作nil的channel永远都不会被select到。
 
-## 并发的退出
+## channel使用
 
-- 原理：**关闭了一个channel并且被消费掉了所有已发送的值，操作channel之后的代码可以立即被执行，并且会产生零值**
+### ⽤简单⼯⼚模式打包并发任务和 channel
+
+```golang
+func NewTest() chan int {
+    c := make(chan int)
+    rand.Seed(time.Now().UnixNano())
+    go func() {
+        // goroutine结束时才返随机数
+        time.Sleep(time.Second)
+        c <- rand.Int()
+    }()
+    return c
+}
+
+func main() {
+    t := NewTest()
+    println(<-t) // 等待 goroutine 结束返回。
+}
+```
+
+### ⽤ channel 实现信号量 (semaphore)
+
+```golang
+func main() {
+    wg := sync.WaitGroup{}
+    wg.Add(3)
+
+    sem := make(chan int, 1)
+
+    for i := 0; i < 3; i++ {
+        go func(id int) {
+            defer wg.Done()
+            sem <- 1 // 向 sem 发送数据，阻塞或者成功。
+            for x := 0; x < 3; x++ {
+                fmt.Println(id, x)
+            }
+            <-sem // 接收数据，使得其他阻塞 goroutine 可以发送数据。
+        }(i)
+    }
+    wg.Wait()
+}
+```
+
+### ⽤ closed channel 发出退出通知
+
+- 原理：**关闭了一个channel并且被消费掉了所有已发送的值，从channel中读取会立即返回，并且产生零值**
 - 方法：**不要向channel发送值，而是用关闭一个channel来进行广播**
 
 ```golang
@@ -543,5 +638,50 @@ func walkDir(dir string, n *sync.WaitGroup, fileSizes chan<- int64) {
     for _, entry := range dirents(dir) {
         // ...
     }
+}
+```
+
+### ⽤ select 实现超时 (timeout)
+
+```golang
+func main() {
+    w := make(chan bool)
+    c := make(chan int, 2)
+    go func() {
+        select {
+        case v := <-c: fmt.Println(v)
+        case <-time.After(time.Second * 3): fmt.Println("timeout.")
+        }
+        w <- true
+    }()
+    // c <- 1 // 注释掉，引发 timeout。
+    <-w
+}
+```
+
+- **channel 是第⼀类对象，可传参 (内部实现为指针) 或者作为结构成员**
+
+```golang
+type Request struct {
+    data []int
+    ret chan int
+}
+
+func NewRequest(data ...int) *Request {
+    return &Request{ data, make(chan int, 1) }
+}
+
+func Process(req *Request) {
+    x := 0
+    for _, i := range req.data {
+        x += i
+    }
+    req.ret <- x
+}
+
+func main() {
+    req := NewRequest(10, 20, 30)
+    Process(req)
+    fmt.Println(<-req.ret)
 }
 ```
