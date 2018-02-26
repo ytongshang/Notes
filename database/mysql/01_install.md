@@ -1,33 +1,38 @@
-# cygwin下的mysql配置
+# 安装MySql
 
-1. 安装相应的组件
+## Ubuntu
 
-2. 在/usr/share/mysql/下找到my-large.cnf
+- 安装
 
-  ```
-  cp /usr/share/mysql/my-large.cnf  /etc/my.cnf
-  ```
+```bash
+#安装mysql
+sudo apt-get install mysql-server
 
-3. vim 修改my.cnf配置文件
+# 依赖问题
+sudo apt-get install -f
+```
 
-  ```
-  # Try number of CPU's*2 for thread_concurrency
-  thread_concurrency = 4
-  # 另外还需要添加如下行指定mysql数据文件的存放位置：
-  datadir = /home/mysqldata
-  ```
+- 启动
 
-4. 新建/home/mysqldata文件夹
+```bash
+service mysql start
+service mysql stop
+service mysql status
 
-5. 执行 mysql_install_db
+# 服务启动后端口查询
+sudo netstat -anp | grep mysql
+```
 
-  ```
-  /bin/mysql_install_db
-  ```
+## 阿里云mysql远程连接
 
-6. 启动与关闭
+- **默认mysql只能本地访问，允许远程访问**
 
-  ```
-  /usr/share/mysql/mysql.server start
-  /usr/share/mysql/mysql.server stop
-  ```
+```bash
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+
+# 注释掉bind-address = 127.0.0.1 
+```
+
+- 本地root账户默认只能本地访问，允许远程访问,解决办法[mysql数据库设置远程连接权限](https://help.aliyun.com/knowledge_detail/40792.html?spm=5176.11065259.1996646101.searchclickresult.280a3ba03E06yq)
+
+- **修改阿里云服务器的安全组，允许外部访问3306端口**
