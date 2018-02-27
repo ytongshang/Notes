@@ -5,9 +5,7 @@
 - 连接mysql,输入下面命令，然后再输入密码，也可以直接在连接中选择要使用的表名
 
   ```sql
-  mysql -h localhost -u root -p
-  或
-  mysql -h localhost -u root -p rancune
+  mysql -h localhost -uroot -p
   ```
 
 - 帮助，清除，退出

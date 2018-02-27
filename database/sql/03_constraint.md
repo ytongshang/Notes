@@ -15,7 +15,7 @@ FOREIGN KEY
 
 ## NOT NULL
 
-- NOT NULL 约束强制列不接受 NULL 值。
+- **NOT NULL 约束强制列不接受 NULL 值**。
 - NOT NULL 约束强制字段始终包含值。这意味着，如果不向字段添加值，就无法插入新记录或者更新记录
 
 ```sql
@@ -32,9 +32,9 @@ City varchar(255)
 ## UNIQUE
 
 - UNIQUE 约束唯一标识数据库表中的每条记录。
-- UNIQUE 和 PRIMARY KEY 约束均为列或列集合提供了唯一性的保证。
+- **UNIQUE 和 PRIMARY KEY 约束均为列或列集合提供了唯一性的保证。**
 - PRIMARY KEY 拥有自动定义的 UNIQUE 约束。
-- 每个表可以有多个 UNIQUE 约束，但是每个表只能有一个 PRIMARY KEY 约束
+- **每个表可以有多个 UNIQUE 约束，但是每个表只能有一个 PRIMARY KEY 约束**
 
 ### 基本使用
 
