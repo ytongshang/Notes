@@ -670,3 +670,58 @@ FROM Test
 SELECT id,COALESCE(a,0)*b
 FROM Test
 ```
+
+## 函数
+
+### AVG
+
+- AVG 函数返回数值列的平均值
+- **NULL 值不包括在计算中**
+
+```sql
+CREATE TABLE Orders (
+  O_Id       INT PRIMARY KEY AUTO_INCREMENT,
+  OrderDate  DATETIME        DEFAULT CURRENT_TIMESTAMP,
+  OrderPrice INT  NOT NULL,
+  Customer   TEXT NOT NULL
+)
+  DEFAULT CHARSET = utf8;
+
+INSERT INTO Orders (OrderPrice, Customer) VALUES (1000, 'Bush');
+INSERT INTO Orders (OrderPrice, Customer) VALUES (1600, 'Carter');
+INSERT INTO Orders (OrderPrice, Customer) VALUES (700, 'Bush');
+INSERT INTO Orders (OrderPrice, Customer) VALUES (300, 'Bush');
+INSERT INTO Orders (OrderPrice, Customer) VALUES (2000, 'Adams');
+INSERT INTO Orders (OrderPrice, Customer) VALUES (100, 'Carter');
+
+-- 获得OrderPrice的平均值
+SELECT AVG(OrderPrice) AS OrderAverage
+FROM Orders;
+
+-- 找出有OrderPrice高于平均值的顾客
+SELECT Customer
+FROM Orders
+WHERE OrderPrice > (SELECT AVG(OrderPrice)
+                    FROM Orders);
+```
+
+### Count
+
+- **COUNT(column_name) 函数返回指定列的值的数目,NULL值不计入**
+- **COUNT(*) 函数返回表中的记录数**
+- **COUNT(DISTINCT column_name) 函数返回指定列的不同值的数目**
+
+```sql
+-- Bush的订单数
+SELECT COUNT(Customer) AS CustomerOrders
+FROM Orders
+WHERE Customer='Bush';
+
+-- 所有的订单数
+SELECT COUNT(*) AS OrderNumbers
+FROM Orders;
+
+-- 有订单的顾客数
+SELECT COUNT(DISTINCT Customer) As Customers
+FROM Orders;
+```
