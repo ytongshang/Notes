@@ -6,7 +6,19 @@
         - [创建databases](#创建databases)
         - [mysql中database的基本操作](#mysql中database的基本操作)
     - [CREATE TABLE](#create-table)
-        - [mysql中常用的数据结构](#mysql中常用的数据结构)
+        - [sql中常用的数据结构](#sql中常用的数据结构)
+    - [CREATE INDEX](#create-index)
+    - [CREATE VIEW](#create-view)
+    - [DROP](#drop)
+        - [删除索引](#删除索引)
+        - [删除表](#删除表)
+        - [删除数据库](#删除数据库)
+        - [TRUNCATE TABLE语句](#truncate-table语句)
+    - [ALTER](#alter)
+        - [增加列](#增加列)
+        - [删除列](#删除列)
+        - [改变数据类型](#改变数据类型)
+    - [INCREMENT](#increment)
 - [DML](#dml)
     - [SELECT](#select)
     - [INSERT](#insert)
@@ -23,6 +35,22 @@
     - [IN](#in)
     - [BETWEEN](#between)
     - [ALIAS](#alias)
+    - [JOIN](#join)
+        - [INNER JOIN](#inner-join)
+        - [LEFT JOIN](#left-join)
+        - [RIGHT JOIN](#right-join)
+        - [FULL JOIN](#full-join)
+- [其它](#其它)
+    - [Date](#date)
+        - [YEAR](#year)
+        - [DATE](#date)
+        - [TIME](#time)
+        - [DATETIME](#datetime)
+        - [TIMESTAMP](#timestamp)
+        - [相关函数](#相关函数)
+        - [查询相关](#查询相关)
+    - [Nulls](#nulls)
+        - [与NULL相关的函数](#与null相关的函数)
 
 ## 基本语法
 
@@ -94,6 +122,119 @@ decimal(size,d) numeric(size,d) | 容纳带有小数的数字。"size"规定数�
 char(size)      | 容纳固定长度的字符串（可容纳字母、数字以及特殊字符）。在括号中规定字符串的长度。
 varchar(size)   | 容纳可变长度的字符串（可容纳字母、数字以及特殊的字符）。在括号中规定字符串的最大长度。
 date(yyyymmdd)  | 容纳日期。
+
+### CREATE INDEX
+
+### CREATE VIEW
+
+### DROP
+
+#### 删除索引
+
+```sql
+-- MS SQL Server
+DROP INDEX table_name.
+
+-- MYSQL
+-- Unique索引删除一样
+ALTER TABLE table_name DROP INDEX index_name
+```
+
+#### 删除表
+
+```sql
+DROP TABLE 表名称
+
+DROP TABLE IF EXISTS 表名称;
+```
+
+#### 删除数据库
+
+```sql
+DROP DATABASE 数据库名称;
+
+DROP DATABASE IF EXISTS 数据库名称;
+```
+
+#### TRUNCATE TABLE语句
+
+- 仅仅删除表内的数据，而不删除表本身
+
+```sql
+TRUNCATE TABLE 表名称;
+
+-- 同样效果的做法
+DELETE FROM 表名称;
+
+-- MySQL不支持下面的语法，仅仅支持 DELETE FROM 表名称;
+DELETE * FROM 表名称;
+```
+
+### ALTER
+
+#### 增加列
+
+```sql
+ALTER TABLE table_name
+ADD column_name datatype
+
+-- MySQL
+ALTER TABLE Orders
+  ADD COLUMN update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+```
+
+#### 删除列
+
+```sql
+ALTER TABLE table_name
+DROP COLUMN column_name
+
+-- MySQL
+ALTER TABLE Orders
+    DROP COLUMN update_time;
+```
+
+#### 改变数据类型
+
+```sql
+ALTER TABLE Persons
+ALTER COLUMN Birthday year
+
+-- MYSQL语法不所不同
+ALTER TABLE Orders
+    MODIFY COLUMN update_time VARCHAR(20);
+
+ALTER TABLE Orders
+    ADD COLUMN order_desc VARCHAR(256);
+-- 修改数据长度
+ALTER TABLE Orders
+    MODIFY COLUMN order_desc VARCHAR(512);
+-- 修改列的名字
+ALTER TABLE Orders
+    CHANGE order_desc or_desc VARCHAR(512)
+```
+
+### INCREMENT
+
+- Auto-increment 会在新记录插入表中时生成一个唯一的数字
+- **默认地，AUTO_INCREMENT 的开始值是 1，每条新记录递增 1**
+- 要让 AUTO_INCREMENT 序列以其他的值起始，可以能过alert设置
+
+```sql
+-- AUTO_INCREMENT默认从1开始，每次增加1
+-- 可以在初始设置AUTO_INCREMENT默认开始的值
+CREATE TABLE Persons
+(
+P_Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+LastName VARCHAR(255) NOT NULL,
+FirstName VARCHAR(255),
+Address VARCHAR(255),
+City VARCHAR(255)
+) AUTO_INCREMENT = 100;
+
+-- 也可以通过ALTER设置AUTO_INCREMENT默认从100开始
+ALTER TABLE Persons AUTO_INCREMENT=100
+```
 
 ## DML
 
@@ -348,4 +489,184 @@ WHERE p.LastName='Adams' AND p.FirstName='John'
 -- 有意义的别名
 SELECT LastName AS Family, FirstName AS Name
 FROM Persons
+```
+
+### JOIN
+
+#### INNER JOIN
+
+#### LEFT JOIN
+
+#### RIGHT JOIN
+
+#### FULL JOIN
+
+## 其它
+
+### Date
+
+-[MySQL数据类型--日期和时间类型](http://blog.csdn.net/u011794238/article/details/50914444)
+
+#### YEAR
+
+- 格式 YYYY 或 YY
+- 范围从1901~~2155
+
+#### DATE
+
+- date类型使用4个字节来表示日期。MySQL中是以YYYY-MM-DD的形式显示date类型的值
+
+#### TIME
+
+- time类型使用3个字节来表示时间。MySQL中以HH:MM:SS的形式显示Time类型的值
+- **使用current_time()或current_time获得当前的系统时间**
+
+#### DATETIME
+
+- datetime类型使用8个字节来表示日期和时间。MySQL中以‘YYYY-MM-DD HH:MM:SS’的形式来显示dateTime类型的值
+- 其中取值范围为1000-01-01 00：00：00〜9999-12-31 23：59：59
+- **使用now()来获得当前的系统日期和时间**
+
+```sql
+-- MYSQL中设置DEFAULT值与类型TIMESTAMP一样，采用CURRENT_TIMESTAMP
+CREATE TABLE Persons3
+(
+  P_Id      INT          NOT NULL  PRIMARY KEY AUTO_INCREMENT,
+  LastName  VARCHAR(255) NOT NULL,
+  FirstName VARCHAR(255),
+  Address   VARCHAR(255),
+  City      VARCHAR(255),
+  UpdateTime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)
+  AUTO_INCREMENT = 1;
+```
+
+#### TIMESTAMP
+
+- timestamp类型使用4个字节来表示日期和时间。
+- timestamp类型的范围是从1970-01-01 08:00:01~~2038-01-19 11:14:07。
+- MySQL中也是以‘YYYY-MM-DD HH:MM:SS’的形式显示timestamp类型的值。从其形式可以看出，timestamp类型与dateTime类型显示的格式是一样的
+- **使用CURRENT_TIMESTAMP来输入系统当前日期与时间**
+- **timestamp类型还有一个很大的特殊点，就是时间是根据时区来显示的!!!!**
+
+```sql
+-- MYSQL中设置DEFAULT值使用CURRENT_TIMESTAMP
+CREATE TABLE Orders (
+  Id_O      INT PRIMARY KEY,
+  OrderNo   INT NOT NULL,
+  Id_P      INT,
+  OrderData TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (Id_P) REFERENCES Persons (Id_P),
+)
+  ENGINE = InnoDB;
+```
+
+#### 相关函数
+
+- MYSQL中相关的函数
+
+函数          | 描述
+--------------|-------------------------------------
+NOW()         | 返回当前的日期和时间
+CURDATE()     | 返回当前的日期
+CURTIME()     | 返回当前的时间
+DATE()        | 提取日期或日期/时间表达式的日期部分
+EXTRACT()     | 返回日期/时间按的单独部分
+DATE_ADD()    | 给日期添加指定的时间间隔
+DATE_SUB()    | 从日期减去指定的时间间隔
+DATEDIFF()    | 返回两个日期之间的天数
+DATE_FORMAT() | 用不同的格式显示日期/
+
+#### 查询相关
+
+- 如果字段带有时间，仅仅列出日期是查不到数据的
+
+```sql
+CREATE TABLE Persons3
+(
+  P_Id      INT          NOT NULL  PRIMARY KEY AUTO_INCREMENT,
+  LastName  VARCHAR(255) NOT NULL,
+  FirstName VARCHAR(255),
+  Address   VARCHAR(255),
+  City      VARCHAR(255),
+  UpdateTime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)
+  AUTO_INCREMENT = 1;
+
+-- 1  Tom	Green	JiangCun	HangZhou	2018-02-28 19:43:43
+
+-- 查不到数据的
+SELECT * FROM Persons3 WHERE UpdateTime='2018-02-28';
+
+-- 可以查到数据
+SELECT * FROM Persons3 WHERE UpdateTime='2018-02-28 19:43:43';
+```
+
+### Nulls
+
+- NULL值是遗漏的未知数据，
+- 如果表中的某个列是可选的，那么我们可以在不向该列添加值的情况下插入新记录或更新已有的记录。
+ 这意味着该字段将以 NULL 值保存。
+- 默认地，表的列可以存放 NULL 值,如果不允许为NULL，使用NOT NULL约束
+- **无法比较 NULL 和 0**
+
+```sql
+CREATE TABLE Test
+(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  a INT,
+  b INT NOT NULL
+);
+
+-- 即使a的数据类型为INT，也是可以插入NULL值的，所以NULL和0是完全不同的
+-- b的数据类型NOT NULL，那么在插入时必须指定值
+INSERT INTO Test(a,b) VALUES (NULL ,1 );
+```
+
+- **无法使用比较运算符来测试 NULL 值，比如 =, <, 或者 <>，必须使用 IS NULL 和 IS NOT NULL 操作符**
+
+```sql
+INSERT INTO Test(a,b) VALUES (NULL ,1 );
+INSERT INTO Test(a,b) VALUES (100, 5);
+
+-- 使用IS NULL
+SELECT * FROM Test WHERE a IS NULL ;
+
+-- 使用IS NOT NULL
+SELECT * FROM Test WHERE a Is NOT NULL ;
+```
+
+#### 与NULL相关的函数
+
+id | a    | b
+---|------|---
+1  | null | 1
+2  | 100  | 5
+
+```sql
+-- 第一行中因为a为null,那么返回的结果为null
+SELECT id, a*b
+FROM Test;
+
+```
+
+id | a*b
+---|------
+1  | null
+2  | 500
+
+- 我们希望将null当作其它特殊的值处理，比如如果为null,当作0处理
+
+```sql
+--SQL Server / MS Access
+SELECT id, ISNULL(a,0)*b
+FROM Test
+
+-- MYSQL
+SELECT id, IFNULL(a,0)*b
+FROM Test
+
+-- MYSQL的另一种写法
+SELECT id,COALESCE(a,0)*b
+FROM Test
 ```
