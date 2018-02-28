@@ -182,7 +182,7 @@ DROP CONSTRAINT fk_PerOrders
 ## DEFAULT
 
 - DEFAULT 约束用于向列中插入默认值。
-- 如果没有规定其他的值，那么会将默认值添加到所有的新记录。
+- 如果没有规定其他的值，那么会将默认值添加到所有的新记录
 
 ```sql
 CREATE TABLE Persons
@@ -193,30 +193,42 @@ FirstName varchar(255),
 Address varchar(255),
 City varchar(255) DEFAULT 'Sandnes'
 )
-```
 
-- 通过使用类似 GETDATE() 这样的函数，DEFAULT 约束也可以用于插入系统值：
-
-```sql
+-- 插入系统值
+-- MYSQL中如果列的默认值为当前的时间的话，目前只有只能类型为TIMESTAMP,默认值为CURRENT_TIMESTAMP()
 CREATE TABLE Orders
 (
 Id_O int NOT NULL,
 OrderNo int NOT NULL,
 Id_P int,
-OrderDate date DEFAULT GETDATE()
+-- MYSQL中Default不支持函数，唯一支持的只有这个
+OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
 )
+
+-- MYSQL
+-- 在创建新记录的时候把这个字段设置为当前时间，但以后修改时，不再刷新它：
+-- 一般用作create_time
+TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+-- 在创建新记录和修改现有记录的时候都对这个数据列刷新：
+-- 一般用作update_time
+TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+-- 在创建新记录的时候把这个字段设置为0，以后修改时刷新它：
+TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+-- 创建新记录的时候把这个字段设置为给定值，以后修改时刷新它
+TIMESTAMP DEFAULT '2018-01-01 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
 ```
 
-### 新增DEFAULT约束
+### 增加Default约束
 
 ```sql
-# mysql
+-- MYSQL
 ALTER TABLE Persons
 ALTER City SET DEFAULT 'SANDNES'
-```
 
-```sql
-# SQL Server / Oracle / MS Access
+-- SQL Server / Oracle / MS Access
 ALTER TABLE Persons
 ALTER COLUMN City SET DEFAULT 'SANDNES'
 ```
@@ -224,13 +236,11 @@ ALTER COLUMN City SET DEFAULT 'SANDNES'
 ### 撤销DEFAULT约束
 
 ```sql
-# mysql
+-- MYSQL
 ALTER TABLE Persons
 ALTER City DROP DEFAULT
-```
 
-```sql
-# SQL Server / Oracle / MS Access
+-- SQL Server / Oracle / MS Access
 ALTER TABLE Persons
 ALTER COLUMN City DROP DEFAULT
 ```
@@ -251,9 +261,7 @@ Address varchar(255),
 City varchar(255),
 CHECK (Id_P>0)
 )
-```
 
-```sql
 CREATE TABLE Persons
 (
 Id_P int NOT NULL,
@@ -265,14 +273,30 @@ CONSTRAINT chk_Person CHECK (Id_P>0 AND City='Sandnes')
 )
 ```
 
+### MYSQL中的CHECK
+
+- **MySQL只是check，但是不强制check，也就是Check无效**
+
+- 如果需要设置CHECK约束的字段范围小，并且比较容易列举全部的值，
+ 就可以考虑将该字段的类型设置为**枚举类型 enum()或集合类型set**
+
+```sql
+-- 注意如果enum中有中文的话，注意要指定CHARSET
+CREATE TABLE CheckTable (
+  id INT PRIMARY KEY ,
+  a  ENUM('男' , '女' , 'both' , 'unknow'),
+  sex  enum('male' , 'female' , 'both' , 'unknow')
+) ENGINE = InnoDB DEFAULT CHARSET =utf8;
+```
+
+- 如果需要设置CHECK约束的字段范围大，且列举全部值比较困难，比如：>0的值，那就**只能使用触发器来代替约束实现数据的有效性了**
+
 ### 增加CHECK约束
 
 ```sql
 ALERT TABLE Persons
 ADD CHECK (ID_P > 0)
-```
 
-```sql
 ALTER TABLE Persons
 ADD CONSTRAINT chk_person CHECK (ID_P > 0 AND City = "Sandnes")
 ```
@@ -280,13 +304,11 @@ ADD CONSTRAINT chk_person CHECK (ID_P > 0 AND City = "Sandnes")
 ### 撤消CHECK约束
 
 ```sql
-# SQL Server / Oracle / MS Access
-ALTER TABLE Persons
-DROP CONSTRAINT chk_persion
-```
-
-```sql
-# mysql
+-- mysql
 ALTER TABLE Persons
 DROP CHECK chk_persion
+
+-- SQL Server / Oracle / MS Access
+ALTER TABLE Persons
+DROP CONSTRAINT chk_persion
 ```
