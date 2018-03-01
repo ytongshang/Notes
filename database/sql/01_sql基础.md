@@ -111,6 +111,9 @@ CREATE TABLE 表名称
 列名称3 数据类型 约束,
 ....
 )
+  -- 一般还可以指定engine和字符集
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 ```
 
 #### sql中常用的数据结构
@@ -161,13 +164,12 @@ DROP DATABASE IF EXISTS 数据库名称;
 - 仅仅删除表内的数据，而不删除表本身
 
 ```sql
+-- 整体删除，执行效率比较快
 TRUNCATE TABLE 表名称;
 
--- 同样效果的做法
+-- 最后的效果相同
+-- 逐条删除，执行效率较慢
 DELETE FROM 表名称;
-
--- MySQL不支持下面的语法，仅仅支持 DELETE FROM 表名称;
-DELETE * FROM 表名称;
 ```
 
 ### ALTER
@@ -205,24 +207,25 @@ ALTER TABLE Orders
     MODIFY COLUMN update_time VARCHAR(20);
 
 ALTER TABLE Orders
-    ADD COLUMN order_desc VARCHAR(256);
+    ADD COLUMN order_desc VARCHAR(128);
 -- 修改数据长度
 ALTER TABLE Orders
-    MODIFY COLUMN order_desc VARCHAR(512);
+    MODIFY COLUMN order_desc VARCHAR(256);
 -- 修改列的名字
 ALTER TABLE Orders
-    CHANGE order_desc or_desc VARCHAR(512)
+    CHANGE order_desc or_desc VARCHAR(256)
 ```
 
 ### INCREMENT
 
 - Auto-increment 会在新记录插入表中时生成一个唯一的数字
 - **默认地，AUTO_INCREMENT 的开始值是 1，每条新记录递增 1**
-- 要让 AUTO_INCREMENT 序列以其他的值起始，可以能过alert设置
+- 要让 AUTO_INCREMENT 序列以其他的值起始，不同的数据库有不同的设置方法
 
 ```sql
 -- AUTO_INCREMENT默认从1开始，每次增加1
 -- 可以在初始设置AUTO_INCREMENT默认开始的值
+-- MYSQL
 CREATE TABLE Persons
 (
 P_Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -292,8 +295,8 @@ DELETE FROM Person
 WHERE LastName = 'Wilson'
 
 --可以在不删除表的情况下删除所有的行。这意味着表的结构、属性和索引都是完整的
+-- 效果等同于TRUNCATE TABLE语句
 DELETE FROM table_name
-DELETE * FROM table_name
 ```
 
 ### WHERE
@@ -347,7 +350,8 @@ SELECT Company, OrderNumber
 FROM Orders
 ORDER BY Company, OrderNumber
 
--- 实际等同于ORDER BY Company ASC, OrderNumber DESC
+-- 如果没有指定就是ASC
+-- 所以实际等同于ORDER BY Company ASC, OrderNumber DESC
 SELECT Company, OrderNumber
 FROM Orders
 ORDER BY Company, OrderNumber DESC
@@ -547,7 +551,7 @@ CREATE TABLE Persons3
 - timestamp类型的范围是从1970-01-01 08:00:01~~2038-01-19 11:14:07。
 - MySQL中也是以‘YYYY-MM-DD HH:MM:SS’的形式显示timestamp类型的值。从其形式可以看出，timestamp类型与dateTime类型显示的格式是一样的
 - **使用CURRENT_TIMESTAMP来输入系统当前日期与时间**
-- **timestamp类型还有一个很大的特殊点，就是时间是根据时区来显示的!!!!**
+- **TIMESTAMP类型还有一个很大的特殊点，就是时间是根据时区来显示的!!!!**，哪怕字段值不变，在不同的时区显示的也是不一样的
 
 ```sql
 -- MYSQL中设置DEFAULT值使用CURRENT_TIMESTAMP
@@ -647,7 +651,6 @@ id | a    | b
 -- 第一行中因为a为null,那么返回的结果为null
 SELECT id, a*b
 FROM Test;
-
 ```
 
 id | a*b
@@ -673,7 +676,9 @@ FROM Test
 
 ## 函数
 
-### AVG
+### Aggregate functions
+
+#### AVG
 
 - AVG 函数返回数值列的平均值
 - **NULL 值不包括在计算中**
@@ -705,7 +710,7 @@ WHERE OrderPrice > (SELECT AVG(OrderPrice)
                     FROM Orders);
 ```
 
-### Count
+#### Count
 
 - **COUNT(column_name) 函数返回指定列的值的数目,NULL值不计入**
 - **COUNT(*) 函数返回表中的记录数**
@@ -724,4 +729,154 @@ FROM Orders;
 -- 有订单的顾客数
 SELECT COUNT(DISTINCT Customer) As Customers
 FROM Orders;
+```
+
+#### FIRST与LAST
+
+- FIRST() 函数返回指定的字段中第一个记录的值
+- LAST() 函数返回指定的字段中最后一个记录的值
+
+```sql
+-- first
+SELECT FIRST(column_name) FROM table_name
+SELECT FIRST(OrderPrice) AS FirstOrderPrice FROM Orders
+
+-- last
+SELECT LAST(column_name) FROM table_name
+SELECT LAST(OrderPrice) AS LastOrderPrice FROM Orders
+```
+
+- MYSQL中没有实现first与last，可以使用Order By与limit间接来实现
+
+```sql
+-- 找第一条记录和最后一条记录
+-- 注意ORDER BY的选择比较重要，比如这里使用自增Id作为排序的列
+SELECT OrderPrice FROM Orders ORDER BY O_Id LIMIT 1;
+SELECT OrderPrice FROM Orders ORDER BY O_Id DESC LIMIT 1;
+```
+
+#### MIN与MAX
+
+- MIN 函数返回一列中的最小值。**NULL 值不包括在计算中**
+- MAX 函数返回一列中的最大值。**NULL 值不包括在计算中。**
+- MIN 和 MAX 也可用于文本列，以获得按字母顺序排列的最高或最低值
+
+```sql
+SELECT MIN(OrderPrice) AS MinOrderPrice FROM Orders;
+
+SELECT MAX(OrderPrice) AS MinOrderPrice FROM Orders;
+```
+
+#### SUM
+
+- SUM 函数返回数值列的总数,**NULL 值不包括在计算中**
+
+```sql
+CREATE TABLE FunctionTest (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  a  INT,
+  b  INT NOT NULL
+)
+  -- 一般还可以指定engine和字符集
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+INSERT INTO FunctionTest(a, b) VALUES (NULL ,1);
+INSERT INTO FunctionTest(a, b) VALUES (1, 2);
+
+SELECT SUM(a) FROM FunctionTest;
+-- 结果为 1
+
+SELECT SUM(b) FROM FunctionTest;
+-- 结果为3
+```
+
+#### GROUP BY
+
+- **GROUP BY 语句用于结合合计函数，根据一个或多个列对结果集进行分组**
+- **GROUP BY X, Y意思是将所有具有相同X字段值和Y字段值的记录放到一个分组里**
+
+```sql
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+WHERE column_name operator value
+GROUP BY column_name
+```
+
+```sql
+SELECT Customer, SUM(OrderPrice)
+FROM Orders
+GROUP BY Customer;
+
+-- group by Customer, OrderDate指将顾客和时间相同的分为一组
+SELECT Customer, OrderDate,SUM(OrderPrice)
+FROM Orders
+GROUP BY Customer, OrderDate;
+```
+
+#### Having
+
+- having称为分组滤过条件,也就是说是分组需要的条件,所以**必须与group by联用**
+ 聚合函数计算的结果可以当条件来使用，因为它无法放在where里，只能通过having这种方式来解决
+
+```sql
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+WHERE column_name operator value
+GROUP BY column_name
+HAVING aggregate_function(column_name) operator value
+```
+
+```sql
+-- 查找客户 "Bush" 或 "Adams" 拥有超过 1500 的订单总金额
+SELECT Customer,SUM(OrderPrice) FROM Orders
+WHERE Customer='Bush' OR Customer='Adams'
+GROUP BY Customer
+HAVING SUM(OrderPrice)>1500
+```
+
+### Scalar 函数
+
+- Scalar 函数的操作面向某个单一的值，并返回基于输入值的一个单一的值
+
+#### 字符操作函数
+
+- **UCASE 函数**把字段的值转换为大写
+- **LCASE 函数**把字段的值转换为小写
+
+```sql
+SELECT UCASE(column_name) FROM table_name
+SELECT LCASE(column_name) FROM table_name
+```
+
+- **MID 函数**用于从文本字段中提取字符，**注意如果从起始开始是从1开始，而非0**
+
+```sql
+-- 从 "City" 列中提取前 3 个字符
+SELECT MID(City,1,3) as SmallCity FROM Persons
+```
+
+- **LEN 函数**返回文本字段中值的长度
+
+```sql
+SELECT LEN(City) as LengthOfCity FROM Persons
+```
+
+#### 其它函数
+
+- **ROUND 函数**用于把数值字段舍入为指定的小数位数,针对decimals类型
+
+```sql
+SELECT ROUND(column_name,decimals) FROM table_name
+
+-- 价格舍入为最接近的整数
+SELECT ProductName, ROUND(UnitPrice,0) as UnitPrice FROM Products
+```
+
+- **NOW 函数**返回当前的日期和时间
+
+- **FORMAT 函数**用于对字段的显示进行格式化
+
+```sql
+SELECT FORMAT(100.31111,2);
 ```

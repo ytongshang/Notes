@@ -195,7 +195,7 @@ City varchar(255) DEFAULT 'Sandnes'
 )
 
 -- 插入系统值
--- MYSQL中如果列的默认值为当前的时间的话，目前只有只能类型为TIMESTAMP,默认值为CURRENT_TIMESTAMP()
+-- MYSQL中如果列的默认值为当前的时间的话，目前只有只能类型为TIMESTAMP或者DataTime,默认值都为CURRENT_TIMESTAMP()
 CREATE TABLE Orders
 (
 Id_O int NOT NULL,
