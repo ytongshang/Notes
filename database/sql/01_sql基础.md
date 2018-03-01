@@ -180,7 +180,7 @@ SELECT * FROM Order_Above_Avg_Price;
 
 ```sql
 -- MS SQL Server
-DROP INDEX table_name.
+DROP INDEX index_name.
 
 -- MYSQL
 -- Unique索引删除一样
