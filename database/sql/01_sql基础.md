@@ -40,6 +40,8 @@
         - [LEFT JOIN](#left-join)
         - [RIGHT JOIN](#right-join)
         - [FULL JOIN](#full-join)
+    - [UNION](#union)
+    - [SELECT INTO](#select-into)
 - [其它](#其它)
     - [Date](#date)
         - [YEAR](#year)
@@ -51,6 +53,18 @@
         - [查询相关](#查询相关)
     - [Nulls](#nulls)
         - [与NULL相关的函数](#与null相关的函数)
+- [函数](#函数)
+    - [Aggregate functions](#aggregate-functions)
+        - [AVG](#avg)
+        - [Count](#count)
+        - [FIRST与LAST](#first与last)
+        - [MIN与MAX](#min与max)
+        - [SUM](#sum)
+        - [GROUP BY](#group-by)
+        - [Having](#having)
+    - [Scalar 函数](#scalar-函数)
+        - [字符操作函数](#字符操作函数)
+        - [其它函数](#其它函数)
 
 ## 基本语法
 
@@ -129,6 +143,36 @@ date(yyyymmdd)  | 容纳日期。
 ### CREATE INDEX
 
 ### CREATE VIEW
+
+- **视图是基于SQL语句的结果集的可视化的表,视图包含行和列，就像一个真实的表**,视图中的字段就是来自一个或多个数据库中的真实的表中的字段
+- **视图总是显示最新的数据！**每当用户查询视图时，数据库引擎通过使用视图的 SQL 语句重建数据
+
+```sql
+-- 创建视图
+CREATE VIEW view_name AS
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+
+-- 更新视图
+CREATE OR REPLACE VIEW view_name AS
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+
+-- 删除视图
+DROP VIEW view_name
+```
+
+```sql
+CREATE VIEW Order_Above_Avg_Price AS
+  SELECT O_Id,OrderDate,OrderPrice,Customer
+  FROM Orders
+  WHERE OrderPrice > (SELECT AVG(OrderPrice)
+                      FROM Orders);
+
+SELECT * FROM Order_Above_Avg_Price;
+```
 
 ### DROP
 
@@ -497,13 +541,102 @@ FROM Persons
 
 ### JOIN
 
+- SQL JOIN 子句用于把来自两个或多个表的行结合起来，基于这些表之间的共同字段
+
 #### INNER JOIN
+
+- **INNER JOIN 关键字在表中存在至少一个匹配时返回行**
+- INNER JOIN与JOIN是相同的
+
+```sql
+SELECT column_name(s)
+FROM table1
+INNER JOIN table2
+ON table1.column_name=table2.column_name;
+
+SELECT column_name(s)
+FROM table1
+JOIN table2
+ON table1.column_name=table2.column_name;
+```
 
 #### LEFT JOIN
 
+- **LEFT JOIN 关键字从左表（table1）返回所有的行，即使右表（table2）中没有匹配。如果右表中没有匹配，则结果为 NULL**
+
+```sql
+SELECT column_name(s)
+FROM table1
+LEFT JOIN table2
+ON table1.column_name=table2.column_name;
+```
+
 #### RIGHT JOIN
 
+- **RIGHT JOIN 关键字从右表（table2）返回所有的行，即使左表（table1）中没有匹配。如果左表中没有匹配，则结果为 NULL。**
+
+```sql
+SELECT column_name(s)
+FROM table1
+RIGHT JOIN table2
+ON table1.column_name=table2.column_name;
+```
+
 #### FULL JOIN
+
+- **FULL OUTER JOIN 关键字只要左表（table1）和右表（table2）其中一个表中存在匹配，则返回行**
+- **UNION操作符选取不同的值。如果允许重复的值，请使用 UNION ALL**
+
+```sql
+SELECT column_name(s)
+FROM table1
+FULL OUTER JOIN table2
+ON table1.column_name=table2.column_name;
+```
+
+### UNION
+
+- UNION 操作符用于合并两个或多个 SELECT 语句的结果集,UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名
+- **UNION内部的每个SELECT语句必须拥有相同数量的列。列也必须拥有相似的数据类型。每个SELECT语句中的列的顺序必须相同。**
+- **UNION命令时需要注意，只能在最后使用一个ORDER BY命令，是将两个查询结果合在一起之后，再进行排序！绝对不能写两个ORDER BY命令**
+
+```sql
+SELECT column_name(s) FROM table1
+UNION
+SELECT column_name(s) FROM table2;
+```
+
+### SELECT INTO
+
+- SELECT INTO 语句从一个表复制数据，然后把数据插入到另一个新表中
+
+```sql
+-- 备份Persons表
+SELECT *
+INTO Persons_backup
+FROM Persons
+
+-- MYSQL中不支持SELECT INTO的语法
+-- MYSQL中的写法
+CREATE TABLE Persons_backup
+(SELECT * FROM Persons);
+
+-- 备份Persons表到另一个数据库
+SELECT *
+INTO Persons IN 'Backup.mdb'
+FROM Persons
+
+-- 备份Persons中的部分列
+SELECT LastName,FirstName
+INTO Persons_backup
+FROM Persons
+
+SELECT LastName,Firstname
+INTO Persons_backup
+FROM Persons
+WHERE City='Beijing'
+```
+
 
 ## 其它
 
