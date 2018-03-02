@@ -1,5 +1,24 @@
 # CONSTRAINT
 
+- [NOT NULL](#not-null)
+- [UNIQUE](#unique)
+    - [基本使用](#基本使用)
+    - [增加Unique约束](#增加unique约束)
+    - [撤消Unique约束](#撤消unique约束)
+- [Primary Key](#primary-key)
+    - [增加 PRIMARY KEY](#增加-primary-key)
+    - [撤消Primary key](#撤消primary-key)
+- [Foreign key](#foreign-key)
+    - [增加 FOREIGN KEY](#增加-foreign-key)
+    - [撤消FOREIGN KEY](#撤消foreign-key)
+- [DEFAULT](#default)
+    - [增加Default约束](#增加default约束)
+    - [撤销DEFAULT约束](#撤销default约束)
+- [CHECK](#check)
+    - [MYSQL中的CHECK](#mysql中的check)
+    - [增加CHECK约束](#增加check约束)
+    - [撤消CHECK约束](#撤消check约束)
+
 - 约束用于限制加入表的数据的类型。
 - 可以在创建表时规定约束（通过 CREATE TABLE 语句），或者在表创建之后也可以（通过 ALTER TABLE 语句）。
 - 常见的约束

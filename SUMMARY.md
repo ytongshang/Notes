@@ -82,11 +82,11 @@
 
 * mysql
   * [01\_install](database/mysql/01_install.md)
-  * [02\_basis](database/mysql/02_basis.md)
+  * [02\_basis](database/mysql/02_常用操作.md)
 * sql
   * [01\_sql基础](database/sql/01_sql基础.md)
-  * [02\_database](database/sql/02_database.md)
-  * [03\_constraint](database/sql/03_constraint.md)
+  * [02\_database](database/sql/02_constraint.md)
+  * [03\_constraint](database/sql/03_索引.md)
 * sqlite3
   * [01\_sql基础](database/sqlite3/01_install.md)
 

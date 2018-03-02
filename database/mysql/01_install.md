@@ -1,5 +1,9 @@
 # 安装MySql
 
+- [Ubuntu](#ubuntu)
+- [阿里云mysql远程连接](#阿里云mysql远程连接)
+- [重置Root的密码](#重置root的密码)
+
 ## Ubuntu
 
 - 安装
