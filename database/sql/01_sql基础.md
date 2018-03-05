@@ -582,7 +582,6 @@ ON table1.column_name=table2.column_name;
 #### FULL JOIN
 
 - **FULL OUTER JOIN 关键字只要左表（table1）和右表（table2）其中一个表中存在匹配，则返回行**
-- **UNION操作符选取不同的值。如果允许重复的值，请使用 UNION ALL**
 
 ```sql
 SELECT column_name(s)
@@ -596,6 +595,7 @@ ON table1.column_name=table2.column_name;
 - UNION 操作符用于合并两个或多个 SELECT 语句的结果集,UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名
 - **UNION内部的每个SELECT语句必须拥有相同数量的列。列也必须拥有相似的数据类型。每个SELECT语句中的列的顺序必须相同。**
 - **UNION命令时需要注意，只能在最后使用一个ORDER BY命令，是将两个查询结果合在一起之后，再进行排序！绝对不能写两个ORDER BY命令**
+- **UNION操作符选取不同的值。如果允许重复的值，请使用 UNION ALL**
 
 ```sql
 SELECT column_name(s) FROM table1
@@ -879,7 +879,7 @@ SELECT LAST(OrderPrice) AS LastOrderPrice FROM Orders
 
 ```sql
 -- 找第一条记录和最后一条记录
--- 注意ORDER BY的选择比较重要，比如这里使用自增Id作为排序的列
+-- 注意ORDER BY选择的列比较重要，比如这里使用自增Id作为排序的列
 SELECT OrderPrice FROM Orders ORDER BY O_Id LIMIT 1;
 SELECT OrderPrice FROM Orders ORDER BY O_Id DESC LIMIT 1;
 ```
