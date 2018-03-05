@@ -303,8 +303,8 @@ CONSTRAINT chk_Person CHECK (Id_P>0 AND City='Sandnes')
 -- 注意如果enum中有中文的话，注意要指定CHARSET
 CREATE TABLE CheckTable (
   id INT PRIMARY KEY ,
-  a  ENUM('男' , '女' , 'both' , 'unknow'),
-  sex  enum('male' , 'female' , 'both' , 'unknow')
+  a  ENUM('男' , '女' , 'both' , 'unknown'),
+  sex  enum('male' , 'female' , 'both' , 'unknown')
 ) ENGINE = InnoDB DEFAULT CHARSET =utf8;
 ```
 

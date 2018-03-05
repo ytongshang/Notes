@@ -7,7 +7,6 @@
         - [mysql中database的基本操作](#mysql中database的基本操作)
     - [CREATE TABLE](#create-table)
         - [sql中常用的数据结构](#sql中常用的数据结构)
-    - [CREATE INDEX](#create-index)
     - [CREATE VIEW](#create-view)
     - [DROP](#drop)
         - [删除索引](#删除索引)
@@ -139,8 +138,6 @@ decimal(size,d) numeric(size,d) | 容纳带有小数的数字。"size"规定数�
 char(size)      | 容纳固定长度的字符串（可容纳字母、数字以及特殊字符）。在括号中规定字符串的长度。
 varchar(size)   | 容纳可变长度的字符串（可容纳字母、数字以及特殊的字符）。在括号中规定字符串的最大长度。
 date(yyyymmdd)  | 容纳日期。
-
-### CREATE INDEX
 
 ### CREATE VIEW
 
