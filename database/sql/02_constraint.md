@@ -292,7 +292,7 @@ CONSTRAINT chk_Person CHECK (Id_P>0 AND City='Sandnes')
 )
 ```
 
-### MYSQL中的CHECK
+### MYSQL中的CHECK
 
 - **MySQL只是check，但是不强制check，也就是Check无效**
 
