@@ -413,7 +413,8 @@ func makeThumbnails4(filenames []string) error {
 
     for range filenames {
         if err := <-errors; err != nil {
-            // 错误
+            // 错误的写法
+            // 如果有多个错误，后面的错误不会被排空，会导致errors发生泄漏
             return err // NOTE: incorrect: goroutine leak!
         }
     }
@@ -453,8 +454,7 @@ func makeThumbnails5(filenames []string) (thumbfiles []string, err error) {
 }
 ```
 
-- 为了知道最后一个goroutine什么时候结束(最后一个结束并不一定是最后一个开始)，我们需要一个递增的计数器，在每一个goroutine启动时加一，在goroutine退出时减一。
- 这需要一种特殊的计数器，这个计数器需要在多个goroutine操作时做到安全并且提供在其减为零之前一直等待的一种方法。这种计数类型被称为sync.WaitGroup
+- 为了知道最后一个goroutine什么时候结束(最后一个结束并不一定是最后一个开始)，我们需要一个递增的计数器，在每一个goroutine启动时加一，在goroutine退出时减一。这需要一种特殊的计数器，这个计数器需要在多个goroutine操作时做到安全并且提供在其减为零之前一直等待的一种方法。这种计数类型被称为sync.WaitGroup
 - 注意Add和Done方法的不对称。**Add是为计数器加一，必须在worker goroutine开始之前调用，而不是在goroutine中**；否则的话我们没办法确定Add是在"closer" goroutine调用Wait之前被调用。
 - 并且Add还有一个参数，但Done却没有任何参数；其实它和Add(-1)是等价的。
 
@@ -509,11 +509,11 @@ default:
 ```
 
 - select语句和switch语句稍微有点相似，也会有几个case和最后的default选择支。
-    - 每一个case代表一个通信操作(在某个channel上进行发送或者接收)并且会包含一些语句组成的一个语句块。
-    - 一个接收表达式可能只包含接收表达式自身，就像上面的第一个case，或者包含在一个简短的变量声明中，像第二个case里一样；第二种形式让你能够引用接收到的值。
-    - **select会等待case中有能够执行的case时去执行。当条件满足时，select才会去通信并执行case之后的语句；这时候其它通信是不会执行的。**
-    - **一个没有任何case的select语句写作select{}，会永远地等待下去**
-    - 如果有一个或多个IO操作可以完成，则Go运行时系统会随机的选择一个执行，否则的话，如果有default分支，则执行default分支语句，如果连default都没有，则select语句会一直阻塞，直到至少有一个IO操作可以进行
+- 每一个case代表一个通信操作(在某个channel上进行发送或者接收)并且会包含一些语句组成的一个语句块。
+- 一个接收表达式可能只包含接收表达式自身，就像上面的第一个case，或者包含在一个简短的变量声明中，像第二个case里一样；第二种形式让你能够引用接收到的值。
+- **select会等待case中有能够执行的case时去执行。当条件满足时，select才会去通信并执行case之后的语句；这时候其它通信是不会执行的。**
+- **一个没有任何case的select语句写作select{}，会永远地等待下去**
+- 如果有一个或多个IO操作可以完成，则Go运行时系统会随机的选择一个执行，否则的话，如果有default分支，则执行default分支语句，如果连default都没有，则select语句会一直阻塞，直到至少有一个IO操作可以进行
 
 ```golang
 func main() {
@@ -648,6 +648,8 @@ func main() {
     w := make(chan bool)
     c := make(chan int, 2)
     go func() {
+        // selet只要其中一个可以执行完成就会退出
+        // 可以搭配for进行循环
         select {
         case v := <-c: fmt.Println(v)
         case <-time.After(time.Second * 3): fmt.Println("timeout.")
