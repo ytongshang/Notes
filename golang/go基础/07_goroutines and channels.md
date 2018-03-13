@@ -20,7 +20,7 @@
 
 - 默认情况下，**进程启动后仅允许⼀个系统线程服务于 goroutine。可使⽤环境变量或标准库函数 runtime.GOMAXPROCS 修改，让调度器⽤多个线程实现多核并⾏，⽽不仅仅是并发**
 - **进程退出时，所有的goroutine都会被直接打断，程序退出**。
-- **调⽤ runtime.Goexit 将⽴即终⽌当前 goroutine 执⾏,不会影响其它线程的执行**，调度器确保所有已注册 defer延迟调⽤被执⾏
+- **调⽤ runtime.Goexit 将⽴即终⽌当前 goroutine 执⾏,不会影响其它协程的执行**，调度器确保所有已注册 defer延迟调⽤被执⾏
 
 ```golang
 func main() {
@@ -179,7 +179,7 @@ close(naturals)
 - 当一个channel被关闭后，再向该channel发送数据将导致panic异常。**当一个被关闭的channel中已经发送的数据都被成功接收后，后续的接收操作将不再阻塞，它们会立即返回一个零值**
  在上面的例子中，**如果仅仅关闭了naturals，打印的goroutine仍然可以源源不断的接受到0值序列，所以并不能终止打印序列**
 - **没有办法直接测试一个channel是否被关闭**，但是接收操作有一个变体形式：它多接收一个结果，
- **多接收的第二个结果是一个布尔值ok，ture表示成功从channels接收到值，false表示channels已经被关闭并且里面没有值可接收**
+ **第二个结果是一个布尔值ok，ture表示成功从channels接收到值，false表示channels已经被关闭并且里面没有值可接收**
 
 ```golang
 // Squarer
