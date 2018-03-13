@@ -59,7 +59,7 @@
 - JMM定义了线程和主内存之间的抽象关系：线程之间的共享变量存储在主内存（main memory）中，每个线程都有一个私有的本地内存（local memory），本地内存中存储了该线程以读/写共享变量的副本。
 - 本地内存是JMM的一个抽象概念，并不真实存在。它涵盖了缓存，写缓冲区，寄存器以及其他的硬件和编译器优化
 
-![java内存抽象](./../../image-resources/jmm/java内存模型抽象.png)
+![java内存抽象](./../../image-resources/java/jmm/java内存模型抽象.png)
 
 ### 重排序
 
@@ -90,7 +90,7 @@ public void read() {
 // 由于处理器重排序，多线程最后可能的结果是 x = y = 0
 ```
 
-![处理器重排序](./../../image-resources/jmm/处理器重排序.png)
+![处理器重排序](./../../image-resources/java/jmm/处理器重排序.png)
 
 ### happens-before
 
@@ -104,7 +104,7 @@ public void read() {
     - volatile变量规则：对一个volatile域的写，happens-before 于任意后续对这个volatile域的读。
     - 传递性：如果A happens-before B，且B happens-before C，那么A happens-before C。
 
-![happens-before](./../../image-resources/jmm/happens-before.png)
+![happens-before](./../../image-resources/java/jmm/happens-before.png)
 
 ### 数据依赖性
 
@@ -151,9 +151,9 @@ class ReorderExample {
 // 线程A中的重排序，则可以导致reader中的结果不正确
 ```
 
-![多线程重排序1](./../../image-resources/jmm/多线程重排序1.png)
+![多线程重排序1](./../../image-resources/java/jmm/多线程重排序1.png)
 
-![多线程重排序2](./../../image-resources/jmm/多线程重排序2.png)
+![多线程重排序2](./../../image-resources/java/jmm/多线程重排序2.png)
 
 ### 顺序一致性
 
@@ -163,7 +163,7 @@ class ReorderExample {
     - 一个线程中的所有操作必须按照程序的顺序来执行。
     - 不管程序是否同步）所有线程都只能看到一个单一的操作执行顺序。在顺序一致性内存模型中，每个操作都必须原子执行且立刻对所有线程可见。
 
-![顺序一致模型](./../../image-resources/jmm/顺序一致模型.png)
+![顺序一致模型](./../../image-resources/java/jmm/顺序一致模型.png)
 
 #### 数据竞争与顺序一致性保证
 
@@ -198,7 +198,7 @@ class ReorderExample {
 }
 ```
 
-![同步程序的顺序一致性](./../../image-resources/jmm/同步程序的顺序一致性.png)
+![同步程序的顺序一致性](./../../image-resources/java/jmm/同步程序的顺序一致性.png)
 
 ### 可见性
 
@@ -222,7 +222,7 @@ class ReorderExample {
     - **[可见性]**：对一个volatile变量的读，总是能看到（任意线程）对这个volatile变量最后的写入。
     - **[原子性]**：对任意单个volatile变量的读/写具有原子性，但类似于volatile++这种复合操作不具有原子性。
 
-![volatile变量重排序](./../../image-resources/jmm/volatile变量重排序.png)
+![volatile变量重排序](./../../image-resources/java/jmm/volatile变量重排序.png)
 
 - 当第二个操作是volatile写时，不管第一个操作是什么，都不能重排序。这个规则确保volatile写之前的操作不会被编译器重排序到volatile写之后。
 - 当第一个操作是volatile读时，不管第二个操作是什么，都不能重排序。这个规则确保volatile读之后的操作不会被编译器重排序到volatile读之前。
@@ -402,7 +402,7 @@ public class FinalReferenceEscapeExample {
 }
 ```
 
-![final逸出](./../../image-resources/jmm/final逸出.png)
+![final逸出](./../../image-resources/java/jmm/final逸出.png)
 
 #### 总结
 

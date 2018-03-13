@@ -51,7 +51,7 @@
 
 - Merge好在它是一个安全的操作。现有的分支不会被更改，避免了rebase潜在的缺点。 另一方面，这同样意味着每次合并上游更改时feature分支都会引入一个外来的合并提交。 如果master非常活跃的话，这或多或少会污染你的分支历史。虽然高级的git log 选项可以减轻 这个问题，但对于开发者来说，还是会增加理解项目历史的难度。
 
-- ![gitmerge](../image-resources/gitmerge.PNG)
+- ![gitmerge](../../image-resources/other/gitmerge.PNG)
 
 # 冲突解决
 

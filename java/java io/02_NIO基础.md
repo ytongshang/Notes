@@ -255,7 +255,7 @@ public abstract long transferTo(long position, long count,
 
 ## Selector
 
-![Selector](./../../image-resources/io/nio_selector.png)
+![Selector](./../../image-resources/java/io/nio_selector.png)
 
 ### Selector的创建
 

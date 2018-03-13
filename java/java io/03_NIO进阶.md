@@ -253,7 +253,7 @@ int bytesWritten = channel.write(but);
 
 ## Pipe
 
-![Pipe](./../../image-resources/io/nio_pipe.bmp)
+![Pipe](./../../image-resources/java/io/nio_pipe.bmp)
 
 ### 创建管道
 
