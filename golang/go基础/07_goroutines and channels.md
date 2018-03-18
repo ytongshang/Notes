@@ -11,7 +11,7 @@
     - [易并行问题(embarrassingly parallel)](#易并行问题embarrassingly-parallel)
 - [Select](#select)
 - [channel使用](#channel使用)
-    - [⽤简单⼯⼚模式打包并发任务和 channel**](#⽤简单⼯⼚模式打包并发任务和-channel)
+    - [⽤简单⼯⼚模式打包并发任务和 channel](#⽤简单⼯⼚模式打包并发任务和-channel)
     - [⽤ channel 实现信号量 (semaphore)](#⽤-channel-实现信号量-semaphore)
     - [⽤ closed channel 发出退出通知](#⽤-closed-channel-发出退出通知)
     - [⽤ select 实现超时 (timeout)](#⽤-select-实现超时-timeout)
