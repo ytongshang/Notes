@@ -4,7 +4,6 @@
 - [Zsh](#zsh)
 - [Autojump](#autojump)
 
-
 ## Homebrew
 
 - 安装Homebrew,[网站](http://brew.sh/)

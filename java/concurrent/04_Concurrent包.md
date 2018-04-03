@@ -37,7 +37,7 @@ for(int i = 0; i < 10; ++i) {
 ### shutdownNow
 
 - **尝试去停掉所有正在执行的任务，但不一定会成功**，一般情况下会调用interrupt，但是如果线程本身没有处理interrupt的话，任务是不会停止的
-- 取消等待中的任务，返回等待执行的任务 的list**
+- 取消等待中的任务，返回等待执行的任务 的list
 - 不会等待执行中的任务停止，如果你希望这样做，可以使用awaitTermination方法
 
 ### isShutdown
@@ -76,8 +76,7 @@ public ThreadPoolExecutor(int corePoolSize,int maximumPoolSize,long keepAliveTim
 }
 ```
 
-- **corePoolSize**:核心线程数，**默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制**。
- 除非将allowCoreThreadTimeOut设置为true。
+- **corePoolSize**:核心线程数，**默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制**。除非将allowCoreThreadTimeOut设置为true。
 - **maximumPoolSize**: **线程池所能容纳的最大线程数**。超过这个数的线程将被阻塞。当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
 - **keepAliveTime**:非核心线程的闲置超时时间，超过这个时间就会被回收
 - **unit**:指定keepAliveTime的单位
