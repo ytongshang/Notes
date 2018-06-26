@@ -1,9 +1,14 @@
-# Http
+# 网络
+
+## 参考资料
+
+- [计算机网络协议层次](https://blog.csdn.net/gavin_john/article/details/53186570)
+- [HTTP协议详解与Android相关基础网络编程](https://www.jianshu.com/p/3ea1bf1ba915)
+- [HTTP请求行、请求头、请求体详解](https://blog.csdn.net/u010256388/article/details/68491509)
 
 ## 网络层次划分
 
-- [计算机网络协议层次](https://blog.csdn.net/gavin_john/article/details/53186570)
-- ![OSI七层模型](../image-resources/http/OSI七层模型.png)
+- ![OSI七层模型](../../image-resources/http/OSI七层模型.png)
 
 ### 应用层
 
@@ -38,7 +43,7 @@
 
 ## 报文的封装
 
-- ![报文的封装](../image-resources/http/报文的封装.jpg)
+- ![报文的封装](../../image-resources/http/报文的封装.jpg)
 
 ## Socket
 
@@ -46,15 +51,14 @@
 - **Socket是对TCP/IP协议的封装，他本身不是什么协议，而是一个调用接口（API）**
 - TCP/IP只是一个协议栈，必须要具体实现，同时还要提供对外的操作接口，这就是Socket接口
 
-## 参考资料
+## URL
 
-- [HTTP协议详解与Android相关基础网络编程](https://www.jianshu.com/p/3ea1bf1ba915)
-- [HTTP请求行、请求头、请求体详解](https://blog.csdn.net/u010256388/article/details/68491509)
+- schema://host[:port#]/path/.../[;url-params][?query-string][#anchor]
 
 ## Http请求报文格式
 
-- ![http请尔报文格式](../image-resources/http/http报文.jpg)
-- ![http request](../image-resources/http/HttpRequest.png)
+- ![http请尔报文格式](../../image-resources/http/http报文.jpg)
+- ![http request](../../image-resources/http/HttpRequest.png)
 
 ## Http Header
 
@@ -92,7 +96,7 @@ max-age=xxx (xxx is numeric)         | 缓存的内容将在 xxx 秒后失效, �
 
 ## Http响应报文格式
 
-- ![http response](../image-resources/http/HttpResponse.png)
+- ![http response](../../image-resources/http/HttpResponse.png)
 
 ### 状态码
 
@@ -109,4 +113,3 @@ max-age=xxx (xxx is numeric)         | 缓存的内容将在 xxx 秒后失效, �
 - **304 Not Modified**， 告诉客户端，你请求的这个资源至你上次取得后，并没有更改，你直接用你本地的缓存吧
 - **404 Not Found**， 你最不希望看到的，即找不到页面。如你在google上找到一个页面，点击这个链接返回404，表示这个页面已经被网站删除了，google那边的记录只是美好的回忆
 - **500 Internal Server Error**，看到这个错误，你就应该查查服务端的日志了，肯定抛出了一堆异常
-
