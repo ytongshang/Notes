@@ -126,6 +126,11 @@ int &refVal3 = 10;  // error: initializer must be an object.
 
 ## 指针
 
+* 指针与引用的区别
+  * **指针本身也是一个对象**，允许对指针的赋值与拷贝
+  * 指针的生命周期内可以先后指向不同的对象
+  * 指针无须在定义时初始化
+  * **因为引用不是对象，所以不能定义指向引用的指针**，但是可以定义指针的引用
 * 指针状态
   * 指向一个对象
   * 指向紧邻对象所占空间的下一个位置
@@ -135,13 +140,48 @@ int &refVal3 = 10;  // error: initializer must be an object.
 * 建议初始化所有的指针,并且在可能的情况下，尽可能定义了对象后定义指向它的指针
 * void\*指针，它可以存放任意对象的指针，但是我们对存于该指针的对象的类型是不知道的，非空的指针只能说明它
   指向一片内存，但是不能对该内存执行任何操作。
-* 理解一条比较复杂的指针或引用的声明时，从右向左有利于理解它的真实含义
+* 理解一条比较复杂的指针或引用的声明时，从右向左有利于理解它的真实含义,**并且一般情况下*和&应当和定义的变量标识符在一起**
+
+```c++
+int *p1, *p2;
+// 修饰符与类型名写在一起，每行定义一个变量
+int* p1;
+int* p2;
+
+int i = 42;
+int *p;      // p是一个int型指针
+int *&r = p; // r是一个对指针p的引用 
+```
 
 ## Const
 
 * const让变量变得不能修改的，必须在定义时被初始化
+
+### 默认状态下，const对象仅在文件内部有效
+
+* 当多个文件出现了同名的const变量时，其实等同于在不同的文件中分别定义了独立的变量
+* **如果想要在不同的文件中共变const变量，应当加上extern关健字**
+
+```c++
+// file_1.cc
+// defines and initializes a const that is accessible to other files
+extern const int bufSize = fcn();
+//必须在定义时就加上extern关键字
+
+// file_2.cc
+extern const int bufSize; // uses bufSize from file_1
+//其它文件的声明也必须加上extern
+// uses bufSize defined in file_1
+for (int index = 0; index != bufSize; ++index) {
+ //...
+}
+```
+
+### const引用相关
+
 * **const引用，即指向const对象的引用，可用相关的const或非const对象初始化，当然也可以用字面值初始化，只是不能通过别名修改对象了**
 * **非const引用，即指向非const对象的引用，只能用非const对象初始化**
+* 所谓指向常量的指针和引用，不过是指针或引用“自以为是”罢了，它们觉得自己指向了常量，所以自觉不去改变所指对象的值。
 
 ```c++
 int i = 42;      //  legal for const references only
@@ -163,6 +203,43 @@ int * cont pa = =&a;
 
 ```c++
 const int *pa= &a;
+```
+
+### const指针
+
+* 常量指针必须初始化，而且一旦初始化完成则它的值(也就是存放在指针中的那个地址)就不能再改变了，不变的是指针的指向，而非指针指向对象的值
+
+```c++
+int main() {
+    int i = 100;
+    int i2 = 100;
+    const int ci = 100;
+    
+    // 底层const 引用,可以用const/const对象，或字面值初始化
+    const int &ri = 100;
+    const int &ri1 = ci;
+    const int &ri2 = i;
+
+    // 指向非const对象的引用，必须用非const对象初始化
+    int &ri3 = i;
+
+    // 底层const 指针,可以用const/const对象的地址初始化
+    const int *pi = &ci;
+    const int *pi2 = &i;
+    
+    // 指向非const对象的指针，必须用非const对象的地址初始化
+    int *pi3 = &i;
+    
+    // const指针，指向的
+    int *const cp = &i;
+    //cp = &i2;   // 非法，指针的指向不能变
+    // int *const cp2 = &ci;   // 非法，指向非const对象的指针，必须用非const对象的地址初始化
+    
+    const int *const ccp = &i;
+    const int *const ccp2 = &ci;
+            
+    return 0;
+}
 ```
 
 ## typedef
