@@ -205,6 +205,8 @@ int * cont pa = =&a;
 const int *pa= &a;
 ```
 
+* 执行拷贝时，顶层const不受什么影响，而拷入与拷出的对象必须具有相同的底层const资格，或者两个对象的数据类型必须能够转型，一般来说非常量可以转换成常量，反之则不行
+
 ### const指针
 
 * 常量指针必须初始化，而且一旦初始化完成则它的值(也就是存放在指针中的那个地址)就不能再改变了，不变的是指针的指向，而非指针指向对象的值
@@ -237,6 +239,22 @@ int main() {
     
     const int *const ccp = &i;
     const int *const ccp2 = &ci;
+
+    int a = 0;
+    int *const p1 = &a;  // 顶层const
+    const int ca = 42;   // 顶层const
+    const int *p2 = &ca; // 底层const
+    const int *const p3 = p2;  // 左为底层，右为顶层
+    const int &ra = ca;        // 因为引用对象，用于声明引用的都是底层const
+    
+    a = ci; // 顶层const，对拷贝没影响
+    p2 = p3; // 都是底层const,可以执行拷贝
+    
+    // int *p = p3;  错误，p3包含底层const，而p没有不能赋值
+    p2 = p3;         // 正确，都有底层const
+    p2 = &a;         // 正确，int *能转换成const int *
+    // int &ra = ca; 错误，普通的int&不能绑定到int 常量上
+    const int &ra2 = a;  // const int &可以绑定到一个普通int 上
             
     return 0;
 }
@@ -249,6 +267,13 @@ int main() {
 ```c++
 typedef double wages;
 using wages =double;
+```
+
+```c++
+typedef char *pstring;
+// pstring的类型是
+const pstring cstr = 0;  // cstr是指向char的常量指针 相当于 char *const
+const pstring *ps;       // ps是一个指针，它指向char *const，所以相当于
 ```
 
 ## constexpr变量
@@ -271,15 +296,25 @@ auto i =0, *p = &i;    //i为整型，p为整型指针
 auto sz = 0 ,pi = 3.14   //错误，两个数据类型不一致
 ```
 
-* auto会忽略顶层const,同时底层const则会保留下来，而decltype则会将顶层、底层const都保留下来
+### auto与复合类型
+
+* **对于引用，auto返回的是引用的变量的类型，不包括引用本身，decltyp则包括引用本身**
+
+```c++
+int  i =0, &pi =i;
+auto a= pi;            //int
+decltype(pi) a = i;    //int& 必须初始化
+```
+
+* **auto会忽略顶层const,同时底层const则会保留下来，而decltype则会将顶层、底层const都保留下来**
 
 ```c++
 int i = 0;
 const int ci = i, &cr = ci;
 auto b = ci ;          //int
-auto c = cr ;          //int
+auto c = cr ;          //int cr是ci的别名，cr是顶层const,被忽略了
 auto d = &i;           //int *
-auto e = &ci;          //const int *
+auto e = &ci;          //const int * 底层const 指针
 ```
 
 * 显式加上const与&可表示顶层const与引用
@@ -289,24 +324,35 @@ int i = 0;
 const int ci = i, &cr = ci;
 const auto f = ci;        // const int
 auto &g =42;              //错误，非常量引用不能绑定到字面值
-const auto &j = 42;       // 正确，可以为常量引用绑定字面值
+const auto &j = 42;       // 正确，可以为常量引用绑定字面值  底层const可以用常量初始化
 ```
 
-* 对于引用，auto返回的是引用的变量的类型，不包括引用本身，decltyp则包括引用本身
+### decltype
+
+* **decltype(变量)，返回变量的类型，包括顶层const和引用本身在内**
 
 ```c++
-int  i =0, &pi =i;
-auto a= pi;            //int
-decltype(pi) a = i;    //int& 必须初始化
+const int ci = 0, &cj = ci;
+decltype(ci) x = 0;  // const int
+decltype(cj) y = x;  // const int &
+decltype(cj) z;      // 错误，z是一个引用，必须初始化
 ```
 
-* decltype（变量）返回变量的类型，decltype\(表达式\)返回表达式结果的类型，如果表达式的结果为左值，则返回左值，如果表达式为右值，则返回为右值
-* 变量是种可以作为赋值语句左值的特殊形式，因而**decltype\(\(variable\)\)永远返回变量的引用类型**，而decltype\(variable\)返回变量类型 ，只有变量为引用类型时才返回引用类型
+* **decltype(表达式)返回表达式结果的类型**，如果表达式的结果为左值，则返回左值，如果表达式为右值，则返回为右值
+* **如果表达式是解引用操作，则decltype将得到引用类型**
 
 ```c++
-int i = 42;
-decltype(i) e;    //e为未初始化的 int
-decltype((i)) d ; //d为 int&,必须初始化
+int i = 42, *p = &i,&r = i;
+decltype (r+0) b; // 加法的结果是int,因而b是一个未初始化的int
+decltype(*p)      // 错误，*p是一个表达式，但是解引用操作，所以类型为int&， 必须初始化
+```
+
+* 变量是种可以作为赋值语句左值的特殊形式，因而**decltype((variable))永远返回变量的引用类型**，而decltype(variable)返回变量类型 ，只有变量为引用类型时才返回引用类型
+
+```c++
+int i = 100;
+decltype(i) a;     // 正确，a是一个未初始化的int
+decltype((i)) b;   // 错误，b的类型为int&,必须初始化
 ```
 
 ## enum
@@ -328,6 +374,3 @@ Points pt2w = 3;       //  error: pt2w initialized with int
 pt2w = polygon;        //  error: polygon is not a Points enumerator
 pt2w = pt3d;           //  ok: both are objects of Points enum type
 ```
-
-
-
