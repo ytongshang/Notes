@@ -5,30 +5,12 @@
 - 在成员函数括号后面加上const,实际上是将this指针由Type * const 转化为了const Type * const,这样用该函数就不能改变对象的值。
 - **const成员函数的声明和定义都要加上const**
 - **常量对象，常量对象的指针与引用都只能调用常量成员函数**，其原因是调用成员函数，实际上隐式地用this指针去初始化成员函数的隐藏形参this，如果对象是常量对象，则this的类型为const Type *const类型，而一般的成员函数的隐形形参this是Type *const类的指针，因为不能用const Type *const初始化 Type *const,所以一般成员函数不能作用于const 对象，从而const对象也就只能调用const成员函数。
+- 一个const成员函数如果以引用的形式返回*this,那么它的返回类型是常量引用
 - 不能从 const 成员函数返回指向类对象的普通引用。const 成员函数只能返回 *this 作为一个 const 引用。
 
 ## 定义类相关的非成员函数
 
 - 这些函数的声明应当与类的定义在同一个头文件中，常见的比如重载+ 、-、<<、>>的操作符，还有就是相关的一些友员函数
-
-## 类的返回类型与作用域
-
-- 与形参类型相比，返回类型出现在成员名字前面。如果函数在类定义体之外定义，则用于返回类型的名字在类作用域之外。
-- **如果返回类型使用由类定义的类型，则必须使用完全限定名**
-
-```c++
-    class Screen {
-     public:
-         typedef std::string::size_type index;
-         index get_cursor() const;
-     };
-
-     // index必须要用全限定名称
-     inline Screen::index Screen::get_cursor() const
-     {
-         return cursor;
-     }
-```
 
 ## 构造函数
 
@@ -103,10 +85,11 @@ salse_data b =sales_data( std::string("Hello world")); //正确，显示调用�
 
 ## 友元
 
-- **友元机制允许一个类将对其非公有成员的访问权授予指定的函数或类。**
-- 友元的声明以关键字 friend 开始。它只能出现在类定义的内部。
-- 友元声明可以出现在类中的任何地方,**友元不是授予友元关系的那个类的成员，所以它们不受声明出现部分的访问控制影响。** 通常，将友元声明成组地放在类定义的开始或结尾是个好主意。
+- **友元机制允许一个类将对其非公有成员的访问权授予指定的函数或类**。
+- 友元声明可以出现在类定义的任何地方,**友元不是授予友元关系的那个类的成员，所以它们不受声明出现部分的访问控制影响。** 通常，将友元声明成组地放在类定义的开始或结尾是个好主意。
 - **友元可以是普通的非成员函数，或前面定义的其他类的成员函数，或整个类。将一个类设为友元，友元类的所有成员函数都可以访问授予友元关系的那个类的非公有成员。**
+- 每个类控制自己的友元类和友元函数，**友元不存在继承与传递**
+- 如果想让一组重载函数都成为一个类的友元，则要对于每一个函数都单独声明友元
 
 ```c++
      class Screen {
@@ -120,8 +103,6 @@ salse_data b =sales_data( std::string("Hello world")); //正确，显示调用�
 ```
 
 - 在一个类里声明友关系，仅仅指明了访问的权限，友元函数或者友元类并没有在这里声明，哪怕在类的类内部定义了友元函数的函数体，在类外该函数仍然是未声明的，要手动声明，**所以在类中声明友元关系之外还要专门对函数或者类进行声明，不过通常将友元的声明和类本身放在一个头文件中**
-- 每个类控制自己的友元类和友元函数，**友元不存在继承与传递**
-- 如果想让一组重载函数都成为一个类的友元，则要对于每一个函数都单独声明友元
 
 ```c++
 struct X
@@ -134,6 +115,45 @@ struct X
  void X::g()   {return f();}  //错误，f未声明
  void f();
  void X::h()  {return f();}   //正确，f声明在作用域了
+```
+
+## 类的返回类型与作用域
+
+- 与形参类型相比，返回类型出现在成员名字前面。**如果返回类型使用由类定义的类型，则必须使用完全限定名**
+
+```c++
+    class Screen {
+     public:
+         typedef std::string::size_type index;
+         index get_cursor() const;
+     };
+
+     // index必须要用全限定名称
+     inline Screen::index Screen::get_cursor() const
+     {
+         return cursor;
+     }
+```
+
+### 名字查找与类的作用域
+
+- **编译器处理完类中的全部声明后才会处理成员函数的定义**
+- 名字查找首先会在类定义的范围内查找，其次才会查找外层作用域查找
+
+```c++
+typedef double Money;
+
+class Account {
+public:
+    // 首先会在Account类作域查找，没找到会在外层作用域查找
+    explicit Account(Money money);
+public:
+    Money balance() {
+        return bal;
+    }
+private:
+    Money bal;
+};
 ```
 
 ## 聚合类与字面值常量类
@@ -171,24 +191,28 @@ void Screen::some_member() const
 ## static成员
 
 - 静态数据成员与类关联在一起，类型可以是常量、指针、引用、类类型
-- static成员函数不与任何时对象绑定在一起，不包含this指针，所以 static 成员函数不能被声明为 const。毕竟，将成员函数声明为 const 就是承诺不会修改该函数所属的对象。最后，static 成员函数也不能被声明为虚函数。
-- static 成员的关键字static在类定义时要有，而在类外定义静态成员时不应当有static关键字
-- static 数据成员必须在类定义体的外部定义（正好一次）。不像普通数据成员，static 成员不是通过类构造函数进行初始化，而是应该在定义时进行初始化
+- **static 成员的关键字static在类中声明时要有，而在类外定义静态成员时不应当有static关键字**
+- **非constexpr类型的static 数据成员必须在类定义体的外部定义**，constexpr类型的static成员可以类定义中初始化，const static 数据成员仍必须在类的定义体之外进行定义
 
 ```c++
 class Account {
-     public:
-         static double rate() { return interestRate; }
-         static void rate(double);  // sets a new rate
-     private:
-         static const int period = 30; // interest posted every 30 days
-         double daily_tbl[period]; // ok: period is constant expression
+private:
+    static const int number;
+    // 如果要在类中初始化，必须用constexpr修饰
+    static constexpr double rate = 0.03;
+public:
+    explicit Account(Money money);
+public:
+    Money balance() {
+        return bal;
+    }
+private:
+    Money bal;
 };
 
-Account::const int;
+const int Account:: number = 1;
 ```
 
-- const static 数据成员，因为是const，所以在类的定义时必须初始化，而且该数据成员仍必须在类的定义体之外进行定义。
 - 普通成员都是给定类的每个对象的组成部分。static 成员独立于任何对象而存在，不是类类型对象的组成部分。所以静态数据成员的类型可以是它所属类的类类型，非静态数据成员只能声明为它所属类的指针或引用
 
 ```c++
@@ -201,3 +225,6 @@ class Bar {
          Bar mem3;        // error
      };
 ```
+
+- **static成员函数不与任何对象绑定在一起，不包含this指针，所以 static 成员函数不能被声明为 const**。毕竟，将成员函数声明为 const 就是承诺不会修改该函数所属的对象。
+- **static 成员函数也不能被声明为虚函数。**
