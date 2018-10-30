@@ -32,6 +32,7 @@ unsigned int b=5;
 * 转义字符：
   * 如果\后面跟着的8进制数超过3个，只有前3个与\组成转义字符，“\1234"表示8制数123与字符’4‘
   * \x会用到跟着的所有字符
+* ![字符与字符串字面值](./../../image-resources/cpp/字符与字符串字面值.png)
 
 ## 定义与声明
 
@@ -69,6 +70,33 @@ extern const int buffSize = 512;
 extern const int buffSize;
 ```
 
+### 作用域
+
+* 作用域中一旦声明了某个名字，它所嵌套的所有作用域中都能访问该名字
+* **内部作用域会覆盖外部作用域的值**
+* 如果函数有可能用到某全局变量，则不宜再下义一个同名的局部变量。
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+int reused = 100;
+
+int main() {
+    cout << "reused = " << reused << endl;
+    int reused = 50;
+    cout << "reused = " << reused << endl;
+    // ::表示没有名字的全局作用域
+    cout << "reused = " << ::reused << endl;
+    return 0;
+}
+
+// reused = 100
+// reused = 50
+// reused = 100
+```
+
 ### 头文件与定义
 
 * 一般情况下头文件不应当有定义，但是头文件可以定义类、值在编译时就已知道的const对象\(constexpr变量\)和 inline 函数
@@ -82,11 +110,12 @@ extern const int buffSize;
 
 ## 引用
 
-* 引用就是对象的另一个名字
-* 定义引用时就必须用用与该引用同类型的对象初始化
+* **引用并非对象，它只是为一个已经存在的对象所起的的另一个名字**
+* 定义引用时就必须用与该引用同类型的对象初始化
 * 引用只是它绑定的对象的另一名字，作用在引用上的所有操作事实上都是作用在该引用绑定的对象
 * 在实际程序中，引用主要用作函数的形式参数
 * 当引用初始化后，只要该引用存在，它就保持绑定到初始化时指向的对象。不可能将引用绑定到另一个对象。
+* **允许在一行中定义多个引用，每个引用标识符都必须以符号&开头**
 
 ```c++
 int ival = 1024;
@@ -97,6 +126,11 @@ int &refVal3 = 10;  // error: initializer must be an object.
 
 ## 指针
 
+* 指针与引用的区别
+  * **指针本身也是一个对象**，允许对指针的赋值与拷贝
+  * 指针的生命周期内可以先后指向不同的对象
+  * 指针无须在定义时初始化
+  * **因为引用不是对象，所以不能定义指向引用的指针**，但是可以定义指针的引用
 * 指针状态
   * 指向一个对象
   * 指向紧邻对象所占空间的下一个位置
@@ -106,13 +140,48 @@ int &refVal3 = 10;  // error: initializer must be an object.
 * 建议初始化所有的指针,并且在可能的情况下，尽可能定义了对象后定义指向它的指针
 * void\*指针，它可以存放任意对象的指针，但是我们对存于该指针的对象的类型是不知道的，非空的指针只能说明它
   指向一片内存，但是不能对该内存执行任何操作。
-* 理解一条比较复杂的指针或引用的声明时，从右向左有利于理解它的真实含义
+* 理解一条比较复杂的指针或引用的声明时，从右向左有利于理解它的真实含义,**并且一般情况下*和&应当和定义的变量标识符在一起**
+
+```c++
+int *p1, *p2;
+// 修饰符与类型名写在一起，每行定义一个变量
+int* p1;
+int* p2;
+
+int i = 42;
+int *p;      // p是一个int型指针
+int *&r = p; // r是一个对指针p的引用 
+```
 
 ## Const
 
 * const让变量变得不能修改的，必须在定义时被初始化
+
+### 默认状态下，const对象仅在文件内部有效
+
+* 当多个文件出现了同名的const变量时，其实等同于在不同的文件中分别定义了独立的变量
+* **如果想要在不同的文件中共变const变量，应当加上extern关健字**
+
+```c++
+// file_1.cc
+// defines and initializes a const that is accessible to other files
+extern const int bufSize = fcn();
+//必须在定义时就加上extern关键字
+
+// file_2.cc
+extern const int bufSize; // uses bufSize from file_1
+//其它文件的声明也必须加上extern
+// uses bufSize defined in file_1
+for (int index = 0; index != bufSize; ++index) {
+ //...
+}
+```
+
+### const引用相关
+
 * **const引用，即指向const对象的引用，可用相关的const或非const对象初始化，当然也可以用字面值初始化，只是不能通过别名修改对象了**
 * **非const引用，即指向非const对象的引用，只能用非const对象初始化**
+* 所谓指向常量的指针和引用，不过是指针或引用“自以为是”罢了，它们觉得自己指向了常量，所以自觉不去改变所指对象的值。
 
 ```c++
 int i = 42;      //  legal for const references only
@@ -136,6 +205,61 @@ int * cont pa = =&a;
 const int *pa= &a;
 ```
 
+* 执行拷贝时，顶层const不受什么影响，而拷入与拷出的对象必须具有相同的底层const资格，或者两个对象的数据类型必须能够转型，一般来说非常量可以转换成常量，反之则不行
+
+### const指针
+
+* 常量指针必须初始化，而且一旦初始化完成则它的值(也就是存放在指针中的那个地址)就不能再改变了，不变的是指针的指向，而非指针指向对象的值
+
+```c++
+int main() {
+    int i = 100;
+    int i2 = 100;
+    const int ci = 100;
+    
+    // 底层const 引用,可以用const/const对象，或字面值初始化
+    const int &ri = 100;
+    const int &ri1 = ci;
+    const int &ri2 = i;
+
+    // 指向非const对象的引用，必须用非const对象初始化
+    int &ri3 = i;
+
+    // 底层const 指针,可以用const/const对象的地址初始化
+    const int *pi = &ci;
+    const int *pi2 = &i;
+    
+    // 指向非const对象的指针，必须用非const对象的地址初始化
+    int *pi3 = &i;
+    
+    // const指针，指向的
+    int *const cp = &i;
+    //cp = &i2;   // 非法，指针的指向不能变
+    // int *const cp2 = &ci;   // 非法，指向非const对象的指针，必须用非const对象的地址初始化
+    
+    const int *const ccp = &i;
+    const int *const ccp2 = &ci;
+
+    int a = 0;
+    int *const p1 = &a;  // 顶层const
+    const int ca = 42;   // 顶层const
+    const int *p2 = &ca; // 底层const
+    const int *const p3 = p2;  // 左为底层，右为顶层
+    const int &ra = ca;        // 因为引用对象，用于声明引用的都是底层const
+    
+    a = ci; // 顶层const，对拷贝没影响
+    p2 = p3; // 都是底层const,可以执行拷贝
+    
+    // int *p = p3;  错误，p3包含底层const，而p没有不能赋值
+    p2 = p3;         // 正确，都有底层const
+    p2 = &a;         // 正确，int *能转换成const int *
+    // int &ra = ca; 错误，普通的int&不能绑定到int 常量上
+    const int &ra2 = a;  // const int &可以绑定到一个普通int 上
+            
+    return 0;
+}
+```
+
 ## typedef
 
 * typedef 类型别名的一种方法，还可以用using
@@ -143,6 +267,13 @@ const int *pa= &a;
 ```c++
 typedef double wages;
 using wages =double;
+```
+
+```c++
+typedef char *pstring;
+// pstring的类型是
+const pstring cstr = 0;  // cstr是指向char的常量指针 相当于 char *const
+const pstring *ps;       // ps是一个指针，它指向char *const，所以相当于
 ```
 
 ## constexpr变量
@@ -165,15 +296,25 @@ auto i =0, *p = &i;    //i为整型，p为整型指针
 auto sz = 0 ,pi = 3.14   //错误，两个数据类型不一致
 ```
 
-* auto会忽略顶层const,同时底层const则会保留下来，而decltype则会将顶层、底层const都保留下来
+### auto与复合类型
+
+* **对于引用，auto返回的是引用的变量的类型，不包括引用本身，decltyp则包括引用本身**
+
+```c++
+int  i =0, &pi =i;
+auto a= pi;            //int
+decltype(pi) a = i;    //int& 必须初始化
+```
+
+* **auto会忽略顶层const,同时底层const则会保留下来，而decltype则会将顶层、底层const都保留下来**
 
 ```c++
 int i = 0;
 const int ci = i, &cr = ci;
 auto b = ci ;          //int
-auto c = cr ;          //int
+auto c = cr ;          //int cr是ci的别名，cr是顶层const,被忽略了
 auto d = &i;           //int *
-auto e = &ci;          //const int *
+auto e = &ci;          //const int * 底层const 指针
 ```
 
 * 显式加上const与&可表示顶层const与引用
@@ -183,24 +324,35 @@ int i = 0;
 const int ci = i, &cr = ci;
 const auto f = ci;        // const int
 auto &g =42;              //错误，非常量引用不能绑定到字面值
-const auto &j = 42;       // 正确，可以为常量引用绑定字面值
+const auto &j = 42;       // 正确，可以为常量引用绑定字面值  底层const可以用常量初始化
 ```
 
-* 对于引用，auto返回的是引用的变量的类型，不包括引用本身，decltyp则包括引用本身
+### decltype
+
+* **decltype(变量)，返回变量的类型，包括顶层const和引用本身在内**
 
 ```c++
-int  i =0, &pi =i;
-auto a= pi;            //int
-decltype(pi) a = i;    //int& 必须初始化
+const int ci = 0, &cj = ci;
+decltype(ci) x = 0;  // const int
+decltype(cj) y = x;  // const int &
+decltype(cj) z;      // 错误，z是一个引用，必须初始化
 ```
 
-* decltype（变量）返回变量的类型，decltype\(表达式\)返回表达式结果的类型，如果表达式的结果为左值，则返回左值，如果表达式为右值，则返回为右值
-* 变量是种可以作为赋值语句左值的特殊形式，因而**decltype\(\(variable\)\)永远返回变量的引用类型**，而decltype\(variable\)返回变量类型 ，只有变量为引用类型时才返回引用类型
+* **decltype(表达式)返回表达式结果的类型**，如果表达式的结果为左值，则返回左值，如果表达式为右值，则返回为右值
+* **如果表达式是解引用操作，则decltype将得到引用类型**
 
 ```c++
-int i = 42;
-decltype(i) e;    //e为未初始化的 int
-decltype((i)) d ; //d为 int&,必须初始化
+int i = 42, *p = &i,&r = i;
+decltype (r+0) b; // 加法的结果是int,因而b是一个未初始化的int
+decltype(*p)      // 错误，*p是一个表达式，但是解引用操作，所以类型为int&， 必须初始化
+```
+
+* 变量是种可以作为赋值语句左值的特殊形式，因而**decltype((variable))永远返回变量的引用类型**，而decltype(variable)返回变量类型 ，只有变量为引用类型时才返回引用类型
+
+```c++
+int i = 100;
+decltype(i) a;     // 正确，a是一个未初始化的int
+decltype((i)) b;   // 错误，b的类型为int&,必须初始化
 ```
 
 ## enum
@@ -222,6 +374,3 @@ Points pt2w = 3;       //  error: pt2w initialized with int
 pt2w = polygon;        //  error: polygon is not a Points enumerator
 pt2w = pt3d;           //  ok: both are objects of Points enum type
 ```
-
-
-

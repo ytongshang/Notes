@@ -1,5 +1,7 @@
 # Expression
 
+- [C++运算符优先级](https://www.sojson.com/operation/cxx.html)
+
 ## 左值与右值
 
 - **当一个对象被用作右值的时候，用的是对象的值(内容)：当对象被用作左值的时候，用的是对象的身份(在内存中的位置)**
@@ -12,13 +14,21 @@
     - 取地址，作用于左值对象，所得的指针是一个右值，int *pa = &a;a为左值对象，pa为右值
     - 内置解引用，下标运算符，迭代器解引用，string，vector的下标运算符的结果为左值
     - 递增递减运算符作用于左值，++a，--a,其前置版本所得结果也是左值
-    
+- decltype，如果表达式的求值结果是左值，decltype作用于该表达式(不是变量)得到一个引用类型
+
+```c++
+int a = 100;
+int *pa = &a;
+decltype (*pa) c = a; // 类型为int&，必须初始化
+decltype(&pa) d;      // 类型为int**
+```
+
 ## 求值顺序
+
 - 明确定义了运算对象求值顺序：&&,||,?:和逗号运算符
 - 如果改变了某个运算对象的值，在表达式的其它地方不要再使用这个运算对象，因为同一个表达式中的运算对象的求值顺序是没有
  规定的
- 
- 
+
 ## 算术运算符
 
 - **C++11规定除法的商一律向0取整，也就是直接切除小数部分**，比如将-3.6,-3.2转换为整数都是向0取整，都是-3
@@ -45,14 +55,14 @@ if (val == true) {...}
 
 - 赋值运算符的左侧必须是一个可以修改的左值
 - 赋值运算符的结果是左侧的运算对象，并且也是一个左值
-- 采用初始值列表的方式初始化，**如果左侧运算对象是内置类型，那么初始值列表最多只能包含一个值，而且该值即使转换的话其所占空间也不大于目标空间**
+- 采用**初始值列表的方式初始化，如果左侧运算对象是内置类型，那么初始值列表最多只能包含一个值，而且该值即使转换的话其所占空间也不大于目标空间**
 - 无论左侧的运算对象是什么，初始值列表都可以为空，此时编译器会创建一个值初始化的临时变量，并且赋给左侧的对象
- 
- ```c++
- int k = 0;
- k = {3.14}      //错误，列表初始化不能将double转为int
- ```
- 
+
+```c++
+int k = 0;
+k = {3.14}      //错误，列表初始化不能将double转为int
+```
+
 ## 自增自减运算符
 
 - **前置版本将对象本身作为左值返回，后置版本则将对象初始值的副本作为右值返回**
@@ -117,43 +127,42 @@ sizeof Sales_data::revenue  // 另一种获得revenue成员大小的方式
     - 对于数组执行sizeof，等价于对数组中所有元素执行一次sizeof然后求和，sizeof不会把数组当指针处理，与decltype相同
     - sizeof()作用于string、vector时，只返回该类型固定部分的大小，不计算对象中元素占用了多少空间
 
- ```c++
- // 总长度/首个元素的大小，返回数组长度
- constexpr size_t sz = sizeof(ia) / sizeof(*ia);
- int arr2[sz];
- ```
- 
- ## 类型转换
- 
- - 算术转换：运算符的运算对象转换成最宽的字符，比如int 与unsigned int一起，int转换为unsigned int
- - 整型提升：小整型转换为int(bool,char,signed char,unsigned char,short,unsigned short)
-  较大的char(wchar_t,char16_t,char32_t)转为int,unsigned int,long,unsigned long ,long long ,unsigned long long中
-  能容纳对象的最小的类型
- - 如果无符号不小于有符号的，有符号的转为无符号的，如果有有符号的大于无符号类型，具体行为依赖于机器
- - 数组转为指向首元素的指针
- - 0，nullptr转换为任意类型的指针
- - 非0为true,0为false
- - 允许将指向非常量的指针或引用转换成指针相应常量的引针/引用，也就是可以用T的指针/引用初始化const T的指针/引用
- 
+```c++
+int ia[10] = {};
+// 总长度/首个元素的大小，返回数组长度
+constexpr size_t sz = sizeof(ia) / sizeof(*ia);
+```
+
+## 类型转换
+
+- 算术转换：运算符的运算对象转换成最宽的字符，比如int 与unsigned int一起，int转换为unsigned int
+- 整型提升：小整型转换为int(bool,char,signed char,unsigned char,short,unsigned short)
+  较大的char(wchar_t,char16_t,char32_t)转为int,unsigned int,long,unsigned long ,long long ,unsigne,long long中能容纳对象的最小的类型
+- 如果无符号不小于有符号的，有符号的转为无符号的，如果有有符号的大于无符号类型，具体行为依赖于机器
+- 数组转为指向首元素的指针
+- 0，nullptr转换为任意类型的指针
+- 非0为true,0为false
+- 允许将指向非常量的指针或引用转换成指针相应常量的引针/引用，也就是可以用T的指针/引用初始化const T的指针/引用
+
  ```c++
  int i;
  const int &j = i ;   // 正确
  const int *p = &i;   // 正确
  int &r = j, *q = p;  // 错误，非const指针/指针只能用非const初始化
  ```
- 
+
 ## 强制转换
 
 ### const_cast
 
-- const_cast ，_改变对象的const,对于底层const的增删，只能用const_cast,_只有使用 const_cast _才能将 const 性质转换掉_。在这种情况下，试图使用其他三种形式的强制转换都会导致编译时的错误。类似 地，除了添加或删除_ const 特性，用 const_cast 符来执行其他任何类型转换，都会引起编译错误。
+- const_cast ，改变对象的const,对于底层const的增删，只能用const_cast,只有使用 const_cast才能将const性质转换掉。在这种情况下，试图使用其他三种形式的强制转换都会导致编译时的错误。类似地，除了添加或删除_const 特性，用const_cast 符来执行其他任何类型转换，都会引起编译错误。
 
 ```c++
 const char *pc;
 char *ptr = const_cast<char*>(pc);
 ```
 
-- 常见的一种用法就是先定义了类的const成员函数，想定义其非const的重载时，先将非const参数用const_cast转化为底层const,然后调用其底层const版本的函数，最后又将参数转回为非底层const
+- **常见的一种用法就是先定义了类的const成员函数，想定义其非const的重载时，先将非const参数用const_cast转化为底层const,然后调用其底层const版本的函数，最后又将参数转回为非底层const**
 
 ### static_cast
 
@@ -163,23 +172,22 @@ char *ptr = const_cast<char*>(pc);
 - 如果编译器不提供自动转换，使用 static_cast 来执行类型转换也是很有用的。例如，下面的程序使用 static_cast 找回存放在 void* 指针中的值
 
 ```c++
-double d=15.0;
-void* p = &d; 
+double d = 15.0;
+void* p = &d;
 // ok: address of any data object can be stored in a void*
 // ok: converts void* back to the original pointer type
 double *dp = static_cast<double*>(p);
 ```
-     
+
 ### dynamic_cast
 
 - dynamic_cast只用于对象的指针和引用。
 - 当用于多态类型时，它允许任意的隐式类型转换以及相反过程。
 - 不过，与static_cast不同，在后一种情况里（注：即隐式转换的相反过程），dynamic_cast会检查操作是否有效。
  也就是说，它会检查转换是否会返回一个被请求的有效的完整对象。检测在运行时进行。如果被转换的指针不是一个被请求的有效完整的对象指针，返回值为NULL.
-- dynamic_cast 主要用于执行“安全的向下转型（safe downcasting）”，也就是说，要确定一个对象是否是一个继承体系中的一个特定类型。
- 它是唯一不能用旧风格语法执行的强制转型，也是唯一可能有重大运行时代价的强制转型。
- 
- ```c++ 
+- dynamic_cast 主要用于执行“安全的向下转型（safe downcasting）”，也就是说，要确定一个对象是否是一个继承体系中的一个特定类型。它是唯一不能用旧风格语法执行的强制转型，也是唯一可能有重大运行时代价的强制转型。
+
+```c++
  //假定 Base 是至少带一个虚函数的类，并且 Derived 类派生于 Base 类。如果有一个名为 basePtr 的指向 Base 的
  //指针，就可以像这样在运行时将它强制转换为指向 Derived 的指针：
   if (Derived *derivedPtr = dynamic_cast<Derived*>(basePtr)) {
@@ -192,15 +200,11 @@ double *dp = static_cast<double*>(p);
 
 ### reinterpret_cast
 
-- 是特意用于底层的强制转型，导致实现依赖（implementation-dependent）（就是说，不可移植）的结果，基本上很少见。
+- 是特意用于底层的强制转型，导致实现依赖（implementation-dependent）（就是说，不可移植）的结果，基本上很少见.
 
+### 旧式强制类型转换
 
-
-
-
-
-
-
-
-
-
+```c++
+type(expr);
+(type)expr;
+```
