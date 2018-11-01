@@ -158,3 +158,157 @@ color:red;
 text-align:right;
 font-size:20pt;
 ```
+
+## CSS分组和嵌套选择器
+
+- [CSS样式之复合选择器](https://blog.csdn.net/Pruett/article/details/77912878?locationNum=5&fps=1)
+
+### 分组选择器
+
+- 在样式表中有很多具有相同样式的元素，可以使用分组选择器。每个选择器用逗号分隔.
+
+```html
+
+h1,h2,p {
+    color:green;
+}
+```
+
+### 嵌套选择器
+
+- 适用于选择器内部的选择器的样式
+
+```html
+
+p {
+    color:blue;
+}
+
+.marked {
+    background-color: red;
+}
+
+.marked p {
+    color: black;
+}
+
+<p>普通的p的样式，字是蓝色的</p>
+
+<div class="marked">
+    <p>marked 内部的p 字应当是黑色的</p>
+</div>
+```
+
+### 后代选择器
+
+- 后代选取器匹配**所有指定元素的后代元素**
+
+### 子元素选择器
+
+- 与后代选择器相比，子元素选择器（Child selectors）只能选择作为**某元素直接子元素的元素**
+
+### 相邻兄弟选择器
+
+- 相邻兄弟选择器选取指定元素的**第一个相邻兄弟元素**
+
+### 普通兄弟选择器
+
+- 普通兄弟选择器选取所有指定元素的**所有相邻兄弟元素**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form</title>
+    <meta name="author" content="Rancune">
+    <style type="text/css">
+
+        * {
+            color: blue;
+        }
+
+        body {
+            background-color: white;
+        }
+
+        #param1 {
+            color: red;
+            text-align: center;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        h4.right {
+            text-align: right;
+        }
+
+        .marked {
+            background-color: red;
+        }
+
+        .marked p {
+            color: black;
+        }
+
+        div h1 {
+            color: red;
+        }
+
+        div > h2 {
+            color: #00e7ef;
+        }
+
+        div + h5 {
+            color: chartreuse;
+        }
+
+        div ~ p {
+            color: blueviolet;
+        }
+    </style>
+</head>
+<body>
+<h4 id="param1">id选择器</h4>
+
+<h4 class="center">class选择器</h4>
+
+<h4 class="right">测试特定元素的class</h4>
+
+<p>普通的p的样式，字是蓝色的</p>
+
+<div class="marked">
+    <p>marked 内部的p 字应当是黑色的</p>
+</div>
+
+<div>
+    <h1>后代选择器，应当是红色的</h1>
+</div>
+
+<div>
+    <h2>子元素选择器，应当是#00e7ef</h2>
+    <div>
+        <span><h2>非直接子类，应当是默认的blue</h2></span>
+    </div>
+</div>
+
+<div>
+    <p>test,默认颜色blue</p>
+</div>
+<h5>相邻兄弟，应当是chartreuse的</h5>
+<h5>非相邻兄弟,应当是默认颜色blue</h5>
+
+<div>
+    <p>test,默认颜色blue</p>
+</div>
+<p>相邻兄弟，blueviolet</p>
+<p>相邻兄弟, blueviolet</p>
+
+
+</body>
+</html>
+```
+
+## 伪类与伪元素
