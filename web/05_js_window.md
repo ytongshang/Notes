@@ -158,11 +158,12 @@ var timer = null;
         if (timer != null) {
             stopTimer();
         }
-        // 这里一定要包一层function才有作用，下面注释的这个代码无效
+        // 下面两种写法都可以，一定要注意第一个对象是函数，不是函数调用
+        // 所以第二种写法一定不能加括号
         timer = window.setInterval(function () {
             myTimer()
         }, 1000);
-        // timer = setInterval(myTimer(), 1000);
+        timer = window.setInterval(myTimer, 1000);
     }
 
     function stopTimer() {

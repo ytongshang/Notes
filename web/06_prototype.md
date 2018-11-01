@@ -50,7 +50,7 @@
     - Function的__proto__指向其构造函数Function()的prototype,也就是Function.prototype
     - Object作为一个构造函数(是一个函数对象!!函数对象!!),所以他的__proto__指向Function.prototype；
     - Function.prototype的__proto__指向其构造函数Object的prototype
-    - Object.prototype的__prototype__指向null（尽头）；
+    - Object.prototype的__proto__指向null；
 
 ## 其它相关方法
 

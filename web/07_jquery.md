@@ -445,7 +445,7 @@ $("p").css({"background-color":"yellow","font-size":"200%"});
 
 - ![jQuery 尺寸](../image-resources/web/img_jquerydim.gif)
 
-## 遍历
+## 遍历
 
 ### 祖先
 
@@ -502,7 +502,7 @@ $(document).ready(function(){
 });
 ```
 
-### 同胞
+### 同胞
 
 - siblings() 方法返回被选元素的所有同胞元素
 - next() 方法返回被选元素的下一个同胞元素，**该方法只返回一个元素**
