@@ -312,3 +312,27 @@ p {
 ```
 
 ## 伪类与伪元素
+
+- CSS伪类是用来添加一些选择器的特殊效果.由于状态的变化是非静态的，所以**元素达到一个特定状态时，它可能得到一个伪类的样式；当状态改变时，它又会失去这个样式**。由此可以看出，它的功能和class有些类似，但它是基于文档之外的抽象，所以叫伪类
+- CSS伪元素是用来添加一些选择器的特殊效果。**CSS伪元素控制的内容和元素是没有差别的，但是它本身只是基于元素的抽象，并不存在于文档中，所以称为伪元素**
+
+```html
+selector:pseudo-class {property:value;}
+
+// CSS类也可以使用伪类
+selector.class:pseudo-class {property:value;}
+```
+
+选择器          | 示例           | 示例说明
+----------------|----------------|----------------------------
+:link           | a:link         | 选择所有未访问链接
+:visited        | a:visited      | 选择所有访问过的链接
+:active         | a:active       | 选择正在活动链接
+:hover          | a:hover        | 把鼠标放在链接上的状态
+:focus          | input:focus    | 选择元素输入后具有焦点
+:first-letter   | p:first-letter | 选择每个&lt;p&gt; 元素的第一个字母
+:first-line     | p:first-line   | 选择每个&lt;p&gt; 元素的第一行
+:first-child    | p:first-child  | 选择器匹配属于任意元素的第一个子元素的 &lt;p&gt; 元素
+:before         | p:before       | 在每个&lt;p&gt;元素之前插入内容
+:after          | p:after        | 在每个&lt;p&gt;元素之后插入内容
+:lang(language) | p:lang(it)     | 为&lt;p&gt;元素的lang属性选择一个开始值
