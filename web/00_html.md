@@ -1,7 +1,13 @@
 # Html
 
 - [head标签](#head标签)
+    - [常用的meta标签](#常用的meta标签)
+        - [format-detection](#format-detection)
 - [常用标签](#常用标签)
+    - [水平线](#水平线)
+    - [换行](#换行)
+    - [文本格式化](#文本格式化)
+    - [图片](#图片)
 
 ## head标签
 
@@ -42,16 +48,42 @@
 </html>
 ```
 
+### 常用的meta标签
+
+#### format-detection
+
+- format-detection —— 格式检测，用来检测html里的一些格式，主要有以下几个设置
+- telephone
+    - 主要作用是是否设置自动将你的数字转化为拨号连接
+    - telephone=no 禁止把数字转化为拨号链接
+    - telephone=yes 开启把数字转化为拨号链接，默认开启
+- email
+    - 告诉设备不识别邮箱，点击之后不自动发送
+    - email=no 禁止作为邮箱地址
+    - email=yes 开启把文字默认为邮箱地址，默认情况开启
+- adress
+    - adress=no 禁止跳转至地图
+    - adress=yes 开启点击地址直接跳转至地图的功能, 默认开启
+
+```html
+<meta name=”format-detection” content=”telephone=no”>
+<meta name=”format-detection” content=”email=no” >
+<meta name=”format-detection” content=”adress=no” >
+
+<!--或者下面的写法-->
+<meta name=”format-detection” content=”telephone=no,email=no,adress=no”>
+```
+
 ## 常用标签
 
-- 水平线
+### 水平线
 
 ```html
 <p>这是一个段落。</p>
 <hr>
 ```
 
-- 换行
+### 换行
 
 ```html
 <p>
@@ -59,7 +91,7 @@
 </p>
 ```
 
-- 文本格式化
+### 文本格式化
 
 ```html
 <b>加粗文本</b><br><br>
@@ -69,7 +101,7 @@
 这是 <sub> 下标</sub> 和 <sup> 上标</sup>
 ```
 
-- 图片
+### 图片
 
 ```html
 <img src="pulpit.jpg" alt="Pulpit rock" width="304" height="228">

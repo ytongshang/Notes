@@ -137,55 +137,6 @@ if (person!=null && person!="") {
 }
 ```
 
-## js计时
-
-### setInterval() 方法
-
-- setInterval() 间隔指定的毫秒数不停地执行指定的代码
-- clearInterval() 方法用于停止 setInterval() 方法执行的函数代码
-
-```js
-var timer = null;
-
-    var clock = document.getElementById("clock_text")
-
-    function myTimer() {
-        var date = new Date();
-        clock.innerHTML = date.toLocaleTimeString();
-    }
-
-    function startTimer() {
-        if (timer != null) {
-            stopTimer();
-        }
-        // 下面两种写法都可以，一定要注意第一个对象是函数，不是函数调用
-        // 所以第二种写法一定不能加括号
-        timer = window.setInterval(function () {
-            myTimer()
-        }, 1000);
-        timer = window.setInterval(myTimer, 1000);
-    }
-
-    function stopTimer() {
-        window.clearInterval(timer);
-        timer = null;
-    }
-```
-
-### setTimeout() 方法
-
-- 暂停指定的毫秒数后执行指定的代码
-- clearTimeout() 方法用于停止执行setTimeout()方法的函数代码
-- 要使用clearTimeout() 方法, 你必须在创建超时方法中（setTimeout）使用全局变量
-
-```js
-myVar = setTimeout(function(){alert("Hello")},3000);
-
-function myStopFunction() {
-    clearTimeout(myVar);
-}
-```
-
 ## Cookies
 
 ### 创建Cookie
