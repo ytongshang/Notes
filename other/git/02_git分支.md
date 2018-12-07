@@ -18,6 +18,12 @@
   git checkout -b new_branch
   ```
 
+- 同步远程分支
+
+```git
+git remote prune origin
+```
+
 - 查看分支,其中不带参数显示本地分支，-a所有的分支，-r远程分支, -v显示分支和分支的最后一次 commit, 列出的分支中，带 ***** 的为当前的分支,要从该清单中筛选出你已经（或尚未）与 当前分支合并的分支，可以用 --merged 和 --no-merged 选项
 
   ```
