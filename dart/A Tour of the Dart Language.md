@@ -1,5 +1,27 @@
 # A Tour of the Dart Language
 
+- [A Tour of the Dart Language](https://www.dartlang.org/guides/language/language-tour)
+
+- [基本概念](#基本概念)
+- [变量](#变量)
+- [final 与 const](#final-与-const)
+- [类型](#类型)
+    - [string](#string)
+    - [map list](#map-list)
+    - [Function](#function)
+    - [函数参数](#函数参数)
+    - [返回值](#返回值)
+    - [cascade](#cascade)
+    - [匿名函数](#匿名函数)
+    - [闭包](#闭包)
+- [运算符](#运算符)
+    - [其它](#其它)
+- [语句](#语句)
+    - [循环](#循环)
+- [Exceptions](#exceptions)
+    - [catch](#catch)
+    - [finally](#finally)
+
 ## 基本概念
 
 - 一切都是对象，所有继承于Object,int,double也是Object
@@ -84,7 +106,7 @@ multi-line string.""";
 var s = r'In a raw string, not even \n gets special treatment.';
 ```
 
-### list map
+### map list
 
 ```Dart
 var list = [1, 2, 3];
@@ -165,16 +187,6 @@ foo() {}
 
 // 如果没有指定返回类型，那么是null
 print(foo() == null);
-```
-
-### cascade
-
-- 对同一个对象，执行多个动作，相当于return this
-
-```Dart
-querySelector('#sample_text_id')
-    ..text = 'Click me!'
-    ..onClick.listen(reverseText);
 ```
 
 ### 匿名函数
@@ -328,4 +340,158 @@ var visibility = isPublic ? 'public' : 'private';
 String playerName(String name) => name ?? 'Guest';
 ```
 
-### Cascade notation (..)
+### cascade
+
+- 对同一个对象，执行多个动作，相当于return this
+
+```Dart
+querySelector('#sample_text_id')
+    ..text = 'Click me!'
+    ..onClick.listen(reverseText);
+```
+
+## 运算符
+
+- **dart支持运算符重载**
+- 对于双目运算符，运算符左边的对象决定了使用的是哪一个重载的运算符
+
+```Dart
+assert(5 / 2 == 2.5); // Result is a double
+assert(5 ~/ 2 == 2); // Result is an int
+```
+
+### 其它
+
+- ?. 条件成员操作符
+
+```Dart
+// 如果a为null,不做什么，否则调用a的test方法
+a?.test()
+// a为null,返回null,否则返回a的value成员
+a?.value
+```
+
+## 语句
+
+### 循环
+
+- 实现了Iterable使用forEach()
+- List,Set使用for-in
+
+```Dart
+var collection = [0, 1, 2];
+for (var x in collection) {
+  print(x); // 0 1 2
+}
+```
+
+## Exceptions
+
+- **Dart可以抛出任何非null的对象，而不仅是Exception**，但一般情况下我们都会抛出实现了Error或Exception的类型对象
+- **Dart中抛出的都是unchecked exceptions**,因而方法不一定会指明抛出什么异常，我们也并不要求去捕获这些异常
+- 抛出异常是语句，所以在可以在=>中使用
+
+```Dart
+void distanceTo(Point other) => throw UnimplementedError();
+```
+
+### catch
+
+- on 用来指明类型
+- catch用来处理异常对象,**catch可以接受两个参数，第一个参数为异常对象，第二个为StackTrace**
+- **再次抛出异常，使用rethrow**
+
+```Dart
+try {
+  breedMoreLlamas();
+} on OutOfLlamasException {
+  // A specific exception
+  buyMoreLlamas();
+} on Exception catch (e) {
+  // Anything else that is an exception
+  print('Unknown exception: $e');
+} catch (e) {
+  // No specified type, handles all
+  print('Something really unknown: $e');
+}
+
+try {
+  // ···
+} on Exception catch (e) {
+  print('Exception details:\n $e');
+} catch (e, s) {
+  print('Exception details:\n $e');
+  print('Stack trace:\n $s');
+}
+
+void misbehave() {
+  try {
+    dynamic foo = true;
+    print(foo++); // Runtime error
+  } catch (e) {
+    print('misbehave() partially handled ${e.runtimeType}.');
+    rethrow; // Allow callers to see the exception.
+  }
+}
+```
+
+### finally
+
+- 与java中的finally一样
+
+## Class
+
+### constructors
+
+- **Dart中的关健字new不是必需的**
+
+#### const constructors
+
+- 构造函数前加上const，返回编译期的常量对象， 两次const constructors返回的是同一个对象
+
+```Dart
+var a = const ImmutablePoint(1, 1);
+var b = const ImmutablePoint(1, 1);
+
+// They are the same instance!
+assert(identical(a, b));
+```
+
+- const位置
+
+```Dart
+// 假设ImmutablePoint是const constractors
+// 常量对象
+const pointAndLine = const {
+  'point': const [const ImmutablePoint(0, 0)],
+  'line': const [const ImmutablePoint(1, 10), const ImmutablePoint(-2, 11)],
+};
+
+// 返回的也是常量对象
+const pointAndLine = {
+  'point': [ImmutablePoint(0, 0)],
+  'line': [ImmutablePoint(1, 10), ImmutablePoint(-2, 11)],
+};
+
+// 常量对象
+var a = const ImmutablePoint(1, 1); // Creates a constant
+
+// 非常量对象
+var b = ImmutablePoint(1, 1);
+```
+
+### runtimeType
+
+- runtimeType返回运行时类型
+
+```Dart
+print('The type of a is ${a.runtimeType}');
+```
+
+### 对象初始化
+
+- Dart中所有变量都是对象，**所有未初始化的成员变量都是null**
+- **所有成员变量都会生成一个隐式的getter方法，所有非final的成员变量都会生成一个隐式的setter方法**，而私有变量(以_开头的变量)不会自动生成getter与setter
+- **如果在定义成员变量的地方初始化，那么成员变量的初始化早于构造函数与初始化列表**
+
+### 构造函数
