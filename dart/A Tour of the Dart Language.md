@@ -256,3 +256,76 @@ void main() {
   print(v.baz != w.baz);
 }
 ```
+
+## Operators
+
+Description              | Operator
+-------------------------|---------------------------------------------------------------------------------
+unary postfix            | expr++    expr--    ()    []     .      ?.
+unary prefix             | -expr    !expr    ~expr    ++expr    --expr
+multiplicative           | *    /    %  ~/
+additive                 | +    -
+shift                    | <<    >>
+bitwise AND              | &
+bitwise XOR              | ^
+bitwise OR               | &#124;
+relational and type test | >=    >    <=    <    as    is    is!
+equality                 | ==    !=
+logical AND              | &&
+logical OR               | &#124;&#124;
+if null                  | ??
+conditional              | expr1 ? expr2 : expr3
+cascade                  | ..
+assignment               | =    *=    /=    ~/=    %=    +=    -=    <<=    >>=    &=  ^=    &#124;=    ??=
+
+### 算术运算符
+
+- ~/ 除法，返回整数
+
+```Dart
+// Result is a double
+assert(5 / 2 == 2.5);
+
+// Result is an int
+assert(5 ~/ 2 == 2);
+```
+
+### type test operators
+
+- as is is!
+
+```Dart
+// 先进行类型检测
+if (emp is Person) {
+    emp.firstName = 'Bob';
+}
+
+// 直接进行类型转换，如果emp不是Person，会Exception
+(emp as Person).firstName = 'Bob';
+```
+
+### 赋值
+
+- = 和 ??=
+
+```Dart
+// 无论a是什么，都将value的值赋值给它
+a = value;
+
+// 如果b为null,那么将value赋值给它，否则b保持不变
+b ??= value;
+```
+
+### 条件运算符
+
+- condition ? expr1 : expr2
+- expr1 ?? expr2 **如果expr1不为null,返回expr1,否则返回expr2**
+
+```Dart
+var visibility = isPublic ? 'public' : 'private';
+
+// 如果name为null，返回Guest,否则返回name
+String playerName(String name) => name ?? 'Guest';
+```
+
+### Cascade notation (..)
