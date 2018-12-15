@@ -100,7 +100,7 @@ var s2 = """This is also a
 multi-line string.""";
 ```
 
-- **raw string,不进行转义,字符串前加上raw**
+- **raw string,不进行转义,字符串前加上r**
 
 ```Dart
 var s = r'In a raw string, not even \n gets special treatment.';
@@ -125,6 +125,31 @@ var gifts = Map();
 gifts['first'] = 'partridge';
 gifts['second'] = 'turtledoves';
 gifts['fifth'] = 'golden rings';
+```
+
+#### List
+
+- **List的构造函数中如果指定长度，那么它是定长的，相当于数组，向其中添加元素不能超过初始指定的长度**
+- 如果不指定长度，那么相当于ArrayList，会自增长
+- **List如果调用length指定长度，那么[0, length)范围内的“空”出来**
+
+```Dart
+  List<int> l = new List(2);
+  l.add(1);
+  l.add(2);
+  // 向其中添加3会报错，因为长度初始指定，那么它就是定长的数组
+  // l.add(3);
+
+  List<int> a = new List();
+  a.length = 2;
+  a.add(1);
+  a.add(2);
+  a.add(3);
+  print(a.length);
+  print(a);
+// 开始指定长度为2，后面又添加3个元素，所以最后length为5
+// 5
+// [null, null, 1, 2, 3]
 ```
 
 ### Function
@@ -271,6 +296,14 @@ void main() {
 
 ## Operators
 
+- **dart支持运算符重载**
+- 对于双目运算符，运算符左边的对象决定了使用的是哪一个重载的运算符
+
+```Dart
+assert(5 / 2 == 2.5); // Result is a double
+assert(5 ~/ 2 == 2); // Result is an int
+```
+
 Description              | Operator
 -------------------------|---------------------------------------------------------------------------------
 unary postfix            | expr++    expr--    ()    []     .      ?.
@@ -348,16 +381,6 @@ String playerName(String name) => name ?? 'Guest';
 querySelector('#sample_text_id')
     ..text = 'Click me!'
     ..onClick.listen(reverseText);
-```
-
-## 运算符
-
-- **dart支持运算符重载**
-- 对于双目运算符，运算符左边的对象决定了使用的是哪一个重载的运算符
-
-```Dart
-assert(5 / 2 == 2.5); // Result is a double
-assert(5 ~/ 2 == 2); // Result is an int
 ```
 
 ### 其它
@@ -441,20 +464,142 @@ void misbehave() {
 
 ## Class
 
-### constructors
-
 - **Dart中的关健字new不是必需的**
 
-#### const constructors
+### runtimeType
 
-- 构造函数前加上const，返回编译期的常量对象， 两次const constructors返回的是同一个对象
+- runtimeType返回运行时类型
 
 ```Dart
-var a = const ImmutablePoint(1, 1);
-var b = const ImmutablePoint(1, 1);
+print('The type of a is ${a.runtimeType}');
+```
 
-// They are the same instance!
-assert(identical(a, b));
+### 对象初始化
+
+- Dart中所有变量都是对象，**所有未初始化的成员变量都是null**
+- **所有成员变量都会生成一个隐式的getter方法，所有非final的成员变量都会生成一个隐式的setter方法**，而私有变量(以_开头的变量)不会自动生成getter与setter
+- **如果在定义成员变量的地方初始化，那么成员变量的初始化早于构造函数与初始化列表**
+
+### 构造函数
+
+- 语法糖：成员变量的初始化
+- **构造函数如果函数体为空，可以直接省略{},用;替代**
+
+```Dart
+class Point {
+  num x, y;
+
+  // Syntactic sugar for setting x and y
+  // before the constructor body runs.
+  Point(this.x, this.y);
+}
+```
+
+- **构造函数不会被继承**
+
+#### 命名构造函数
+
+- 因为构造函数不会被继承，所以**如果子类想要调用父类的命名构造函数，那么子类必须自己实现同名的构造函数**
+
+```Dart
+class Point {
+  num x, y;
+
+  Point(this.x, this.y);
+
+  // Named constructor
+  Point.origin() {
+    x = 0;
+    y = 0;
+  }
+}
+```
+
+#### 初始化列表
+
+- **初始化列表先于构造函数体执行**
+- **final对象只能在定义成员变量的地方和初始化列表中初始化**，不能在构造函数中初始化
+- 可以在初始化列表中进行值判断
+
+```Dart
+Point.fromJson(Map<String, num> json)
+    : x = json['x'],
+      y = json['y'] {
+  print('In Point.fromJson(): ($x, $y)');
+}
+
+// final对象的初始化
+class Point {
+  final num x;
+  final num y;
+  final num distanceFromOrigin;
+
+  Point(x, y)
+      : x = x,
+        y = y,
+        distanceFromOrigin = sqrt(x * x + y * y);
+}
+
+// 值判断
+Point.withAssert(this.x, this.y) : assert(x >= 0) {
+  print('In Point.withAssert(): ($x, $y)');
+}
+```
+
+#### 调用父类的构造函数
+
+- 默认构造函数调用顺序：
+    - 初始化列表
+    - 父类构造函数
+    - 自己的构造函数
+- 可以手动指定初始化列表与父类构造函数的顺序，但是这两者都是在构造函数体执行前执行的
+
+```Dart
+class Person {
+  String firstName;
+
+  Person.fromJson(Map data) {
+    print('in Person');
+  }
+}
+
+class Employee extends Person {
+  // Person does not have a default constructor;
+  // you must call super.fromJson(data).
+  Employee.fromJson(Map data) : super.fromJson(data) {
+    print('in Employee');
+  }
+}
+```
+
+#### 调用自身
+
+```Dart
+class Point {
+  num x, y;
+
+  // The main constructor for this class.
+  Point(this.x, this.y);
+
+  // Delegates to the main constructor.
+  Point.alongXAxis(num x) : this(x, 0);
+}
+```
+
+#### Constant constructors
+
+- 返回的是一个编译期的常量对象
+- **构造方法加上const，并且所有的成员对象都需要为final**
+
+```Dart
+class ImmutablePoint {
+  static final ImmutablePoint origin =
+      const ImmutablePoint(0, 0);
+
+  final num x, y;
+
+  const ImmutablePoint(this.x, this.y);
+}
 ```
 
 - const位置
@@ -480,18 +625,234 @@ var a = const ImmutablePoint(1, 1); // Creates a constant
 var b = ImmutablePoint(1, 1);
 ```
 
-### runtimeType
+#### Factory constructors
 
-- runtimeType返回运行时类型
+- 工厂构造函数，factory
+- 主要用于不是每一次都创建新的对象
 
 ```Dart
-print('The type of a is ${a.runtimeType}');
+class Logger {
+  final String name;
+  bool mute = false;
+
+  // _cache is library-private, thanks to
+  // the _ in front of its name.
+  static final Map<String, Logger> _cache =
+      <String, Logger>{};
+
+  factory Logger(String name) {
+    if (_cache.containsKey(name)) {
+      return _cache[name];
+    } else {
+      final logger = Logger._internal(name);
+      _cache[name] = logger;
+      return logger;
+    }
+  }
+
+  Logger._internal(this.name);
+
+  void log(String msg) {
+    if (!mute) print(msg);
+  }
+}
 ```
 
-### 对象初始化
+### Methods
 
-- Dart中所有变量都是对象，**所有未初始化的成员变量都是null**
-- **所有成员变量都会生成一个隐式的getter方法，所有非final的成员变量都会生成一个隐式的setter方法**，而私有变量(以_开头的变量)不会自动生成getter与setter
-- **如果在定义成员变量的地方初始化，那么成员变量的初始化早于构造函数与初始化列表**
+#### getters and setters
 
-### 构造函数
+- **每一个成员变量都有一个隐式的getter,非final的对象都有一个隐式的setter**
+- private的成员(_开头的)没有隐式的setter与getter
+- **可以通过实现getter与setter为对象增加额外的属性**
+
+```Dart
+class Rectangle {
+  num left, top, width, height;
+
+  Rectangle(this.left, this.top, this.width, this.height);
+
+  // Define two calculated properties: right and bottom.
+  num get right => left + width;
+  set right(num value) => left = value - width;
+  num get bottom => top + height;
+  set bottom(num value) => top = value - height;
+}
+```
+
+#### abstract
+
+#### Implicit interfaces
+
+- **Dart中要实现的接口可以是一个具体的类,并且要求重写所有可见的方法**
+- **实接一个接口，接口中的可见的隐式的setter与getter也会被要求重写**
+- **如果不想实现部分方法，可以重写noSuchMethod方法**
+
+```Dart
+class Person {
+  // In the interface, but visible only in this library.
+  final _name;
+
+  // Not in the interface, since this is a constructor.
+  Person(this._name);
+
+  // In the interface.
+  String greet(String who) => 'Hello, $who. I am $_name.';
+
+  String _greet(String who) => 'Hello, $who. I am $_name.';
+}
+
+// 如果ImplementInterface与Person在一个library中，则要求重写greet,_greet与_name的setter方法(_name的setter因为final不存在)
+//  如果ImplementInterface与Person不在一个library中，则只要求重写greet方法，其它的两个方法因为可见性的原因不要求重写
+class ImplementInterface implements Person {
+  @override
+  // TODO: implement _name
+  get _name => null;
+
+  @override
+  String greet(String who) {
+    // TODO: implement greet
+    return null;
+  }
+
+  @override
+  String _greet(String who) {
+    // TODO: implement _greet
+    return null;
+  }
+}
+```
+
+- 实现多个接口
+
+```Dart
+class Point implements Comparable, Location {...}
+```
+
+#### Extending a class
+
+- 使用super调用父类方法
+
+#### Overriding members
+
+- @override
+- 如果需要缩小一个方法的参数或者变量值，并且是类型安全的，可以使用关键字covariant
+
+```Dart
+class Animal {
+  void chase(Animal x) { ... }
+}
+
+class Mouse extends Animal { ... }
+
+class Cat extends Animal {
+  void chase(covariant Mouse x) { ... }
+}
+```
+
+#### Overridable operators
+
+![重载运算符](../image-resources/dart/运算符重载.png)
+
+- != 不需要重载，重载==就可以了
+
+```Dart
+class Vector {
+  final int x, y;
+
+  Vector(this.x, this.y);
+
+  Vector operator +(Vector v) => Vector(x + v.x, y + v.y);
+  Vector operator -(Vector v) => Vector(x - v.x, y - v.y);
+
+  // Operator == and hashCode not shown. For details, see note below.
+  // ···
+}
+```
+
+### Enumerated types
+
+- index()方法返回index,第一个枚举返回0
+- 返回所有的枚举 values
+- 枚举可以用在switch中
+
+```Dart
+enum Color { red, green, blue }
+assert(Color.red.index == 0);
+
+List<Color> colors = Color.values;
+assert(colors[2] == Color.blue);
+```
+
+### mixin
+
+- **可以认为mixin是java中带有成员变量的interface，定义了不同继承体系中可以通用的方法与变量**
+- minin的原理与用途：
+    - 首先**Dart是单继承**
+    - 如果两个类继承的父类不同，但是有相同的功能，可以使用接口来实现
+    - 但是接口只有方法签名，没有实现，在两个不同的类中可能要将相同的代码写一遍
+    - 如果相同功能的实现也相同，可以将相同功能的代码放到一个mixin中，然后这两个类使用mixin就可以了
+
+- 实现一个mixin
+    - 创建一个继承Object的类
+    - 不要创建构造函数，只有默认构造函数
+    - 除非要将mixin当作普通类使用，否则使用mixin而非class
+
+```Dart
+// 首先定义一个mixin
+// 里面可以包含代码和成员变量
+mixin Musical {
+  bool canPlayPiano = false;
+  bool canCompose = false;
+  bool canConduct = false;
+
+  void entertainMe() {
+    if (canPlayPiano) {
+      print('Playing piano');
+    } else if (canConduct) {
+      print('Waving hands');
+    } else {
+      print('Humming to self');
+    }
+  }
+}
+
+class A {}
+
+class B {}
+
+// C和D继承体系不一样，但是却同时有Musical中的成员变量与方法
+class C extends A with Musical {
+  
+}
+
+class D extends B with Musical {
+  
+}
+
+
+void main() {
+  C c = new C();
+  c.canCompose = true;
+  c.entertainMe();
+  
+  D d = new D();
+  d.canPlayPiano = true;
+  d.entertainMe();
+}
+```
+
+- 指定只有某些类可以使用mixin,使用on
+
+```Dart
+// 只有Musician可以使用mixin MusicalPerformer
+mixin MusicalPerformer on Musician {
+  // ···
+}
+```
+
+### Class variables and methods
+
+#### static
+
+- 静态变量只有当要用的时候，才会初始化
