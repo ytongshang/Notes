@@ -66,14 +66,18 @@ assert(lineCount == null)
 - **final变量必须在构造函数体开始前初始化，在变量定义的地方，构造函数参数或Initializer list**
 
 ```Dart
-class Test {
-  final int _a = 1;
-  final int _b;
-
-  Test (int a) : _b = a {
-    print("");
-  }
+class TestFinal {
+  // 在定义变量的地方初始化
+  final int a = -1;
+  final int b;
+  final int c;
+  final int d;
+  
+  // 用语法糖在构造函数的参数中初始化
+  // 在初始化列表中初始化
+  TestFinal(this.b, this.c, int d) : d = d;
 }
+
 ```
 
 ## 类型
@@ -154,7 +158,7 @@ gifts['fifth'] = 'golden rings';
 
 ### Function
 
-- **Dart中function也是对象,也是first-class对象**
+- **Dart中function也是对象,也是first-class对象**
 - => 等号等价于 { return expr; }， 返回中只能有一个表达式，而不是语句，因而可以是条件表达式
 
 ```Dart
@@ -164,7 +168,7 @@ bool isNoble(int atomicNumber) => _nobleGases[atomicNumber] != null;
 ### 函数参数
 
 - 函数调用时使用命名参数
-- @required，表示必须的参数
+- **@required表示必须的参数，import 'package:meta/meta.dart'; 但是参数本身可以为null**
 - 用[]来表示可选参数
 - 参数用=指定默认值，但默认值必须是编译常量
 
@@ -206,6 +210,7 @@ void doStuff(
 ### 返回值
 
 - **所有的函数都返回一个值，如果没有指定返回值，那么返回null**
+- 如果指定返回void，那么返回值不能与null比较
 
 ```Dart
 foo() {}
@@ -477,7 +482,7 @@ print('The type of a is ${a.runtimeType}');
 ### 对象初始化
 
 - Dart中所有变量都是对象，**所有未初始化的成员变量都是null**
-- **所有成员变量都会生成一个隐式的getter方法，所有非final的成员变量都会生成一个隐式的setter方法**，而私有变量(以_开头的变量)不会自动生成getter与setter
+- **所有成员变量都会生成一个隐式的getter方法，所有非final的成员变量都会生成一个隐式的setter方法**
 - **如果在定义成员变量的地方初始化，那么成员变量的初始化早于构造函数与初始化列表**
 
 ### 构造函数
@@ -663,7 +668,6 @@ class Logger {
 #### getters and setters
 
 - **每一个成员变量都有一个隐式的getter,非final的对象都有一个隐式的setter**
-- private的成员(_开头的)没有隐式的setter与getter
 - **可以通过实现getter与setter为对象增加额外的属性**
 
 ```Dart
@@ -856,3 +860,84 @@ mixin MusicalPerformer on Musician {
 #### static
 
 - 静态变量只有当要用的时候，才会初始化
+
+## Generics
+
+### 常见使用
+
+- Using collection literals
+
+```Dart
+var names = <String>['Seth', 'Kathy', 'Lars'];
+var pages = <String, String>{
+  'index.html': 'Homepage',
+  'robots.txt': 'Hints for web robots',
+  'humans.txt': 'We are people, not machines'
+};
+```
+
+- 构造函数中
+
+```Dart
+var names = List<String>();
+names.addAll(['Seth', 'Kathy', 'Lars']);
+var nameSet = Set<String>.from(names);
+```
+
+### Dart中泛型与java的不同
+
+- **java中的泛型使用擦除实现，而Dart不是的**
+
+```Dart
+var names = List<String>();
+names.addAll(['Seth', 'Kathy', 'Lars']);
+print(names is List<String>); // true
+
+var names = <String>["Seth", "Kathy", "Lars"];
+var ids = <int>[1, 2, 3];
+// 在java中两者都是list,类型是一样的，但是在Dart中两者的类型是不一样的
+print(names.runtimeType == ids.runtimeType);
+```
+
+### 泛型中的extends
+
+- 泛型参数中可以指定
+
+```Dart
+class Foo<T extends SomeBaseClass> {
+  // Implementation goes here...
+  String toString() => "Instance of 'Foo<$T>'";
+}
+
+class Extender extends SomeBaseClass {...}
+
+var someBaseClassFoo = Foo<SomeBaseClass>();
+var extenderFoo = Foo<Extender>();
+```
+
+### 泛型方法
+
+- [Using Generic Methods.](https://github.com/dart-lang/sdk/blob/master/pkg/dev_compiler/doc/GENERIC_METHODS.md)
+- 与java的不同之处在于，**java中除了static方法，否则不能使用定义类时指定泛型参数之外的泛型参数，但是Dart中是可以的**
+
+```Dart
+TestGeneric testGeneric = new TestGeneric<int>();
+  testGeneric.test(<String>["a", "b", "c"]);
+```
+
+## Libraries and visibility
+
+- Dart中一个每一个app都是一个library
+- _开头的成员变量与方法在library中都仅在同一个libary中可见
+
+```Dart
+// 指定一个library
+library learningdart;
+
+// 系统的以dart开头
+import 'dart:html';
+
+// 自己的以package开头的schem
+
+import 'package:test/test.dart';
+```
