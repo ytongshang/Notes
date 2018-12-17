@@ -8,19 +8,62 @@
 - [类型](#类型)
     - [string](#string)
     - [map list](#map-list)
+        - [List](#list)
     - [Function](#function)
     - [函数参数](#函数参数)
     - [返回值](#返回值)
-    - [cascade](#cascade)
     - [匿名函数](#匿名函数)
     - [闭包](#闭包)
-- [运算符](#运算符)
+- [Operators](#operators)
+    - [算术运算符](#算术运算符)
+    - [type test operators](#type-test-operators)
+    - [赋值](#赋值)
+    - [条件运算符](#条件运算符)
+    - [cascade](#cascade)
     - [其它](#其它)
 - [语句](#语句)
     - [循环](#循环)
 - [Exceptions](#exceptions)
     - [catch](#catch)
     - [finally](#finally)
+- [Class](#class)
+    - [runtimeType](#runtimetype)
+    - [对象初始化](#对象初始化)
+    - [构造函数](#构造函数)
+        - [命名构造函数](#命名构造函数)
+        - [初始化列表](#初始化列表)
+        - [调用父类的构造函数](#调用父类的构造函数)
+        - [调用自身](#调用自身)
+        - [Constant constructors](#constant-constructors)
+        - [Factory constructors](#factory-constructors)
+    - [Methods](#methods)
+        - [getters and setters](#getters-and-setters)
+        - [abstract](#abstract)
+        - [Implicit interfaces](#implicit-interfaces)
+        - [Extending a class](#extending-a-class)
+        - [Overriding members](#overriding-members)
+        - [Overridable operators](#overridable-operators)
+    - [Enumerated types](#enumerated-types)
+    - [mixin](#mixin)
+    - [Class variables and methods](#class-variables-and-methods)
+        - [static](#static)
+- [Generics](#generics)
+    - [常见使用](#常见使用)
+    - [Dart中泛型与java的不同](#dart中泛型与java的不同)
+    - [泛型中的extends](#泛型中的extends)
+    - [泛型方法](#泛型方法)
+- [Libraries and visibility](#libraries-and-visibility)
+    - [Lazily loading a library](#lazily-loading-a-library)
+    - [Implementing libraries](#implementing-libraries)
+- [Asynchrony support](#asynchrony-support)
+    - [await与async](#await与async)
+    - [Streams](#streams)
+    - [Generators](#generators)
+        - [使用方法](#使用方法)
+- [Callable classed](#callable-classed)
+- [Isolates](#isolates)
+- [Typedefs](#typedefs)
+- [Metadata](#metadata)
 
 ## 基本概念
 
@@ -941,3 +984,223 @@ import 'dart:html';
 
 import 'package:test/test.dart';
 ```
+
+- library prefix
+
+```Dart
+import 'package:lib1/lib1.dart';
+import 'package:lib2/lib2.dart' as lib2;
+
+// Uses Element from lib1.
+Element element1 = Element();
+
+// Uses Element from lib2.
+lib2.Element element2 = lib2.Element();
+```
+
+- import part of a library
+
+```Dart
+// Import only foo.
+import 'package:lib1/lib1.dart' show foo;
+
+// Import all names EXCEPT foo.
+import 'package:lib2/lib2.dart' hide foo;
+```
+
+### Lazily loading a library
+
+- 可以使用lazily引入的地方
+  - 减少app启动时间
+  - ab测试
+  - load一些比较少用的功能
+
+- 具体使用
+  - 使用deferred as 引入
+  - 当需要的时候，使用loadLibrary
+
+```Dart
+// 后面的引入都会放到hello的namespace中
+import 'package:greetings/hello.dart' deferred as hello;
+```
+
+```Dart
+// 使用async和await加载libary
+Future greet() async {
+  await hello.loadLibrary();
+  hello.printGreeting();
+}
+```
+
+- 注意事项
+  - **一个deferred libary在加载完成之前，常量并不是常量**
+  - **不能使用deferred libary中的类型**，考虑将接口类型放到一个import file和deferred library都会引入的library
+  - **Dart会将代码引入到deferred as 的命名空间中**
+  - 返回一个Future对象
+
+### Implementing libraries
+
+- [Create Library Packages](https://www.dartlang.org/guides/libraries/create-library-packages)
+
+## Asynchrony support
+
+- Dart中使用异步主要有
+  - await与async
+  - Future 相关的API [Future API](https://www.dartlang.org/guides/libraries/library-tour#future)
+
+### await与async
+
+- **也许async是一个耗时的方法，但是并不会等待方法执行完成**
+- **await必须与async方法一起使用**
+- **await返回一个Future对象**
+- **使用try catch和final来处理await方法中的错误与清理工作**
+- 一个async方法中，可以多次调用await
+
+```Dart
+Future checkVersion() async {
+  var version = await lookUpVersion();
+  // Do something with version
+}
+```
+
+```Dart
+try {
+  version = await lookUpVersion();
+} catch (e) {
+  // React to inability to look up the version
+} finally {
+  // clean up
+}
+```
+
+```Dart
+// 可以多次使用async
+Future test() async {
+  var entrypoint = await findEntrypoint();
+  var exitCode = await runExecutable(entrypoint, args);
+  await flushThenExit(exitCode);
+}
+```
+
+### Streams
+
+- 使用streams的方式
+  - 使用async与await for
+  - 使用Streams相关的API [Stream API](https://www.dartlang.org/guides/libraries/library-tour#stream)
+
+- 一定要配合async方法一起使用
+- await for中的对象一定要是一个Stream
+- 使用await for一定要注意，要确定我们的确需要stream所有的结果
+- 退出stream,使用break与return
+
+```Dart
+Future main() async {
+  // ...
+  await for (var request in requestServer) {
+    handleRequest(request);
+  }
+  // ...
+}
+```
+
+### Generators
+
+- 同步：Iterable
+- 异步：Stream
+- [Generator](https://www.dartlang.org/articles/language/beyond-async)
+
+#### 使用方法
+
+- 同步方法上加上 sync*, 异步方法上加上async*
+- 使用yield产生数据
+
+```Dart
+// 同步sync*
+Iterable<int> naturalsTo(int n) sync* {
+  int k = 0;
+  while (k < n) yield k++;
+}
+```
+
+```Dart
+Stream<int> asynchronousNaturalsTo(int n) async* {
+  int k = 0;
+  while (k < n) yield k++;
+}
+```
+
+- 如果generator是循环的，可以通过使用yield* 增加性能
+
+```Dart
+Iterable<int> naturalsDownFrom(int n) sync* {
+  if (n > 0) {
+    yield n;
+    yield* naturalsDownFrom(n - 1);
+  }
+}
+```
+
+## Callable classed
+
+- [Emulating Functions in Dart](https://www.dartlang.org/articles/language/emulating-functions)
+- 如果想让类对象能够像函数一样被调用，实现call()方法
+- Dart遇到这种语法时，首先当函数调用，不成功时，尝试调用参数合适的call方法，如果也失败了，尝试调用noSuchMethod方法
+
+```Dart
+class WannabeFunction {
+  call(String a, String b, String c) => '$a $b $c!';
+}
+
+main() {
+  var wf = new WannabeFunction();
+  var out = wf("Hi","there,","gang");
+  print('$out');
+}
+```
+
+## Isolates
+
+## Typedefs
+
+- 目前Dart仅支持Function的typedef
+- **typedef的好处是可以保存函数的类型信息**
+
+```Dart
+typedef Compare = int Function(Object a, Object b);
+
+class SortedCollection {
+  Compare compare;
+
+  SortedCollection(this.compare);
+}
+
+// Initial, broken implementation.
+int sort(Object a, Object b) => 0;
+
+void main() {
+  SortedCollection coll = SortedCollection(sort);
+  assert(coll.compare is Function);
+  assert(coll.compare is Compare);
+}
+```
+
+- **typedef中因为相当于别名，也支持泛型**
+
+```Dart
+typedef Compare<T> = int Function(T a, T b);
+
+int sort(int a, int b) => a - b;
+
+void main() {
+  assert(sort is Compare<int>); // True!
+}
+```
+
+## Metadata
+
+- 相当于java中的anotation
+- 常见的metadata
+  - @deprecated
+  - @override
+  - @Todo
+  - @required
