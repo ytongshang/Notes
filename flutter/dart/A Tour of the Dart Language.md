@@ -833,7 +833,7 @@ assert(colors[2] == Color.blue);
 
 ### mixin
 
-- **可以认为mixin是java中带有成员变量的interface，定义了不同继承体系中可以通用的方法与变量**
+- **可以认为mixin是java中带有变量与代码实现的interface，定义了在不同继承体系中可以通用的方法与变量**
 - minin的原理与用途：
     - 首先**Dart是单继承**
     - 如果两个类继承的父类不同，但是有相同的功能，可以使用接口来实现
@@ -964,6 +964,14 @@ var extenderFoo = Foo<Extender>();
 - 与java的不同之处在于，**java中除了static方法，否则不能使用定义类时指定泛型参数之外的泛型参数，但是Dart中是可以的**
 
 ```Dart
+
+class TestGeneric<T extends num> {
+
+  bool test<E> (List<E> list) {
+    return false;
+  }
+}
+
 TestGeneric testGeneric = new TestGeneric<int>();
   testGeneric.test(<String>["a", "b", "c"]);
 ```
