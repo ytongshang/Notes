@@ -45,7 +45,7 @@ clip：auto | <shape>
 clip: rect(<top>, <right>, <bottom>, <left>);
 ```
 
-![css_position_clip](../image-resources/web/css/css_position_clip.jpg)
+![css_position_clip](../../image-resources/web/css/css_position_clip.jpg)
 
 - 依据上-右-下-左的顺序**提供相对自身左上角为(0,0)坐标计算的四个偏移数值**，其中任一数值都可用auto替换，即此边不剪切
 
@@ -58,6 +58,7 @@ clip: rect(<top>, <right>, <bottom>, <left>);
 #### display:none
 
 - 相当于Android中的View.GONE
+- visibility:hidden相当于Android中的View.INVISIBLE
 
 #### display:block display:inline
 
