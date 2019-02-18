@@ -77,3 +77,34 @@ let someValue: any = 'this is a string';
 let strLength: number = (someValue as string).length;
 strLength = (<string>someValue).length;
 ```
+
+## 展开
+
+-   展开操作符正与解构相反。 它允许你将一个数组展开为另一个数组，或将一个对象展开为另一个对象
+
+```ts
+let first = [1, 2];
+let second = [3, 4];
+let bothPlus = [0, ...first, ...second, 5];
+
+// bothPlus [0,1,2,3,4,5]
+```
+
+-   对象展开
+    -   是一个浅拷贝，也就是说如果对象的属性为对象，原对象和展开后的对象中的对象属性指向是相同的
+    -   左至右进行处理，但结果仍为对象。 这就意味着出现在展开对象后面的属性会覆盖前面的属性
+    -   它仅包含对象**自身的可枚举属性**
+
+```ts
+class C {
+    p = 12;
+    m() {}
+}
+let c = new C();
+let clone = { ...c };
+clone.p; // ok
+clone.m(); // error!
+
+// class中的方实际上是定义在其prototype中间的
+// class中的方法 enumable为false
+```
