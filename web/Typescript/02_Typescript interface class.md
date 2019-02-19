@@ -368,3 +368,185 @@ class Image implements SelectableControl {
 
 class Location {}
 ```
+
+## Class
+
+### public protected private
+
+-   默认为 public
+-   当成员被标记成 private 时，它就不能在声明它的类的外部访问
+-   TypeScript 使用的是结构性类型系统。 当我们比较两种不同的类型时，并不在乎它们从何处而来，如果所有成员的类型都是兼容的，我们就认为它们的类型是兼容的,**但如果其中一个类型里包含一个 private 成员，那么只有当另外一个类型中也存在这样一个 private 成员， 并且它们都是来自同一处声明时，我们才认为这两个类型是兼容的,对于 protected 成员也使用这个规则**
+
+```ts
+class Animal {
+    private name: string;
+    constructor(theName: string) {
+        this.name = theName;
+    }
+}
+
+class Rhino extends Animal {
+    constructor() {
+        super('Rhino');
+    }
+}
+
+class Employee {
+    private name: string;
+    constructor(theName: string) {
+        this.name = theName;
+    }
+}
+
+let animal = new Animal('Goat');
+let rhino = new Rhino();
+let employee = new Employee('Bob');
+
+animal = rhino;
+animal = employee; // 错误: Animal 与 Employee 不兼容.
+```
+
+-   构造函数也可以被标记成 protected。 这意味着这个类不能在包含它的类外被实例化，但是能被继承
+
+```ts
+class Person {
+    protected name: string;
+    protected constructor(theName: string) {
+        this.name = theName;
+    }
+}
+
+// Employee 能够继承 Person
+class Employee extends Person {
+    private department: string;
+
+    constructor(name: string, department: string) {
+        super(name);
+        this.department = department;
+    }
+
+    public getElevatorPitch() {
+        return `Hello, my name is ${this.name} and I work in ${
+            this.department
+        }.`;
+    }
+}
+
+let howard = new Employee('Howard', 'Sales');
+let john = new Person('John'); // 错误: 'Person' 的构造函数是被保护的.
+```
+
+### readonly
+
+-   readonly 关键字将属性设置为只读的。 只读属性必须在声明时或构造函数里被初始化
+
+```ts
+class Octopus {
+    readonly name: string;
+    readonly numberOfLegs: number = 8;
+    constructor(theName: string) {
+        this.name = theName;
+    }
+}
+let dad = new Octopus('Man with the 8 strong legs');
+dad.name = 'Man with the 3-piece suit'; // 错误! name 是只读的.
+```
+
+### 参数属性
+
+-   **参数属性通过给构造函数参数添加一个访问限定符来声明。 使用 private 限定一个参数属性会声明并初始化一个私有成员；对于 public 和 protected 来说也是一样**
+
+```ts
+class Animal {
+    // 构造函数中有private的name属性，相当于定义了一个private的name属性
+    constructor(private name: string) {}
+    move(distanceInMeters: number) {
+        console.log(`${this.name} moved ${distanceInMeters}m.`);
+    }
+}
+```
+
+### 存取器
+
+-   TypeScript 支持通过 getters/setters 来截取对对象成员的访问。 它能帮助你有效的控制对对象成员的访问
+
+```ts
+let passcode = 'secret passcode';
+
+class Employee {
+    private _fullName: string;
+
+    get fullName(): string {
+        return this._fullName;
+    }
+
+    set fullName(newName: string) {
+        if (passcode && passcode == 'secret passcode') {
+            this._fullName = newName;
+        } else {
+            console.log('Error: Unauthorized update of employee!');
+        }
+    }
+}
+```
+
+### 静态属性
+
+-   static 修饰静态属性，这些属性存在于类本身上面而不是类的实例上
+
+```ts
+class Grid {
+    static origin = { x: 0, y: 0 };
+    calculateDistanceFromOrigin(point: { x: number; y: number }) {
+        let xDist = point.x - Grid.origin.x;
+        let yDist = point.y - Grid.origin.y;
+        return Math.sqrt(xDist * xDist + yDist * yDist) / this.scale;
+    }
+    constructor(public scale: number) {}
+}
+
+let grid1 = new Grid(1.0); // 1x scale
+let grid2 = new Grid(5.0); // 5x scale
+
+console.log(grid1.calculateDistanceFromOrigin({ x: 10, y: 10 }));
+console.log(grid2.calculateDistanceFromOrigin({ x: 10, y: 10 }));
+```
+
+### 抽象类
+
+-   abstract
+
+```ts
+abstract class Department {
+    constructor(public name: string) {}
+
+    printName(): void {
+        console.log('Department name: ' + this.name);
+    }
+
+    abstract printMeeting(): void; // 必须在派生类中实现
+}
+
+class AccountingDepartment extends Department {
+    constructor() {
+        super('Accounting and Auditing'); // 在派生类的构造函数中必须调用 super()
+    }
+
+    printMeeting(): void {
+        console.log('The Accounting Department meets each Monday at 10am.');
+    }
+
+    generateReports(): void {
+        console.log('Generating accounting reports...');
+    }
+}
+
+let department: Department; // 允许创建一个对抽象类型的引用
+department = new Department(); // 错误: 不能创建一个抽象类的实例
+department = new AccountingDepartment(); // 允许对一个抽象子类进行实例化和赋值
+department.printName();
+department.printMeeting();
+department.generateReports(); // 错误: 方法在声明的抽象类中不存在
+```
+
+###
