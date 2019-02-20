@@ -1,5 +1,16 @@
 # Promise
 
+-   [基本用法](#基本用法)
+-   [Promise.prototype.then()](#promiseprototypethen)
+-   [Promise.prototype.catch()](#promiseprototypecatch)
+-   [Promise.prototype.finally()](#promiseprototypefinally)
+-   [其它](#其它)
+
+    -   [Promise.all()](#promiseall)
+    -   [Promise.race()](#promiserace)
+    -   [Promise.resolve()](#promiseresolve)
+    -   [Promise.reject()](#promisereject)
+
 -   类似于 Java 中的 Future
 -   两个特点
     -   **对象的状态不受外界影响**。Promise 对象代表一个异步操作，有三种状态：pending（进行中）、fulfilled（已成功）和 rejected（已失败）。只有异步操作的结果，可以决定当前是哪一种状态，任何其他操作都无法改变这个状态
