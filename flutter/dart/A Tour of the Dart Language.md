@@ -10,10 +10,10 @@
     - [map list](#map-list)
         - [List](#list)
     - [Function](#function)
-    - [函数参数](#函数参数)
-    - [返回值](#返回值)
-    - [匿名函数](#匿名函数)
-    - [闭包](#闭包)
+        - [函数参数](#函数参数)
+        - [返回值](#返回值)
+        - [匿名函数](#匿名函数)
+        - [闭包](#闭包)
 - [Operators](#operators)
     - [算术运算符](#算术运算符)
     - [type test operators](#type-test-operators)
@@ -208,16 +208,16 @@ gifts['fifth'] = 'golden rings';
 bool isNoble(int atomicNumber) => _nobleGases[atomicNumber] != null;
 ```
 
-### 函数参数
+#### 函数参数
 
-- 函数调用时使用命名参数
+- 使用{param1, param2, …}来定义命名函数参数
 - **@required表示必须的参数，import 'package:meta/meta.dart'; 但是参数本身可以为null**
 - 用[]来表示可选参数
-- 参数用=指定默认值，但默认值必须是编译常量
+- 可以为命名函数参数与可选参数用=指定默认值，但默认值必须是编译期的常量
 
 ```Dart
+// {param1, param2, …}定义命名函数参数
 void enableFlags({bool bold, bool hidden}) {...}
-
 // 调用时可选的命名调用
 enableFlags(bold: true, hidden: false);
 
@@ -250,7 +250,7 @@ void doStuff(
 }
 ```
 
-### 返回值
+#### 返回值
 
 - **所有的函数都返回一个值，如果没有指定返回值，那么返回null**
 - 如果指定返回void，那么返回值不能与null比较
@@ -262,7 +262,7 @@ foo() {}
 print(foo() == null);
 ```
 
-### 匿名函数
+#### 匿名函数
 
 ```Dart
 ([[Type] param1[, …]]) {
@@ -271,18 +271,14 @@ print(foo() == null);
 
 // 参数用括号括起来，可以带上参数类型，也可以不带
 List<String> strList = ['abc', 'def', 'hij'];
-  strList.forEach( (String a) {
-    print(a);
-  });
+strList.forEach( (String a) {
+  print(a);
+});
 
-List<String> strList = ['abc', 'def', 'hij'];
-  strList.forEach( (a) {
-    print(a);
-  });
-
+strList.forEach((item) => print("$item"));
 ```
 
-### 闭包
+#### 闭包
 
 - 支持闭包
 
@@ -446,6 +442,7 @@ a?.value
 
 ### 循环
 
+- 普通的for循环
 - 实现了Iterable使用forEach()
 - List,Set使用for-in
 
@@ -453,6 +450,26 @@ a?.value
 var collection = [0, 1, 2];
 for (var x in collection) {
   print(x); // 0 1 2
+}
+```
+
+### switch
+
+- 强制break,否则的话，需要使用label语句来实现fall through
+
+```Dart
+var command = 'CLOSED';
+switch (command) {
+  case 'CLOSED':
+    executeClosed();
+    continue nowClosed;
+  // Continues executing at the nowClosed label.
+
+  nowClosed:
+  case 'NOW_CLOSED':
+    // Runs for both CLOSED and NOW_CLOSED.
+    executeNowClosed();
+    break;
 }
 ```
 
@@ -530,7 +547,7 @@ print('The type of a is ${a.runtimeType}');
 
 ### 构造函数
 
-- 语法糖：成员变量的初始化
+- ClassName or ClassName.identifier
 - **构造函数如果函数体为空，可以直接省略{},用;替代**
 
 ```Dart
