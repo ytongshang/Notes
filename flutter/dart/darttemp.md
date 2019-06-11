@@ -103,3 +103,80 @@ class Logger {
   }
 }
 ```
+
+## implementes
+
+- 一个类实际定义了它的对外接口，在Dart中不仅可以Implements一个Interface，还可以Implements一个类
+- Implements一个类，实际上实现了类的对外接口，但是不包含它的实现
+
+```Dart
+// package:flutter_app/test.dart
+class Point {
+  final int x;
+  final int y;
+  int _size;
+
+  Point(this.x, this.y);
+}
+
+// package:flutter_app/test.dart
+class PointImplement implements Point {
+  @override
+  int get x => null;
+
+  @override
+  int get y => null;
+
+  //  在同一个package下，所以需要重写私有的_size
+  @override
+  int _size;
+}
+
+// package:flutter_app/test2.dart
+// 与test.dart不在同一个包下，所以不需要重写_size
+import 'package:flutter_app/test.dart';
+class PointImplement2 implements Point {
+  @override
+  int get x => null;
+
+  @override
+  int get y => null;
+}
+```
+
+## covariant 
+
+- 相当于java中的类型协变
+- 返回值的类型协变是默认支持的
+- 函数参数的类型协变，也就是参数是原来参数的子类，必须加上covariant关健字
+
+```Dart
+class Animal {
+  void chase(Animal b) {
+
+  }
+
+  Animal test() {
+    return this;
+  }
+}
+
+class Mouse extends Animal {
+
+}
+
+class Cat extends Animal {
+
+  // 函数参数协变，加上covariant关健字
+  @override
+  void chase(covariant Mouse b) {
+    super.chase(b);
+  }
+
+  // 返回值的类型协变，默认是支持的
+  @override
+  Cat test() {
+    return this;
+  }
+}
+```
