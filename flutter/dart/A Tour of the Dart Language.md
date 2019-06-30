@@ -816,7 +816,7 @@ class Cat extends Animal {
 
 #### Overridable operators
 
-![重载运算符](../image-resources/dart/运算符重载.png)
+![重载运算符](../../image-resources/flutter/运算符重载.png)
 
 - != 不需要重载，重载==就可以了
 
