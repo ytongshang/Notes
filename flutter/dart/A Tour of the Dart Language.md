@@ -1,75 +1,77 @@
 # A Tour of the Dart Language
 
-- [A Tour of the Dart Language](https://www.dartlang.org/guides/language/language-tour)
+-   [A Tour of the Dart Language](https://www.dartlang.org/guides/language/language-tour)
 
-- [基本概念](#基本概念)
-- [变量](#变量)
-- [final 与 const](#final-与-const)
-- [类型](#类型)
-    - [string](#string)
-    - [map list](#map-list)
-        - [List](#list)
-    - [Function](#function)
-        - [函数参数](#函数参数)
-        - [返回值](#返回值)
-        - [匿名函数](#匿名函数)
-        - [闭包](#闭包)
-- [Operators](#operators)
-    - [算术运算符](#算术运算符)
-    - [type test operators](#type-test-operators)
-    - [赋值](#赋值)
-    - [条件运算符](#条件运算符)
-    - [cascade](#cascade)
-    - [其它](#其它)
-- [语句](#语句)
-    - [循环](#循环)
-- [Exceptions](#exceptions)
-    - [catch](#catch)
-    - [finally](#finally)
-- [Class](#class)
-    - [runtimeType](#runtimetype)
-    - [对象初始化](#对象初始化)
-    - [构造函数](#构造函数)
-        - [命名构造函数](#命名构造函数)
-        - [初始化列表](#初始化列表)
-        - [调用父类的构造函数](#调用父类的构造函数)
-        - [调用自身](#调用自身)
-        - [Constant constructors](#constant-constructors)
-        - [Factory constructors](#factory-constructors)
-    - [Methods](#methods)
-        - [getters and setters](#getters-and-setters)
-        - [abstract](#abstract)
-        - [Implicit interfaces](#implicit-interfaces)
-        - [Extending a class](#extending-a-class)
-        - [Overriding members](#overriding-members)
-        - [Overridable operators](#overridable-operators)
-    - [Enumerated types](#enumerated-types)
-    - [mixin](#mixin)
-    - [Class variables and methods](#class-variables-and-methods)
-        - [static](#static)
-- [Generics](#generics)
-    - [常见使用](#常见使用)
-    - [Dart中泛型与java的不同](#dart中泛型与java的不同)
-    - [泛型中的extends](#泛型中的extends)
-    - [泛型方法](#泛型方法)
-- [Libraries and visibility](#libraries-and-visibility)
-    - [Lazily loading a library](#lazily-loading-a-library)
-    - [Implementing libraries](#implementing-libraries)
-- [Asynchrony support](#asynchrony-support)
-    - [await与async](#await与async)
-    - [Streams](#streams)
-    - [Generators](#generators)
-        - [使用方法](#使用方法)
-- [Callable classed](#callable-classed)
-- [Isolates](#isolates)
-- [Typedefs](#typedefs)
-- [Metadata](#metadata)
+-   [基本概念](#基本概念)
+-   [变量](#变量)
+-   [final 与 const](#final-与-const)
+-   [类型](#类型)
+    -   [string](#string)
+    -   [map list](#map-list)
+        -   [List](#list)
+    -   [Function](#function)
+        -   [函数参数](#函数参数)
+        -   [返回值](#返回值)
+        -   [匿名函数](#匿名函数)
+        -   [闭包](#闭包)
+-   [Operators](#operators)
+    -   [算术运算符](#算术运算符)
+    -   [type test operators](#type-test-operators)
+    -   [赋值](#赋值)
+    -   [条件运算符](#条件运算符)
+    -   [cascade](#cascade)
+    -   [其它](#其它)
+-   [语句](#语句)
+    -   [循环](#循环)
+    -   [switch](#switch)
+-   [Exceptions](#exceptions)
+    -   [catch](#catch)
+    -   [finally](#finally)
+-   [Class](#class)
+    -   [runtimeType](#runtimetype)
+    -   [对象初始化](#对象初始化)
+    -   [构造函数](#构造函数)
+        -   [初始化列表](#初始化列表)
+        -   [调用父类的构造函数](#调用父类的构造函数)
+        -   [调用自身](#调用自身)
+        -   [Constant constructors](#constant-constructors)
+        -   [Factory constructors](#factory-constructors)
+        -   [命名构造函数](#命名构造函数)
+    -   [Methods](#methods)
+        -   [getters and setters](#getters-and-setters)
+        -   [abstract](#abstract)
+        -   [Implicit interfaces](#implicit-interfaces)
+        -   [Extending a class](#extending-a-class)
+        -   [Overriding members](#overriding-members)
+        -   [类型协变 covariant](#类型协变-covariant)
+        -   [Overridable operators](#overridable-operators)
+    -   [Enumerated types](#enumerated-types)
+    -   [mixin](#mixin)
+    -   [Class variables and methods](#class-variables-and-methods)
+        -   [static](#static)
+-   [Generics](#generics)
+    -   [常见使用](#常见使用)
+    -   [Dart 中泛型与 java 的不同](#dart-中泛型与-java-的不同)
+    -   [泛型中的 extends](#泛型中的-extends)
+    -   [泛型方法](#泛型方法)
+-   [Libraries and visibility](#libraries-and-visibility)
+    -   [Lazily loading a library](#lazily-loading-a-library)
+    -   [Implementing libraries](#implementing-libraries)
+-   [Asynchrony support](#asynchrony-support)
+    -   [await 与 async](#await-与-async)
+    -   [Streams](#streams)
+    -   [Generators](#generators)
+        -   [使用方法](#使用方法)
+-   [Callable classed](#callable-classed)
+-   [Isolates](#isolates)
+-   [Typedefs](#typedefs)
+-   [Metadata](#metadata)
 
 ## 基本概念
 
-- 一切都是对象，所有继承于Object,int,double也是Object
-- **函数支持全局函数，也支持类的成员与静态函数**
-- **支持全局变量，也支持类的成员与静态变量**
+-   一切都是对象，所有继承于 Object,int,double 也是 Object
+-   **函数支持全局函数，也支持类的成员与静态函数**
+-   **支持全局变量，也支持类的成员与静态变量**
 
 ```Dart
 void main() {
@@ -85,17 +87,17 @@ void printInteger(int number) {
 }
 ```
 
-- **dart没有public,protected和private,以下滑线开头的标识符对于library是private的**
+-   **dart 没有 public,protected 和 private,以下滑线开头的标识符对于 library 是 private 的**
 
 ## 变量
 
-- **dart是强类型语言，如果类型不定，使用dynamic与object**
+-   **dart 是强类型语言，如果类型不定，使用 dynamic 与 object**
 
 ```Dart
 dynamic name = "Bob'
 ```
 
-- **所有变量没有初始化为null,即使是int,因为int也是对象**
+-   **所有变量没有初始化为 null,即使是 int,因为 int 也是对象**
 
 ```Dart
 int lineCount;
@@ -104,9 +106,9 @@ assert(lineCount == null)
 
 ## final 与 const
 
-- final只能被设置一次值
-- **const是编译期间的常量**，const隐式是final的
-- **final变量必须在构造函数体开始前初始化，在变量定义的地方，构造函数参数或Initializer list**
+-   final 只能被设置一次值
+-   **const 是编译期间的常量**，const 隐式是 final 的
+-   **final 变量必须在构造函数体开始前初始化，在变量定义的地方，构造函数参数或 Initializer list**
 
 ```Dart
 class TestFinal {
@@ -115,7 +117,7 @@ class TestFinal {
   final int b;
   final int c;
   final int d;
-  
+
   // 用语法糖在构造函数的参数中初始化
   // 在初始化列表中初始化
   TestFinal(this.b, this.c, int d) : d = d;
@@ -127,7 +129,7 @@ class TestFinal {
 
 ### string
 
-- 在string中使用变量或表达式的值，$variableName (or ${expression})
+-   在 string 中使用变量或表达式的值，$variableName (or ${expression})
 
 ```Dart
 printInteger(int aNumber) {
@@ -135,7 +137,7 @@ printInteger(int aNumber) {
 }
 ```
 
-- 多行string,使用三层引号
+-   多行 string,使用三层引号
 
 ```Dart
 var s1 = '''
@@ -147,7 +149,7 @@ var s2 = """This is also a
 multi-line string.""";
 ```
 
-- **raw string,不进行转义,字符串前加上r**
+-   **raw string,不进行转义,字符串前加上 r**
 
 ```Dart
 var s = r'In a raw string, not even \n gets special treatment.';
@@ -176,9 +178,9 @@ gifts['fifth'] = 'golden rings';
 
 #### List
 
-- **List的构造函数中如果指定长度，那么它是定长的，相当于数组，向其中添加元素不能超过初始指定的长度**
-- 如果不指定长度，那么相当于ArrayList，会自增长
-- **List如果调用length指定长度，那么[0, length)范围内的“空”出来**
+-   **List 的构造函数中如果指定长度，那么它是定长的，相当于数组，向其中添加元素不能超过初始指定的长度**
+-   如果不指定长度，那么相当于 ArrayList，会自增长
+-   **List 如果调用 length 指定长度，那么[0, length)范围内的“空”出来**
 
 ```Dart
   List<int> l = new List(2);
@@ -201,8 +203,8 @@ gifts['fifth'] = 'golden rings';
 
 ### Function
 
-- **Dart中function也是对象,也是first-class对象**
-- => 等号等价于 { return expr; }， 返回中只能有一个表达式，而不是语句，因而可以是条件表达式
+-   **Dart 中 function 也是对象,也是 first-class 对象**
+-   => 等号等价于 { return expr; }， 返回中只能有一个表达式，而不是语句，因而可以是条件表达式
 
 ```Dart
 bool isNoble(int atomicNumber) => _nobleGases[atomicNumber] != null;
@@ -210,10 +212,10 @@ bool isNoble(int atomicNumber) => _nobleGases[atomicNumber] != null;
 
 #### 函数参数
 
-- 使用{param1, param2, …}来定义命名函数参数
-- **@required表示必须的参数，import 'package:meta/meta.dart'; 但是参数本身可以为null**
-- 用[]来表示可选参数
-- 可以为命名函数参数与可选参数用=指定默认值，但默认值必须是编译期的常量
+-   使用{param1, param2, …}来定义命名函数参数
+-   **@required 表示必须的参数，import 'package:meta/meta.dart'; 但是参数本身可以为 null**
+-   用[]来表示可选参数
+-   可以为命名函数参数与可选参数用=指定默认值，但默认值必须是编译期的常量
 
 ```Dart
 // {param1, param2, …}定义命名函数参数
@@ -252,8 +254,8 @@ void doStuff(
 
 #### 返回值
 
-- **所有的函数都返回一个值，如果没有指定返回值，那么返回null**
-- 如果指定返回void，那么返回值不能与null比较
+-   **所有的函数都返回一个值，如果没有指定返回值，那么返回 null**
+-   如果指定返回 void，那么返回值不能与 null 比较
 
 ```Dart
 foo() {}
@@ -280,7 +282,7 @@ strList.forEach((item) => print("$item"));
 
 #### 闭包
 
-- 支持闭包
+-   支持闭包
 
 ```Dart
 Function makeAdder(num addBy) {
@@ -299,7 +301,7 @@ void main() {
 }
 ```
 
-- 函数相等性
+-   函数相等性
 
 ```Dart
 void foo() {} // A top-level function
@@ -340,36 +342,36 @@ void main() {
 
 ## Operators
 
-- **dart支持运算符重载**
-- 对于双目运算符，运算符左边的对象决定了使用的是哪一个重载的运算符
+-   **dart 支持运算符重载**
+-   对于双目运算符，运算符左边的对象决定了使用的是哪一个重载的运算符
 
 ```Dart
 assert(5 / 2 == 2.5); // Result is a double
 assert(5 ~/ 2 == 2); // Result is an int
 ```
 
-Description              | Operator
--------------------------|---------------------------------------------------------------------------------
-unary postfix            | expr++    expr--    ()    []     .      ?.
-unary prefix             | -expr    !expr    ~expr    ++expr    --expr
-multiplicative           | *    /    %  ~/
-additive                 | +    -
-shift                    | <<    >>
-bitwise AND              | &
-bitwise XOR              | ^
-bitwise OR               | &#124;
-relational and type test | >=    >    <=    <    as    is    is!
-equality                 | ==    !=
-logical AND              | &&
-logical OR               | &#124;&#124;
-if null                  | ??
-conditional              | expr1 ? expr2 : expr3
-cascade                  | ..
-assignment               | =    *=    /=    ~/=    %=    +=    -=    <<=    >>=    &=  ^=    &#124;=    ??=
+| Description              | Operator                                        |
+|--------------------------|-------------------------------------------------|
+| unary postfix            | expr++ expr-- () [] . ?.                        |
+| unary prefix             | -expr !expr ~expr ++expr --expr                 |
+| multiplicative           | \* / % ~/                                       |
+| additive                 | + -                                             |
+| shift                    | << >>                                           |
+| bitwise AND              | &                                               |
+| bitwise XOR              | ^                                               |
+| bitwise OR               | &#124;                                          |
+| relational and type test | >= > <= < as is is!                             |
+| equality                 | == !=                                           |
+| logical AND              | &&                                              |
+| logical OR               | &#124;&#124;                                    |
+| if null                  | ??                                              |
+| conditional              | expr1 ? expr2 : expr3                           |
+| cascade                  | ..                                              |
+| assignment               | = \*= /= ~/= %= += -= <<= >>= &= ^= &#124;= ??= |
 
 ### 算术运算符
 
-- ~/ 除法，返回整数
+-   ~/ 除法，返回整数
 
 ```Dart
 // Result is a double
@@ -381,7 +383,7 @@ assert(5 ~/ 2 == 2);
 
 ### type test operators
 
-- as is is!
+-   as is is!
 
 ```Dart
 // 先进行类型检测
@@ -395,7 +397,7 @@ if (emp is Person) {
 
 ### 赋值
 
-- = 和 ??=
+-   = 和 ??=
 
 ```Dart
 // 无论a是什么，都将value的值赋值给它
@@ -407,8 +409,8 @@ b ??= value;
 
 ### 条件运算符
 
-- condition ? expr1 : expr2
-- expr1 ?? expr2 **如果expr1不为null,返回expr1,否则返回expr2**
+-   condition ? expr1 : expr2
+-   expr1 ?? expr2 **如果 expr1 不为 null,返回 expr1,否则返回 expr2**
 
 ```Dart
 var visibility = isPublic ? 'public' : 'private';
@@ -419,7 +421,7 @@ String playerName(String name) => name ?? 'Guest';
 
 ### cascade
 
-- 对同一个对象，执行多个动作，相当于return this
+-   对同一个  对象，执行多个动作，相当于 return this
 
 ```Dart
 querySelector('#sample_text_id')
@@ -429,7 +431,7 @@ querySelector('#sample_text_id')
 
 ### 其它
 
-- ?. 条件成员操作符
+-   ?. 条件成员操作符
 
 ```Dart
 // 如果a为null,不做什么，否则调用a的test方法
@@ -442,9 +444,9 @@ a?.value
 
 ### 循环
 
-- 普通的for循环
-- 实现了Iterable使用forEach()
-- List,Set使用for-in
+-   普通的 for 循环
+-   实现了 Iterable 使用 forEach()
+-   List,Set 使用 for-in
 
 ```Dart
 var collection = [0, 1, 2];
@@ -455,7 +457,7 @@ for (var x in collection) {
 
 ### switch
 
-- 强制break,否则的话，需要使用label语句来实现fall through
+-   强制 break,否则的话，需要使用 label 语句来实现 fall through
 
 ```Dart
 var command = 'CLOSED';
@@ -475,9 +477,9 @@ switch (command) {
 
 ## Exceptions
 
-- **Dart可以抛出任何非null的对象，而不仅是Exception**，但一般情况下我们都会抛出实现了Error或Exception的类型对象
-- **Dart中抛出的都是unchecked exceptions**,因而方法不一定会指明抛出什么异常，我们也并不要求去捕获这些异常
-- 抛出异常是语句，所以在可以在=>中使用
+-   **Dart 可以抛出任何非 null 的对象，而不仅是 Exception**，但一般情况下我们都会抛出实现了 Error 或 Exception 的类型对象
+-   **Dart 中抛出的都是 unchecked exceptions**,因而方法不一定会指明抛出什么异常，我们也并不要求去捕获这些异常
+-   抛出异常是语句，所以在可以在=>中使用
 
 ```Dart
 void distanceTo(Point other) => throw UnimplementedError();
@@ -485,9 +487,9 @@ void distanceTo(Point other) => throw UnimplementedError();
 
 ### catch
 
-- on 用来指明类型
-- catch用来处理异常对象,**catch可以接受两个参数，第一个参数为异常对象，第二个为StackTrace**
-- **再次抛出异常，使用rethrow**
+-   on 用来指明类型
+-   catch 用来处理异常对象,**catch 可以接受两个参数，第一个参数为异常对象，第二个为 StackTrace**
+-   **再次抛出异常，使用 rethrow**
 
 ```Dart
 try {
@@ -525,15 +527,55 @@ void misbehave() {
 
 ### finally
 
-- 与java中的finally一样
+-   与 java 中的 finally 一样
+
+### 异常的捕获
+
+- 同步的异常可以捕获
+- **async函数中异常，通过await调用时，可以对整个捕获**
+
+```dart
+void test1() {
+  throw Exception("test1 exception");
+}
+
+Future test2() async {
+  return Future.delayed(Duration(seconds: 2), () {
+    throw Exception("test2 exception");
+  });
+}
+
+// 正常的捕获
+ try {
+    test1();
+  } catch (e) {
+    print(e);
+  }
+
+//  也可以捕获
+try {
+    await test2();
+  } catch (e) {
+    print("async catch");
+    print(e);
+  }
+
+// 不使用await,这种异常捕获不了
+  try {
+    test2();
+  } catch (e) {
+    print("async catch");
+    print(e);
+  }
+```
 
 ## Class
 
-- **Dart中的关健字new不是必需的**
+-   **Dart 中的关健字 new 不是必需的**
 
 ### runtimeType
 
-- runtimeType返回运行时类型
+-   runtimeType 返回运行时类型
 
 ```Dart
 print('The type of a is ${a.runtimeType}');
@@ -541,14 +583,15 @@ print('The type of a is ${a.runtimeType}');
 
 ### 对象初始化
 
-- Dart中所有变量都是对象，**所有未初始化的成员变量都是null**
-- **所有成员变量都会生成一个隐式的getter方法，所有非final的成员变量都会生成一个隐式的setter方法**
-- **如果在定义成员变量的地方初始化，那么成员变量的初始化早于构造函数与初始化列表**
+-   Dart 中所有变量都是对象，**所有未初始化的成员变量都是 null**
+-   **所有成员变量都会生成一个隐式的 getter 方法，所有非 final 的成员变量都会生成一个隐式的 setter 方法**
+-   **如果在定义成员变量的地方初始化，那么成员变量的初始化早于构造函数与初始化列表**
 
 ### 构造函数
 
-- ClassName or ClassName.identifier
-- **构造函数如果函数体为空，可以直接省略{},用;替代**
+-   ClassName or ClassName.identifier
+-   **构造函数如果函数体为空，可以直接省略{},用;替代**
+-   **构造函数不会被继承**
 
 ```Dart
 class Point {
@@ -560,31 +603,11 @@ class Point {
 }
 ```
 
-- **构造函数不会被继承**
-
-#### 命名构造函数
-
-- 因为构造函数不会被继承，所以**如果子类想要调用父类的命名构造函数，那么子类必须自己实现同名的构造函数**
-
-```Dart
-class Point {
-  num x, y;
-
-  Point(this.x, this.y);
-
-  // Named constructor
-  Point.origin() {
-    x = 0;
-    y = 0;
-  }
-}
-```
-
 #### 初始化列表
 
-- **初始化列表先于构造函数体执行**
-- **final对象只能在定义成员变量的地方和初始化列表中初始化**，不能在构造函数中初始化
-- 可以在初始化列表中进行值判断
+-   **初始化列表先于构造函数体执行**
+-   **final 对象只能在定义成员变量的地方和初始化列表中初始化**，不能在构造函数中初始化
+-   可以在初始化列表中进行值判断
 
 ```Dart
 Point.fromJson(Map<String, num> json)
@@ -611,32 +634,6 @@ Point.withAssert(this.x, this.y) : assert(x >= 0) {
 }
 ```
 
-#### 调用父类的构造函数
-
-- 默认构造函数调用顺序：
-    - 初始化列表
-    - 父类构造函数
-    - 自己的构造函数
-- 可以手动指定初始化列表与父类构造函数的顺序，但是这两者都是在构造函数体执行前执行的
-
-```Dart
-class Person {
-  String firstName;
-
-  Person.fromJson(Map data) {
-    print('in Person');
-  }
-}
-
-class Employee extends Person {
-  // Person does not have a default constructor;
-  // you must call super.fromJson(data).
-  Employee.fromJson(Map data) : super.fromJson(data) {
-    print('in Employee');
-  }
-}
-```
-
 #### 调用自身
 
 ```Dart
@@ -653,8 +650,9 @@ class Point {
 
 #### Constant constructors
 
-- 返回的是一个编译期的常量对象
-- **构造方法加上const，并且所有的成员对象都需要为final**
+-   所有成员变量为 final
+-   构造函数前加上 const
+-   const 构造函数如果调用时间面也加上 const,返回的对象可能是同一个编译期的常量对象
 
 ```Dart
 class ImmutablePoint {
@@ -667,7 +665,7 @@ class ImmutablePoint {
 }
 ```
 
-- const位置
+-   const 位置
 
 ```Dart
 // 假设ImmutablePoint是const constractors
@@ -692,8 +690,9 @@ var b = ImmutablePoint(1, 1);
 
 #### Factory constructors
 
-- 工厂构造函数，factory
-- 主要用于不是每一次都创建新的对象
+-   工厂构造函数，factory, 主要用于不是每一次都创建新的对象
+-   可以返回同一个对象
+-   factory 构造函数中没法引用 this
 
 ```Dart
 class Logger {
@@ -723,12 +722,77 @@ class Logger {
 }
 ```
 
+#### 命名构造函数
+
+-   因为构造函数不会被继承，所以**如果子类想要调用父类的命名构造函数，那么子类必须自己实现同名的构造函数**
+
+```Dart
+class Point {
+  num x, y;
+
+  Point(this.x, this.y);
+
+  // Named constructor
+  Point.origin() {
+    x = 0;
+    y = 0;
+  }
+}
+```
+
+#### 对象构造顺序
+
+-   类继承后，类实例的初始化顺序
+    -   类按顺序定义的变量
+    -   initializer list
+    -   super 类型按顺序定义的成员变量
+    -   super 的构造函数
+    -   自身的构造函数
+
+```Dart
+String test(String a) {
+  print(a);
+  return a;
+}
+
+
+class Parent {
+  String parentVar = test("parentVar");
+
+  Parent(int x) {
+    print("Parent constructor");
+  }
+}
+
+class Child extends Parent {
+  int a = 0;
+
+  String childVar = test("childVar");
+
+  Child(int x, int y)
+      : a = x,
+        super(y) {
+    print("Child contructor");
+  }
+}
+
+void main() {
+  Child child = Child(1, 2);
+}
+
+// childVar
+// parentVar
+// Parent constructor
+// Child contructor
+
+```
+
 ### Methods
 
 #### getters and setters
 
-- **每一个成员变量都有一个隐式的getter,非final的对象都有一个隐式的setter**
-- **可以通过实现getter与setter为对象增加额外的属性**
+-   **每一个成员变量都有一个隐式的 getter,非 final 的对象都有一个隐式的 setter**
+-   **可以通过实现 getter 与 setter 为对象增加额外的属性**
 
 ```Dart
 class Rectangle {
@@ -748,9 +812,9 @@ class Rectangle {
 
 #### Implicit interfaces
 
-- **Dart中要实现的接口可以是一个具体的类,并且要求重写所有可见的方法**
-- **实接一个接口，接口中的可见的隐式的setter与getter也会被要求重写**
-- **如果不想实现部分方法，可以重写noSuchMethod方法**
+-   **Dart 中要实现的接口可以是一个具体的类,并且要求重写所有可见的方法**
+-   **实接一个接口，接口中的可见的隐式的 setter 与 getter 也会被要求重写**
+-   **如果不想实现部分方法，可以重写 noSuchMethod 方法**
 
 ```Dart
 class Person {
@@ -787,7 +851,7 @@ class ImplementInterface implements Person {
 }
 ```
 
-- 实现多个接口
+-   实现多个接口
 
 ```Dart
 class Point implements Comparable, Location {...}
@@ -795,12 +859,18 @@ class Point implements Comparable, Location {...}
 
 #### Extending a class
 
-- 使用super调用父类方法
+-   使用 super 调用父类方法
 
 #### Overriding members
 
-- @override
-- 如果需要缩小一个方法的参数或者变量值，并且是类型安全的，可以使用关键字covariant
+-   @override
+
+#### 类型协变 covariant
+
+-   如果需要缩小一个方法的参数或者变量值，并且是类型安全的，可以使用关键字 covariant
+-   相当于 java 中的类型协变
+-   返回值的类型协变是默认支持的
+-   函数参数的类型协变，也就是参数是原来参数的子类，必须加上 covariant 关健字
 
 ```Dart
 class Animal {
@@ -818,7 +888,7 @@ class Cat extends Animal {
 
 ![重载运算符](../../image-resources/flutter/运算符重载.png)
 
-- != 不需要重载，重载==就可以了
+-   != 不需要重载，重载==就可以了
 
 ```Dart
 class Vector {
@@ -836,9 +906,9 @@ class Vector {
 
 ### Enumerated types
 
-- index()方法返回index,第一个枚举返回0
-- 返回所有的枚举 values
-- 枚举可以用在switch中
+-   index()方法返回 index,第一个枚举返回 0
+-   返回所有的枚举 values
+-   枚举可以用在 switch 中
 
 ```Dart
 enum Color { red, green, blue }
@@ -850,17 +920,14 @@ assert(colors[2] == Color.blue);
 
 ### mixin
 
-- **可以认为mixin是java中带有变量与代码实现的interface，定义了在不同继承体系中可以通用的方法与变量**
-- minin的原理与用途：
-    - 首先**Dart是单继承**
-    - 如果两个类继承的父类不同，但是有相同的功能，可以使用接口来实现
-    - 但是接口只有方法签名，没有实现，在两个不同的类中可能要将相同的代码写一遍
-    - 如果相同功能的实现也相同，可以将相同功能的代码放到一个mixin中，然后这两个类使用mixin就可以了
+#### mixin 基础
 
-- 实现一个mixin
-    - 创建一个继承Object的类
-    - 不要创建构造函数，只有默认构造函数
-    - 除非要将mixin当作普通类使用，否则使用mixin而非class
+-   **个人在用途上认为 mixin 是 java 中带有变量与代码实现的 interface，定义了在不同继承体系中可以通用的方法与变量**
+
+-   实现一个 mixin
+    -   创建一个继承 Object 的类
+    -   不要创建构造函数，只有默认构造函数
+    -   除非要将 mixin 当作普通类使用，否则使用 mixin 而非 class 关键字
 
 ```Dart
 // 首先定义一个mixin
@@ -887,11 +954,11 @@ class B {}
 
 // C和D继承体系不一样，但是却同时有Musical中的成员变量与方法
 class C extends A with Musical {
-  
+
 }
 
 class D extends B with Musical {
-  
+
 }
 
 
@@ -899,14 +966,14 @@ void main() {
   C c = new C();
   c.canCompose = true;
   c.entertainMe();
-  
+
   D d = new D();
   d.canPlayPiano = true;
   d.entertainMe();
 }
 ```
 
-- 指定只有某些类可以使用mixin,使用on
+-   指定只有某些类可以使用 mixin,使用 on
 
 ```Dart
 // 只有Musician可以使用mixin MusicalPerformer
@@ -915,17 +982,109 @@ mixin MusicalPerformer on Musician {
 }
 ```
 
-### Class variables and methods
+#### mixin 的调用顺序
 
-#### static
+-   [Dart: What are mixins?](https://medium.com/flutter-community/dart-what-are-mixins-3a72344011f3)
 
-- 静态变量只有当要用的时候，才会初始化
+-   Dart 中的 mixin 是线性的，是一层一层覆盖的，并不会继承所有混合的类的“遗产”，后面的会覆盖前面的
+
+![mixIn01](../../image-resources/flutter/mixin01.jpg)
+
+```Dart
+class A {
+  void test() {
+    print("A.test()");
+  }
+}
+
+class B {
+  void test() {
+    print("B.test()");
+  }
+}
+
+class P {
+  void test() {
+    print("P.test()");
+  }
+}
+
+class AB extends P with A, B {}
+
+class BA extends P with B, A {}
+
+void main() {
+  AB().test();  // B.test()
+  BA().test(); // A.test()
+}
+```
+
+-   **一个 mixin 类的实例，它既是其父类的子类，也是其 mixin 的子类**, 在 Dart 中每一个类也是一个接口，通过 mixin 生成的类，它不仅包含了 mixin 的成员，也实现了 mixin 的接口 mmix
+
+```Dart
+class A {
+  void test() {
+    print("A.test()");
+  }
+}
+
+class B {
+  void test() {
+    print("B.test()");
+  }
+}
+
+class P {
+  void test() {
+    print("P.test()");
+  }
+}
+
+class AB extends P with A, B {}
+
+AB ab = AB();
+print(ab is P);     // true
+print(ab is A);    // true
+print(ab is A);    // true
+```
+
+```Dart
+abstract class Super {
+  void method() {
+    print("Super");
+  }
+}
+
+class MySuper implements Super {
+  @override
+  void method() {
+    print("MySuper");
+  }
+}
+
+mixin Mixin on Super {
+  void method() {
+    super.method();
+    print("Sub");
+  }
+}
+
+class Client extends MySuper with Mixin {}
+
+Client().method();
+ // MySuper
+ // Sub
+// 最终调用的是Mixin中的super.method()和print("Sub)
+// 只不过super指借的是MySuper
+```
+
+![mixIn02](../../image-resources/flutter/mixin02.jpg)
 
 ## Generics
 
 ### 常见使用
 
-- Using collection literals
+-   Using collection literals
 
 ```Dart
 var names = <String>['Seth', 'Kathy', 'Lars'];
@@ -936,7 +1095,7 @@ var pages = <String, String>{
 };
 ```
 
-- 构造函数中
+-   构造函数中
 
 ```Dart
 var names = List<String>();
@@ -944,9 +1103,9 @@ names.addAll(['Seth', 'Kathy', 'Lars']);
 var nameSet = Set<String>.from(names);
 ```
 
-### Dart中泛型与java的不同
+### Dart 中泛型与 java 的不同
 
-- **java中的泛型使用擦除实现，而Dart不是的**
+-   **java 中的泛型使用擦除实现，而 Dart 不是的**
 
 ```Dart
 var names = List<String>();
@@ -959,9 +1118,9 @@ var ids = <int>[1, 2, 3];
 print(names.runtimeType == ids.runtimeType);
 ```
 
-### 泛型中的extends
+### 泛型中的 extends
 
-- 泛型参数中可以指定
+-   泛型参数中可以指定
 
 ```Dart
 class Foo<T extends SomeBaseClass> {
@@ -977,8 +1136,8 @@ var extenderFoo = Foo<Extender>();
 
 ### 泛型方法
 
-- [Using Generic Methods.](https://github.com/dart-lang/sdk/blob/master/pkg/dev_compiler/doc/GENERIC_METHODS.md)
-- 与java的不同之处在于，**java中除了static方法，否则不能使用定义类时指定泛型参数之外的泛型参数，但是Dart中是可以的**
+-   [Using Generic Methods.](https://github.com/dart-lang/sdk/blob/master/pkg/dev_compiler/doc/GENERIC_METHODS.md)
+-   与 java 的不同之处在于，**java 中除了 static 方法，否则不能使用定义类时指定泛型参数之外的泛型参数，但是 Dart 中是可以的**
 
 ```Dart
 
@@ -995,8 +1154,8 @@ TestGeneric testGeneric = new TestGeneric<int>();
 
 ## Libraries and visibility
 
-- Dart中一个每一个app都是一个library
-- _开头的成员变量与方法在library中都仅在同一个libary中可见
+-   Dart 中一个每一个 app 都是一个 library
+-   \_开头的成员变量与方法在 library 中都仅在同一个 libary 中可见
 
 ```Dart
 // 指定一个library
@@ -1010,7 +1169,7 @@ import 'dart:html';
 import 'package:test/test.dart';
 ```
 
-- library prefix
+-   library prefix
 
 ```Dart
 import 'package:lib1/lib1.dart';
@@ -1023,7 +1182,7 @@ Element element1 = Element();
 lib2.Element element2 = lib2.Element();
 ```
 
-- import part of a library
+-   import part of a library
 
 ```Dart
 // Import only foo.
@@ -1035,14 +1194,15 @@ import 'package:lib2/lib2.dart' hide foo;
 
 ### Lazily loading a library
 
-- 可以使用lazily引入的地方
-  - 减少app启动时间
-  - ab测试
-  - load一些比较少用的功能
+-   可以使用 lazily 引入的地方
 
-- 具体使用
-  - 使用deferred as 引入
-  - 当需要的时候，使用loadLibrary
+    -   减少 app 启动时间
+    -   ab 测试
+    -   load 一些比较少用的功能
+
+-   具体使用
+    -   使用 deferred as 引入
+    -   当需要的时候，使用 loadLibrary
 
 ```Dart
 // 后面的引入都会放到hello的namespace中
@@ -1057,29 +1217,29 @@ Future greet() async {
 }
 ```
 
-- 注意事项
-  - **一个deferred libary在加载完成之前，常量并不是常量**
-  - **不能使用deferred libary中的类型**，考虑将接口类型放到一个import file和deferred library都会引入的library
-  - **Dart会将代码引入到deferred as 的命名空间中**
-  - 返回一个Future对象
+-   注意事项
+    -   **一个 deferred libary 在加载完成之前，常量并不是常量**
+    -   **不能使用 deferred libary 中的类型**，考虑将接口类型放到一个 import file 和 deferred library 都会引入的 library
+    -   **Dart 会将代码引入到 deferred as 的命名空间中**
+    -   返回一个 Future 对象
 
 ### Implementing libraries
 
-- [Create Library Packages](https://www.dartlang.org/guides/libraries/create-library-packages)
+-   [Create Library Packages](https://www.dartlang.org/guides/libraries/create-library-packages)
 
 ## Asynchrony support
 
-- Dart中使用异步主要有
-  - await与async
-  - Future 相关的API [Future API](https://www.dartlang.org/guides/libraries/library-tour#future)
+-   Dart 中使用异步主要有
+    -   await 与 async
+    -   Future 相关的 API [Future API](https://www.dartlang.org/guides/libraries/library-tour#future)
 
-### await与async
+### await 与 async
 
-- **也许async是一个耗时的方法，但是并不会等待方法执行完成**
-- **await必须与async方法一起使用**
-- **await返回一个Future对象**
-- **使用try catch和final来处理await方法中的错误与清理工作**
-- 一个async方法中，可以多次调用await
+-   **也许 async 是一个耗时的方法，但是并不会等待方法执行完成**
+-   **await 必须与 async 方法一起使用**
+-   **await 返回一个 Future 对象**
+-   **使用 try catch 和 final 来处理 await 方法中的错误与清理工作**
+-   一个 async 方法中，可以多次调用 await
 
 ```Dart
 Future checkVersion() async {
@@ -1109,14 +1269,15 @@ Future test() async {
 
 ### Streams
 
-- 使用streams的方式
-  - 使用async与await for
-  - 使用Streams相关的API [Stream API](https://www.dartlang.org/guides/libraries/library-tour#stream)
+-   使用 streams 的方式
 
-- 一定要配合async方法一起使用
-- await for中的对象一定要是一个Stream
-- 使用await for一定要注意，要确定我们的确需要stream所有的结果
-- 退出stream,使用break与return
+    -   使用 async 与 await for
+    -   使用 Streams 相关的 API [Stream API](https://www.dartlang.org/guides/libraries/library-tour#stream)
+
+-   一定要配合 async 方法一起使用
+-   await for 中的对象一定要是一个 Stream
+-   使用 await for 一定要注意，要确定我们的确需要 stream 所有的结果
+-   退出 stream,使用 break 与 return
 
 ```Dart
 Future main() async {
@@ -1130,14 +1291,14 @@ Future main() async {
 
 ### Generators
 
-- 同步：Iterable
-- 异步：Stream
-- [Generator](https://www.dartlang.org/articles/language/beyond-async)
+-   同步：Iterable
+-   异步：Stream
+-   [Generator](https://www.dartlang.org/articles/language/beyond-async)
 
 #### 使用方法
 
-- 同步方法上加上 sync*, 异步方法上加上async*
-- 使用yield产生数据
+-   同步方法上加上 sync*, 异步方法上加上 async*
+-   使用 yield 产生数据
 
 ```Dart
 // 同步sync*
@@ -1154,7 +1315,7 @@ Stream<int> asynchronousNaturalsTo(int n) async* {
 }
 ```
 
-- 如果generator是循环的，可以通过使用yield* 增加性能
+-   如果 generator 是循环的，可以通过使用 yield\* 增加性能
 
 ```Dart
 Iterable<int> naturalsDownFrom(int n) sync* {
@@ -1167,9 +1328,9 @@ Iterable<int> naturalsDownFrom(int n) sync* {
 
 ## Callable classed
 
-- [Emulating Functions in Dart](https://www.dartlang.org/articles/language/emulating-functions)
-- 如果想让类对象能够像函数一样被调用，实现call()方法
-- Dart遇到这种语法时，首先当函数调用，不成功时，尝试调用参数合适的call方法，如果也失败了，尝试调用noSuchMethod方法
+-   [Emulating Functions in Dart](https://www.dartlang.org/articles/language/emulating-functions)
+-   如果想让类对象能够像函数一样被调用，实现 call()方法
+-   Dart 遇到这种语法时，首先当函数调用，不成功时，尝试调用参数合适的 call 方法，如果也失败了，尝试调用 noSuchMethod 方法
 
 ```Dart
 class WannabeFunction {
@@ -1187,8 +1348,8 @@ main() {
 
 ## Typedefs
 
-- 目前Dart仅支持Function的typedef
-- **typedef的好处是可以保存函数的类型信息**
+-   目前 Dart 仅支持 Function 的 typedef
+-   **typedef 的好处是可以保存函数的类型信息**
 
 ```Dart
 typedef Compare = int Function(Object a, Object b);
@@ -1209,7 +1370,7 @@ void main() {
 }
 ```
 
-- **typedef中因为相当于别名，也支持泛型**
+-   **typedef 中因为相当于别名，也支持泛型**
 
 ```Dart
 typedef Compare<T> = int Function(T a, T b);
@@ -1223,9 +1384,9 @@ void main() {
 
 ## Metadata
 
-- 相当于java中的anotation
-- 常见的metadata
-  - @deprecated
-  - @override
-  - @Todo
-  - @required
+-   相当于 java 中的 anotation
+-   常见的 metadata
+    -   @deprecated
+    -   @override
+    -   @Todo
+    -   @required
