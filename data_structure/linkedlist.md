@@ -83,6 +83,28 @@
 
 ## 常见的问题
 
--   单/双/循环链表的增删改查
--   leetcode 19,21,141,206,876
--   **快慢指针**
+### 判断链表是否有环
+
+![链表环判断](./../image-resources/algo/list/链表环判断.png)
+
+- 采用快慢指针，快每次走两步，慢每次走一步
+- 如果有环，肯定fast先走入环，slow后进入环
+- 每迭代一次，fast和slow之间的距离就会多1，当达到环的长度的时候，fast就和slow重合了
+
+```java
+fun hasCircle(node: Node?): Boolean {
+    if (node?.next == null) {
+        return false
+    }
+    var fast = node
+    var slow = node
+    while (fast?.next?.next != null) {
+        fast = fast.next?.next
+        slow = slow?.next
+        if (fast == slow) {
+            return true
+        }
+    }
+    return false
+}
+```
