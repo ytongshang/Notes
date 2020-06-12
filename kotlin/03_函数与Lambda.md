@@ -313,3 +313,5 @@ fun html(init: HTML.() -> Unit): HTML {
     return html
 }
 ```
+
+## 函数
