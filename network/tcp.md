@@ -39,6 +39,8 @@
 
 ## TCP
 
+-   ![tcp_header](../image-resources/network/tcp_header.webp)
+
 ### 三次握手，四次挥手
 
 ### TCP 校验和
